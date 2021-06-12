@@ -19,6 +19,7 @@ public class TestConstants {
     public static String APPROVAL_USER_NAME = "svc-study-report-approval@pactpharma.com";
     public static String APPROVAL_PASSWORD = "k#2REA3pp42R";
     public static String GET_FETCH_DOCS_URI = "/api/v1/report/reports/%s/fetchdocs";
+    public static String GET_FETCH_IN_WORD_FORMAT_URI = "/api/v1/report/reports/%s/fetchinwordformat";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";

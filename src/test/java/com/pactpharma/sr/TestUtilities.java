@@ -50,7 +50,7 @@ public class TestUtilities {
         RestAssured.baseURI = BASE_URI;
         RequestSpecification httpRequest = RestAssured.given();
         String token = TestUtilities.getToken(userName, userPassword);
-        System.out.println("token " + token);
+       // System.out.println("token " + token);
         httpRequest.header(AUTHORIZATION, String.format("Bearer %s", token));
         return httpRequest;
     }
