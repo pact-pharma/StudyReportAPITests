@@ -13,22 +13,30 @@ public class StudyReportTests {
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
-        return new Object[][] {{CREATOR_USER_NAME, CREATOR_PASSWORD,
+        return new Object[][] {{GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                 200, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).tar.gz",
                 "https://study-report.zest.pactpharma.com/api/v1/report/reports/25046/fetchdocs/", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD ,
+                {GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         400, "125046", null, null, "Error: No such report found!"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD ,
+                {GET_FETCH_DOCS_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                        400, "25046", null, null, "User svc-study-report-approval@pactpharma.com does not have permission " +
+                        "to download report of type Protein Science(S)"},
+                {GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        200, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).word.tar.gz",
+                        "https://study-report.zest.pactpharma.com/api/v1/report/reports/25046/fetchinwordformat/", null},
+                {GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD ,
+                        400, "125046", null, null, "Error: No such report found!"},
+                {GET_FETCH_IN_WORD_FORMAT_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD ,
                         400, "25046", null, null, "User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"}
         };
 
     }
-    @Test(dataProvider = "getFetchDocsDataProvider", enabled = false)
-    void getFetchDocsTest(String userName, String userPassword, int expectedReturnCode, String studyReportId,
+    @Test(dataProvider = "getFetchDocsDataProvider", enabled = true)
+    void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedReturnCode, String studyReportId,
                     String expectedArchiveName, String expectedUriPrefix, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
-        Response response = httpRequest.request(Method.GET, String.format(GET_FETCH_DOCS_URI, studyReportId));
+        Response response = httpRequest.request(Method.GET, String.format(fetchDocsUri, studyReportId));
 
         Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
                                                          expectedReturnCode, response.getStatusCode());
@@ -64,7 +72,7 @@ public class StudyReportTests {
         };
     }
 
-    @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = true)
+    @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = false)
     void getFetchWithToken(String userName, String userPassword, int expectedReturnCode, String studyReportId,
                            String secondStudyReportId, boolean sleep,
                            String expectedPdfFile, String expectedErrorMessage) throws Exception {
@@ -102,5 +110,4 @@ public class StudyReportTests {
                 break;
         }
     }
-
 }
