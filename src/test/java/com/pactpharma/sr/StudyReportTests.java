@@ -9,8 +9,6 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static com.pactpharma.sr.TestConstants.*;
 
-//import io.restassured.internal.http.GZIPEncoding.GZIPDecompressingEntity;
-
 public class StudyReportTests {
 
     @DataProvider(name = "getFetchDocsDataProvider")
