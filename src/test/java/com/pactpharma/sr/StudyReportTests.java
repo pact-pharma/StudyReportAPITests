@@ -5,6 +5,7 @@ import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Assert;
+import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static com.pactpharma.sr.TestConstants.*;
@@ -32,7 +33,7 @@ public class StudyReportTests {
         };
 
     }
-    @Test(dataProvider = "getFetchDocsDataProvider", enabled = true)
+    @Test(dataProvider = "getFetchDocsDataProvider", enabled = false)
     void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedReturnCode, String studyReportId,
                     String expectedArchiveName, String expectedUriPrefix, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
@@ -110,4 +111,24 @@ public class StudyReportTests {
                 break;
         }
     }
+
+    @DataProvider(name = "getPdfSearchReportDataProvider")
+    public Object[][] getPdfSearchReportDataProvider(){
+        return new Object[][]{{CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55",
+                200, "src/test/resources/files/expectedGetPdfSearchReportPatientId55imPact.json"}
+        };
+    }
+    @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = true)
+    void getPdfSearchReport(String userName, String userPassword, String reportType, String patientId,
+                            int expectedReturnCode,
+                            String expectedResponseFile) throws Exception{
+        RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
+        Response response = httpRequest.request(Method.GET, String.format(GET_PDF_SEARCH_REPORT, reportType, patientId));
+        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
+                expectedReturnCode, response.getStatusCode());
+        String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
+        JSONAssert.assertEquals(String.format("API:%s\nResponse should be %s",
+                String.format(GET_PDF_SEARCH_REPORT, reportType, patientId), expectedResponse), expectedResponse, response.asPrettyString(), false);
+    }
+
 }
