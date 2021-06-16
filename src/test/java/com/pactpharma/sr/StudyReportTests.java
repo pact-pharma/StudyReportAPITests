@@ -158,7 +158,17 @@ public class StudyReportTests {
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "203530011", null, null, null, null,
                         200, "src/test/resources/files/expectedGetPdfSearchReportWithIncorrectPSSWithExpId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", null, null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportPSL.json"}
+                        200, "src/test/resources/files/expectedGetPdfSearchReportPSL.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", "3118938", null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportPSLWithExpId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", "311893800", null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportPSLWithIncorrectExpId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportGE.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088", null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportGEWithStudyReportId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088XX", null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportGEWithIncorrectStudyReportId.json"},
         };
     }
     @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = true)
@@ -182,8 +192,6 @@ public class StudyReportTests {
 
     }
 
-
-
     private String constructPdfSearchReportUrl(String reportType, String patientId,
        String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier) {
         StringBuilder strBuilderUrl
@@ -195,6 +203,5 @@ public class StudyReportTests {
         strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  studyId, "&study_id=%s");
         strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  hgxIdentifier, "&hgx_identifier=%s");
         return strBuilderUrl.toString();
-
     }
 }

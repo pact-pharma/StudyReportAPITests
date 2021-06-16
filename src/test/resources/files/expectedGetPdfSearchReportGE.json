@@ -1,0 +1,15 @@
+{
+  "studyIdFound": false,
+  "condidatesFound": true,
+  "studyReportId": null,
+  "condidates": {
+    "name": [
+      "study_id"
+    ],
+    "values": [
+      {
+        "study_id": "21-088"
+      }
+    ]
+  }
+}
