@@ -1,0 +1,16 @@
+{
+    "studyIdFound": false,
+    "condidatesFound": true,
+    "studyReportId": null,
+    "condidates": {
+        "name": [
+            "exp_id"
+        ],
+        "values": [
+            {
+                "db_exp_id": 2035300,
+                "exp_id": "20002337"
+            }
+        ]
+    }
+}

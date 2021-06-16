@@ -1,0 +1,12 @@
+{
+    "studyIdFound": false,
+    "condidatesFound": false,
+    "studyReportId": null,
+    "condidates": {
+        "name": [
+            "impact_sample_name",
+            "exp_id"
+        ],
+        "values": []
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "studyIdFound": false,
+    "condidatesFound": true,
+    "studyReportId": null,
+    "condidates": {
+        "name": [
+            "sample_name",
+            "hgx_identifier",
+            "study_id"
+        ],
+        "values": [
+            {
+                "sample_name": "PP001585",
+                "hgx_identifier": "12860102C",
+                "study_id": "20-628"
+            }
+        ]
+    }
+}

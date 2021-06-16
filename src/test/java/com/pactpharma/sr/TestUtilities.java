@@ -73,5 +73,14 @@ public class TestUtilities {
     }
 
 
+    public static StringBuilder constructPartOfUrl(StringBuilder strBuilderUrl, String stringToSubstitute, String partOfUrl) {
+        if(!(stringToSubstitute == null || stringToSubstitute.isEmpty() || stringToSubstitute.isBlank())){
+            strBuilderUrl.append(String.format(partOfUrl, stringToSubstitute));
+        }
+        return strBuilderUrl;
+    }
+
+
+
 
 }

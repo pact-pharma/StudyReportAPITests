@@ -33,7 +33,7 @@ public class StudyReportTests {
         };
 
     }
-    @Test(dataProvider = "getFetchDocsDataProvider", enabled = false)
+    @Test(dataProvider = "getFetchDocsDataProvider", enabled = true)
     void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedReturnCode, String studyReportId,
                     String expectedArchiveName, String expectedUriPrefix, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
@@ -55,9 +55,6 @@ public class StudyReportTests {
                         expectedErrorMessage, response.jsonPath().get(MESSAGE));
                 break;
         }
-
-        //String expectedResult = TestUtilities.readJsonFile("src/test/resources/reportForPatient0021");
-        //JSONAssert.assertEquals(expectedResult, response.asPrettyString(), false);
     }
 
     @DataProvider(name = "getFetchDocsWithTokenDataProvider")
@@ -73,7 +70,7 @@ public class StudyReportTests {
         };
     }
 
-    @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = false)
+    @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = true)
     void getFetchWithToken(String userName, String userPassword, int expectedReturnCode, String studyReportId,
                            String secondStudyReportId, boolean sleep,
                            String expectedPdfFile, String expectedErrorMessage) throws Exception {
@@ -112,23 +109,92 @@ public class StudyReportTests {
         }
     }
 
+    //Patient 0603 has id 55
+    //Patient 0612 has is 2383964
     @DataProvider(name = "getPdfSearchReportDataProvider")
     public Object[][] getPdfSearchReportDataProvider(){
-        return new Object[][]{{CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55",
-                200, "src/test/resources/files/expectedGetPdfSearchReportPatientId55imPact.json"}
+        return new Object[][]{{CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, null, null,
+                200, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", "M01", null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentIdAndImpactSampleName.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "M01", null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImPactWithImpactSampleName.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, "21-006", null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, "PP001146", null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, "PP001146", "21-006", null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", "M01", "PP001146", "21-006", null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentIdAndImpactSampleName.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "5500000", null, null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectPatientId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "0.001", null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "XXXX", null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectImpactSampleName.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "5500000", "XXXX", null, null, null,
+                        400, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentIdAndImpactName.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformatics.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", "20-628", "12860102C",
+                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithSampleNameStudyIdHgxIdentifier.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001584", "20-627", "12860102",
+                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithIncorrectSampleNameStudyIdHgxIdentifier.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", "20002337", "XXXX", "PP001585", "20-628", "12860102C",
+                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithAllParameters.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithSampleName.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, "20-628", null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithStudyId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, "12860102C",
+                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithHgxIdentifier.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", null, null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportPSS.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "2035300", null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportPSSWithExpId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "203530011", null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportWithIncorrectPSSWithExpId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", null, null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportPSL.json"}
         };
     }
     @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = true)
     void getPdfSearchReport(String userName, String userPassword, String reportType, String patientId,
+                            String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier,
                             int expectedReturnCode,
                             String expectedResponseFile) throws Exception{
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
-        Response response = httpRequest.request(Method.GET, String.format(GET_PDF_SEARCH_REPORT, reportType, patientId));
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
+        String requestUrl = constructPdfSearchReportUrl(reportType, patientId,
+                experimentId, impactSampleName, sampleName, studyId, hgxIdentifier);
+
+        System.out.println("URL: " + requestUrl);
+        Response response = httpRequest.request(Method.GET, requestUrl);
+
+        Assert.assertEquals(String.format("API:%s\nResponse code should be %s", requestUrl, expectedReturnCode),
                 expectedReturnCode, response.getStatusCode());
         String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
+
         JSONAssert.assertEquals(String.format("API:%s\nResponse should be %s",
-                String.format(GET_PDF_SEARCH_REPORT, reportType, patientId), expectedResponse), expectedResponse, response.asPrettyString(), false);
+                requestUrl, expectedResponse), expectedResponse, response.asPrettyString(), false);
+
     }
 
+
+
+    private String constructPdfSearchReportUrl(String reportType, String patientId,
+       String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier) {
+        StringBuilder strBuilderUrl
+                = new StringBuilder();
+        strBuilderUrl.append(String.format(GET_PDF_SEARCH_REPORT, reportType, patientId));
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, experimentId, "&exp_id=%s");
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, impactSampleName, "&impact_sample_name=%s");
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, sampleName, "&sample_name=%s");
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  studyId, "&study_id=%s");
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  hgxIdentifier, "&hgx_identifier=%s");
+        return strBuilderUrl.toString();
+
+    }
 }
