@@ -4,13 +4,18 @@ import com.testautomationguru.utility.PDFUtil;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static com.pactpharma.sr.TestConstants.*;
+import static com.pactpharma.sr.TestUtilities.addBodyParameter;
+import static com.pactpharma.sr.TestUtilities.convertBase64ToPdfFile;
+
 
 public class StudyReportTests {
+    final boolean isTestEnabled = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -33,7 +38,7 @@ public class StudyReportTests {
         };
 
     }
-    @Test(dataProvider = "getFetchDocsDataProvider", enabled = true)
+    @Test(dataProvider = "getFetchDocsDataProvider", enabled = isTestEnabled)
     void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedReturnCode, String studyReportId,
                     String expectedArchiveName, String expectedUriPrefix, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
@@ -70,7 +75,7 @@ public class StudyReportTests {
         };
     }
 
-    @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = true)
+    @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = isTestEnabled)
     void getFetchWithToken(String userName, String userPassword, int expectedReturnCode, String studyReportId,
                            String secondStudyReportId, boolean sleep,
                            String expectedPdfFile, String expectedErrorMessage) throws Exception {
@@ -169,9 +174,15 @@ public class StudyReportTests {
                         200, "src/test/resources/files/expectedGetPdfSearchReportGEWithStudyReportId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088XX", null,
                         200, "src/test/resources/files/expectedGetPdfSearchReportGEWithIncorrectStudyReportId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, null, null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportTI.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, "21-247", null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportTIWithStudyReportId.json"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, "21-247XX", null,
+                        200, "src/test/resources/files/expectedGetPdfSearchReportTIWithIncorrectStudyReportId.json"}
         };
     }
-    @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = true)
+    @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = isTestEnabled)
     void getPdfSearchReport(String userName, String userPassword, String reportType, String patientId,
                             String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier,
                             int expectedReturnCode,
@@ -203,5 +214,102 @@ public class StudyReportTests {
         strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  studyId, "&study_id=%s");
         strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  hgxIdentifier, "&hgx_identifier=%s");
         return strBuilderUrl.toString();
+    }
+
+    @DataProvider(name = "putReportReportsDataProvider")
+    public Object[][] putReportReportsDataProvider() {
+        return new Object[][]{
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
+                null, null, null, null, null, null, null,
+                null, null, null, null, null, null,
+                "src/test/resources/files/putReportReports.pdf"},
+               {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
+                        null, "06/May/21", null, null, null, null, null,
+                        null, null, null, null, null, null,
+                        "src/test/resources/files/putReportReportsWithHandOffDate.pdf"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
+                        null, "06/May/21","This is tumor fusion Detected Comment",
+                        "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
+                        "This is test recommendation", "This is test amendments",
+                        "Melanoma", "Premalignant", "legs", "30748", "11905", null,
+                        "src/test/resources/files/putReportReportsWithHandOffDate.pdf"}
+              /*  {CREATOR_USER_NAME, CREATOR_PASSWORD, "51894", 200,
+                        null, "06/Apr/21","This is tumor fusion Detected Comment",
+                        "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
+                        "This is test recommendation", "This is test amendments",
+                        "Melanoma", "Premalignant", "legs", null, null, null,
+                        "src/test/resources/files/putReportReportsWithHandOffDate.pdf"},*/
+                };
+    }
+
+    //Study Id belong to Patint 0612
+    @Test(dataProvider = "putReportReportsDataProvider", enabled = true)
+    void putReportReports(String userName, String userPassword, String studyReportId,
+                          int expectedReturnCode, String fileAttachmentName, String compactReportHandOffDate,
+                          String tumorFusionDetectedComment, String lowExpressedNsmComment,
+                          String lowTcByNgsPctComment, String recommendation, String amendments,
+                          String cancerType, String tumorType, String tumorLocation, String expId,
+                          String tCellNonConfidentCount, String lscSelectedSamples,
+                          String expectedResponseFile) throws Exception{
+        RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
+
+        JSONObject requestObjectJSON = constructPutReportReportsBody(fileAttachmentName, compactReportHandOffDate,
+                tumorFusionDetectedComment, lowExpressedNsmComment, lowTcByNgsPctComment, recommendation, amendments,
+                cancerType, tumorType, tumorLocation, expId, tCellNonConfidentCount, lscSelectedSamples);
+        System.out.println("Body: " + requestObjectJSON);
+        System.out.println("Request:" + String.format(PUT_REPORT_REPORTS , studyReportId));
+        httpRequest.body(requestObjectJSON.toJSONString());
+
+        Response response = httpRequest.request(Method.PUT, String.format(PUT_REPORT_REPORTS , studyReportId));
+        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
+                expectedReturnCode, response.getStatusCode());
+
+        convertBase64ToPdfFile("src/test/tmp/convertPdf.pdf",
+                response.getBody().jsonPath().get(TestConstants.PDF).toString());
+
+        PDFUtil pdfUtil = new PDFUtil();
+
+         Assert.assertTrue(String.format("Put %s should retrieve file identical to %s file",
+                String.format(PUT_REPORT_REPORTS , studyReportId), expectedResponseFile),
+                pdfUtil.compare(expectedResponseFile, "src/test/tmp/convertPdf.pdf"));
+    }
+
+    /**
+     * This method constructs request body for put /api/v1/report/reports/:id
+     * @param fileAttachmentName
+     * @param compactReportHandOffDate
+     * @param tumorFusionDetectedComment
+     * @param lowExpressedNsmComment
+     * @param lowTcByNgsPctComment
+     * @param recommendation
+     * @param amendments
+     * @param cancerType
+     * @param tumorType
+     * @param tumorLocation
+     * @param expId
+     * @param tCellNonConfidentCount
+     * @param lscSelectedSamples
+     * @return - Request body JSON File
+     */
+    private JSONObject constructPutReportReportsBody(String fileAttachmentName, String compactReportHandOffDate,
+                                                     String tumorFusionDetectedComment, String lowExpressedNsmComment,
+                                                     String lowTcByNgsPctComment, String recommendation, String amendments,
+                                                     String cancerType, String tumorType, String tumorLocation, String expId,
+                                                     String tCellNonConfidentCount, String lscSelectedSamples) {
+        JSONObject requestParams = new JSONObject();
+        requestParams = addBodyParameter(requestParams, "fileAttachmentName", fileAttachmentName);
+        requestParams = addBodyParameter(requestParams, "compact_report_hand_off_date", compactReportHandOffDate);
+        requestParams = addBodyParameter(requestParams, "tumor_fusion_detected_comment", tumorFusionDetectedComment);
+        requestParams = addBodyParameter(requestParams, "low_expressed_nsm_comment", lowExpressedNsmComment);
+        requestParams = addBodyParameter(requestParams, "low_tc_by_ngs_pct_comment", lowTcByNgsPctComment);
+        requestParams = addBodyParameter(requestParams, "recommendation", recommendation);
+        requestParams = addBodyParameter(requestParams, "amendments", amendments);
+        requestParams = addBodyParameter(requestParams, "cancer_type", cancerType);
+        requestParams = addBodyParameter(requestParams, "tumor_type", tumorType);
+        requestParams = addBodyParameter(requestParams, "tumor_location", tumorLocation);
+        requestParams = addBodyParameter(requestParams, "exp_id", expId);
+        requestParams = addBodyParameter(requestParams, "t_cell_non_confident_count", tCellNonConfidentCount);
+        requestParams = addBodyParameter(requestParams, "lsc_selected_samples", lscSelectedSamples);
+        return requestParams;
     }
 }
