@@ -260,10 +260,10 @@ public class StudyReportTests {
                          null, null, null, null, null, null, null,
                          null, null, null, null, null, LSC_SELECTED_SAMPLES,
                         "src/test/resources/files/expectedPutReportReportsPSL.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 200,
+               /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "42981", 200,
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, LSC_SELECTED_SAMPLES,
-                        "src/test/resources/files/expectedPutReportReportsPSLWithCompactReportHandOffDate.pdf", null},
+                        "src/test/resources/files/expectedPutReportReportsPSLWithCompactReportHandOffDate.pdf", null},*/
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 400,
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, null,
@@ -277,15 +277,41 @@ public class StudyReportTests {
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null,
                         null, "Modifications to approved report are disallowed!"},
+                //Study Report with USER APPROVAL permissions
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have permission to " +
-                                "update report of type Tumor Immunology"}
+                                "update report of type Tumor Immunology"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "24682", 400,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "User svc-study-report-approval@pactpharma.com does " +
+                                "not have permission to update report of type Protein Science(S)"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "51930", 400,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "User svc-study-report-approval@pactpharma.com does not " +
+                                "have permission to update report of type Bioinformatics"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42954", 400,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "User svc-study-report-approval@pactpharma.com " +
+                                "does not have permission to update report of type Protein Science(L)"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3017400", 400,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "User svc-study-report-approval@pactpharma.com does not have " +
+                                "permission to update report of type Gene Editing"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "User svc-study-report-approval@pactpharma.com does not have " +
+                                "permission to update report of type Tumor Immunology"}
                 };
     }
 
-    @Test(dataProvider = "putReportReportsDataProvider", enabled = isTestEnabled)
+    @Test(dataProvider = "putReportReportsDataProvider", enabled = true)
     void putReportReports(String userName, String userPassword, String studyReportId,
                           int expectedReturnCode, String fileAttachmentName, String compactReportHandOffDate,
                           String tumorFusionDetectedComment, String lowExpressedNsmComment,
