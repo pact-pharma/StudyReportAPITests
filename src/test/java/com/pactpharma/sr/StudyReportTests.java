@@ -233,7 +233,7 @@ public class StudyReportTests {
         return new Object[][]{
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                 null, null, null, null, null, null, null,
-                null, null, null, null, null, null, null,
+                null, null, null, null, null, null, "This test conclusion.",
                 "src/test/resources/files/expectedPutReportReports.pdf", null},
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         null, "06/May/21", null, null, null, null, null,
@@ -249,10 +249,10 @@ public class StudyReportTests {
                         null, null, "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
-                        "Melanoma", "Premalignant", "legs", null, null, null, null,
+                        "Melanoma", "Premalignant", "legs", null, null, null, "This test conclusion.",
                         "src/test/resources/files/" +
                         "expectedPutReportReportsBioinformaticsWithCommentsRecommendationsAmendmentsCancerAndTumorTypes.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", 200,
+               {CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", 200,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "src/test/resources/files/expectedReportReportsGE.pdf", null},
@@ -325,7 +325,7 @@ public class StudyReportTests {
                           String expectedResponseFile, String expectedErrorMessage) throws Exception{
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
 
-        JSONObject requestObjectJSON = constructPutReportReportsBody(fileAttachmentName, compactReportHandOffDate,
+        JSONObject requestObjectJSON = constructPutReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
                 tumorFusionDetectedComment, lowExpressedNsmComment, lowTcByNgsPctComment, recommendation, amendments,
                 cancerType, tumorType, tumorLocation, expId, tCellNonConfidentCount, lscSelectedSamples);
         System.out.println("Body: " + requestObjectJSON.toJSONString());
@@ -377,12 +377,13 @@ public class StudyReportTests {
      * @param lscSelectedSamples
      * @return - Request body JSON File
      */
-    private JSONObject constructPutReportReportsBody(String[] fileAttachmentName, String compactReportHandOffDate,
+    private JSONObject constructPutReportReportsBody(String conclusion, String[] fileAttachmentName, String compactReportHandOffDate,
                                                      String tumorFusionDetectedComment, String lowExpressedNsmComment,
                                                      String lowTcByNgsPctComment, String recommendation, String amendments,
                                                      String cancerType, String tumorType, String tumorLocation, String expId,
                                                      String tCellNonConfidentCount, String[] lscSelectedSamples) {
         JSONObject requestParams = new JSONObject();
+        requestParams = addBodyParameter(requestParams, "conclusion", conclusion);
         requestParams = addBodyArray(requestParams, "fileAttachmentName", fileAttachmentName);
         requestParams = addBodyParameter(requestParams, "compact_report_hand_off_date", compactReportHandOffDate);
         requestParams = addBodyParameter(requestParams, "tumor_fusion_detected_comment", tumorFusionDetectedComment);
