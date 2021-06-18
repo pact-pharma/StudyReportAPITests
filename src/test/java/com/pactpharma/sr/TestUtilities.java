@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 
@@ -134,7 +135,7 @@ public class TestUtilities {
 
     /**
      * This method adds new parameter for JSON Object
-     * @param jsonObject - json object
+     * @param jsonObject - JSON object
      * @param parameterName - parameter name
      * @param parameterValue - parameter value
      * @return
@@ -142,6 +143,25 @@ public class TestUtilities {
     public static JSONObject addBodyParameter(JSONObject jsonObject, String parameterName, String parameterValue) {
         if(parameterValue!=null) {
             jsonObject.put(parameterName, parameterValue);
+        }
+        return jsonObject;
+    }
+
+    /**
+     * This method adds JSONArray to json object
+     * @param jsonObject - JSON Object
+     * @param arrayName - array Name
+     * @param parameterValues - JSON array need to be constructed from this String array
+     * @return
+     */
+    public static JSONObject addBodyArray(JSONObject jsonObject, String arrayName, String[] parameterValues) {
+
+        if(parameterValues != null) {
+            JSONArray array = new JSONArray();
+            for (String parameterValue : parameterValues) {
+                array.add(parameterValue);
+            }
+            jsonObject.put(arrayName, array);
         }
         return jsonObject;
     }

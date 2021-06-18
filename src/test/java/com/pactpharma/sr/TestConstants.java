@@ -26,4 +26,5 @@ public class TestConstants {
     public static String URI = "uri";
     public static String MESSAGE = "message";
     public static String PDF = "pdf";
+    public static String[] LSC_SELECTED_SAMPLES = {"MO1", "MO2"};
 }

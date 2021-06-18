@@ -10,8 +10,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import static com.pactpharma.sr.TestConstants.*;
-import static com.pactpharma.sr.TestUtilities.addBodyParameter;
-import static com.pactpharma.sr.TestUtilities.convertBase64ToPdfFile;
+import static com.pactpharma.sr.TestUtilities.*;
 
 
 public class StudyReportTests {
@@ -109,7 +108,7 @@ public class StudyReportTests {
                 break;
             case 400:
                 Assert.assertEquals(String.format("Error message should be %s", expectedErrorMessage),
-                        expectedErrorMessage, getFetchDocsWithTokeResponse.jsonPath().get("message"));
+                        expectedErrorMessage, getFetchDocsWithTokeResponse.jsonPath().get(MESSAGE));
                 break;
         }
     }
@@ -216,47 +215,90 @@ public class StudyReportTests {
         return strBuilderUrl.toString();
     }
 
+    //Study Id 51930 belongs to patient 0411 (BIOINFORMATICS)
+    //Study Id 24682 belongs to patient 0403 (Protein Science S)
+    //Study Id 3017400 belongs to patient 0030 (GE)
+    //Study Id 3107271 belongs to patient 0315 (imPACT)
+    //Study Id 42954 belongs to patient 0602 (Protein Science L)
+    //Study Id 2541372 belongs to patient 0401 (TI)
+    //Study Id 38465 belongs to patient 0020 (Status code is approved)
+
+    //SELECT * FROM report_dev.study_report where data_file LIKE '%BINF%' ;
+    //select * from report_dev.study_report where data_file LIKE '%GE%' and status='Pending';
+    //select * from report_dev.study_report where report_name LIKE '%imPACT%' and status='Pending';
+    //select * from report_dev.study_report where report_name LIKE '%Protein Science(L)%' and status='Pending';
+    //select id, report_name from report_dev.study_report where report_name LIKE "%Tumor%" and status='Pending';
     @DataProvider(name = "putReportReportsDataProvider")
     public Object[][] putReportReportsDataProvider() {
         return new Object[][]{
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
+               {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                 null, null, null, null, null, null, null,
                 null, null, null, null, null, null,
-                "src/test/resources/files/putReportReports.pdf"},
+                "src/test/resources/files/expectedPutReportReports.pdf", null},
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         null, "06/May/21", null, null, null, null, null,
                         null, null, null, null, null, null,
-                        "src/test/resources/files/putReportReportsWithHandOffDate.pdf"},
+                        "src/test/resources/files/expectedPutReportReportsWithHandOffDate.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         null, "06/May/21","This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs", "30748", "11905", null,
-                        "src/test/resources/files/putReportReportsWithHandOffDate.pdf"}
-              /*  {CREATOR_USER_NAME, CREATOR_PASSWORD, "51894", 200,
-                        null, "06/Apr/21","This is tumor fusion Detected Comment",
+                        "src/test/resources/files/expectedPutReportReportsWithHandOffDate.pdf", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "51930", 200,
+                        null, null, "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs", null, null, null,
-                        "src/test/resources/files/putReportReportsWithHandOffDate.pdf"},*/
+                        "src/test/resources/files/" +
+                        "expectedPutReportReportsBioinformaticsWithCommentsRecommendationsAmendmentsCancerAndTumorTypes.pdf", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", 200,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null,
+                        "src/test/resources/files/expectedReportReportsGE.pdf", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3107271", 200,
+                         null, null, null, null, null, null, null,
+                         null, null, null, null, null, LSC_SELECTED_SAMPLES,
+                        "src/test/resources/files/expectedPutReportReportsPSL.pdf", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 200,
+                        null, "08/May/21", null, null, null, null, null,
+                        null, null, null, null, null, LSC_SELECTED_SAMPLES,
+                        "src/test/resources/files/expectedPutReportReportsPSLWithCompactReportHandOffDate.pdf", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 400,
+                        null, "08/May/21", null, null, null, null, null,
+                        null, null, null, null, null, null,
+                        null, "Error: Named parameter \":lsc_selected_samples\" has no value in the given object."},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541372", 200,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null,
+                        "src/test/resources/files/expectedPutReportReportsTI.pdf", null},
+                //Study Report with Approved Status
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", 200,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null,
+                        null, "Modifications to approved report are disallowed!"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "User svc-study-report-approval@pactpharma.com does not have permission to " +
+                                "update report of type Tumor Immunology"}
                 };
     }
 
-    //Study Id belong to Patint 0612
-    @Test(dataProvider = "putReportReportsDataProvider", enabled = true)
+    @Test(dataProvider = "putReportReportsDataProvider", enabled = isTestEnabled)
     void putReportReports(String userName, String userPassword, String studyReportId,
                           int expectedReturnCode, String fileAttachmentName, String compactReportHandOffDate,
                           String tumorFusionDetectedComment, String lowExpressedNsmComment,
                           String lowTcByNgsPctComment, String recommendation, String amendments,
                           String cancerType, String tumorType, String tumorLocation, String expId,
-                          String tCellNonConfidentCount, String lscSelectedSamples,
-                          String expectedResponseFile) throws Exception{
+                          String tCellNonConfidentCount, String[] lscSelectedSamples,
+                          String expectedResponseFile, String expectedErrorMessage) throws Exception{
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
 
         JSONObject requestObjectJSON = constructPutReportReportsBody(fileAttachmentName, compactReportHandOffDate,
                 tumorFusionDetectedComment, lowExpressedNsmComment, lowTcByNgsPctComment, recommendation, amendments,
                 cancerType, tumorType, tumorLocation, expId, tCellNonConfidentCount, lscSelectedSamples);
-        System.out.println("Body: " + requestObjectJSON);
+        System.out.println("Body: " + requestObjectJSON.toJSONString());
         System.out.println("Request:" + String.format(PUT_REPORT_REPORTS , studyReportId));
         httpRequest.body(requestObjectJSON.toJSONString());
 
@@ -264,14 +306,28 @@ public class StudyReportTests {
         Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
                 expectedReturnCode, response.getStatusCode());
 
-        convertBase64ToPdfFile("src/test/tmp/convertPdf.pdf",
-                response.getBody().jsonPath().get(TestConstants.PDF).toString());
+        switch(expectedReturnCode) {
+            case 200:
+                if(expectedResponseFile != null) {
+                    convertBase64ToPdfFile("src/test/tmp/convertPdf.pdf",
+                            response.getBody().jsonPath().get(TestConstants.PDF).toString());
 
-        PDFUtil pdfUtil = new PDFUtil();
+                    PDFUtil pdfUtil = new PDFUtil();
 
-         Assert.assertTrue(String.format("Put %s should retrieve file identical to %s file",
-                String.format(PUT_REPORT_REPORTS , studyReportId), expectedResponseFile),
-                pdfUtil.compare(expectedResponseFile, "src/test/tmp/convertPdf.pdf"));
+                    Assert.assertTrue(String.format("Put %s should retrieve file identical to %s file",
+                            String.format(PUT_REPORT_REPORTS, studyReportId), expectedResponseFile),
+                            pdfUtil.compare(expectedResponseFile, "src/test/tmp/convertPdf.pdf"));
+                } else {
+                    Assert.assertEquals(String.format("Error message should be %s", expectedErrorMessage),
+                            expectedErrorMessage, response.jsonPath().get(MESSAGE));
+                }
+                break;
+            case 400:
+                Assert.assertEquals(String.format("Error message should be %s", expectedErrorMessage),
+                        expectedErrorMessage, response.jsonPath().get(MESSAGE));
+                break;
+        }
+
     }
 
     /**
@@ -295,7 +351,7 @@ public class StudyReportTests {
                                                      String tumorFusionDetectedComment, String lowExpressedNsmComment,
                                                      String lowTcByNgsPctComment, String recommendation, String amendments,
                                                      String cancerType, String tumorType, String tumorLocation, String expId,
-                                                     String tCellNonConfidentCount, String lscSelectedSamples) {
+                                                     String tCellNonConfidentCount, String[] lscSelectedSamples) {
         JSONObject requestParams = new JSONObject();
         requestParams = addBodyParameter(requestParams, "fileAttachmentName", fileAttachmentName);
         requestParams = addBodyParameter(requestParams, "compact_report_hand_off_date", compactReportHandOffDate);
@@ -309,7 +365,7 @@ public class StudyReportTests {
         requestParams = addBodyParameter(requestParams, "tumor_location", tumorLocation);
         requestParams = addBodyParameter(requestParams, "exp_id", expId);
         requestParams = addBodyParameter(requestParams, "t_cell_non_confident_count", tCellNonConfidentCount);
-        requestParams = addBodyParameter(requestParams, "lsc_selected_samples", lscSelectedSamples);
+        requestParams = addBodyArray(requestParams, "lsc_selected_samples", lscSelectedSamples);
         return requestParams;
     }
 }
