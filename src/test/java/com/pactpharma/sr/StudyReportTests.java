@@ -14,7 +14,7 @@ import static com.pactpharma.sr.TestUtilities.*;
 
 
 public class StudyReportTests {
-    final boolean isTestEnabled = true;
+    final boolean isTestEnabled = false;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -233,91 +233,95 @@ public class StudyReportTests {
         return new Object[][]{
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                 null, null, null, null, null, null, null,
-                null, null, null, null, null, null,
+                null, null, null, null, null, null, null,
                 "src/test/resources/files/expectedPutReportReports.pdf", null},
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         null, "06/May/21", null, null, null, null, null,
-                        null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
                         "src/test/resources/files/expectedPutReportReportsWithHandOffDate.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         null, "06/May/21","This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
-                        "Melanoma", "Premalignant", "legs", "30748", "11905", null,
+                        "Melanoma", "Premalignant", "legs", "30748", "11905", null, null,
                         "src/test/resources/files/expectedPutReportReportsWithHandOffDate.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "51930", 200,
                         null, null, "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
-                        "Melanoma", "Premalignant", "legs", null, null, null,
+                        "Melanoma", "Premalignant", "legs", null, null, null, null,
                         "src/test/resources/files/" +
                         "expectedPutReportReportsBioinformaticsWithCommentsRecommendationsAmendmentsCancerAndTumorTypes.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", 200,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
                         "src/test/resources/files/expectedReportReportsGE.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "3107271", 200,
                          null, null, null, null, null, null, null,
-                         null, null, null, null, null, LSC_SELECTED_SAMPLES,
+                         null, null, null, null, null, LSC_SELECTED_SAMPLES, null,
                         "src/test/resources/files/expectedPutReportReportsPSL.pdf", null},
-               /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "42981", 200,
+              /*  {CREATOR_USER_NAME, CREATOR_PASSWORD, "42981", 200,
                         null, "08/May/21", null, null, null, null, null,
-                        null, null, null, null, null, LSC_SELECTED_SAMPLES,
+                        null, null, null, null, null, LSC_SELECTED_SAMPLES, null,
                         "src/test/resources/files/expectedPutReportReportsPSLWithCompactReportHandOffDate.pdf", null},*/
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 400,
+               {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 400,
                         null, "08/May/21", null, null, null, null, null,
-                        null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
                         null, "Error: Named parameter \":lsc_selected_samples\" has no value in the given object."},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541372", 200,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
                         "src/test/resources/files/expectedPutReportReportsTI.pdf", null},
                 //Study Report with Approved Status
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", 200,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
                         null, "Modifications to approved report are disallowed!"},
                 //Study Report with USER APPROVAL permissions
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have permission to " +
                                 "update report of type Tumor Immunology"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "24682", 400,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to update report of type Protein Science(S)"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "51930", 400,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to update report of type Bioinformatics"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42954", 400,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com " +
                                 "does not have permission to update report of type Protein Science(L)"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3017400", 400,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to update report of type Gene Editing"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have " +
-                                "permission to update report of type Tumor Immunology"}
+                                "permission to update report of type Tumor Immunology"},
+               /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
+                        NOT_EXISTING_FIlE_ATTACHMENT_NAME, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "src/test/resources/files/expectedPutReportReports.pdf", null}*/
                 };
     }
 
     @Test(dataProvider = "putReportReportsDataProvider", enabled = true)
     void putReportReports(String userName, String userPassword, String studyReportId,
-                          int expectedReturnCode, String fileAttachmentName, String compactReportHandOffDate,
+                          int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
                           String tumorFusionDetectedComment, String lowExpressedNsmComment,
                           String lowTcByNgsPctComment, String recommendation, String amendments,
                           String cancerType, String tumorType, String tumorLocation, String expId,
-                          String tCellNonConfidentCount, String[] lscSelectedSamples,
+                          String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion,
                           String expectedResponseFile, String expectedErrorMessage) throws Exception{
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
 
@@ -373,13 +377,13 @@ public class StudyReportTests {
      * @param lscSelectedSamples
      * @return - Request body JSON File
      */
-    private JSONObject constructPutReportReportsBody(String fileAttachmentName, String compactReportHandOffDate,
+    private JSONObject constructPutReportReportsBody(String[] fileAttachmentName, String compactReportHandOffDate,
                                                      String tumorFusionDetectedComment, String lowExpressedNsmComment,
                                                      String lowTcByNgsPctComment, String recommendation, String amendments,
                                                      String cancerType, String tumorType, String tumorLocation, String expId,
                                                      String tCellNonConfidentCount, String[] lscSelectedSamples) {
         JSONObject requestParams = new JSONObject();
-        requestParams = addBodyParameter(requestParams, "fileAttachmentName", fileAttachmentName);
+        requestParams = addBodyArray(requestParams, "fileAttachmentName", fileAttachmentName);
         requestParams = addBodyParameter(requestParams, "compact_report_hand_off_date", compactReportHandOffDate);
         requestParams = addBodyParameter(requestParams, "tumor_fusion_detected_comment", tumorFusionDetectedComment);
         requestParams = addBodyParameter(requestParams, "low_expressed_nsm_comment", lowExpressedNsmComment);
