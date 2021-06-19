@@ -22,6 +22,8 @@ public class TestConstants {
     public static String GET_FETCH_IN_WORD_FORMAT_URI = "/api/v1/report/reports/%s/fetchinwordformat";
     public static String GET_PDF_SEARCH_REPORT = "/api/v1/pdf/search/reports?report_type=%s&patient_id=%s";
     public static String PUT_REPORT_REPORTS = "/api/v1/report/reports/%s";
+    public static String POST_REPORT_REPORTS_SAVE = "/api/v1/report/reports/%s/save";
+    public static String PUT_REPORT_REPORTS_SUBMIT = "/api/v1/report/reports/%s/submit";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";

@@ -14,7 +14,7 @@ import static com.pactpharma.sr.TestUtilities.*;
 
 
 public class StudyReportTests {
-    final boolean isTestEnabled = false;
+    final boolean isTestEnabled = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -234,44 +234,43 @@ public class StudyReportTests {
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                 null, null, null, null, null, null, null,
                 null, null, null, null, null, null, "This test conclusion.",
-                "src/test/resources/files/expectedPutReportReports.pdf", null},
+                "expectedPutReportReports.pdf", null},
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         null, "06/May/21", null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "src/test/resources/files/expectedPutReportReportsWithHandOffDate.pdf", null},
+                        "expectedPutReportReportsWithHandOffDate.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         null, "06/May/21","This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs", "30748", "11905", null, null,
-                        "src/test/resources/files/expectedPutReportReportsWithHandOffDate.pdf", null},
+                        "expectedPutReportReportsWithHandOffDate.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "51930", 200,
                         null, null, "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs", null, null, null, "This test conclusion.",
-                        "src/test/resources/files/" +
                         "expectedPutReportReportsBioinformaticsWithCommentsRecommendationsAmendmentsCancerAndTumorTypes.pdf", null},
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", 200,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "src/test/resources/files/expectedReportReportsGE.pdf", null},
+                        "expectedReportReportsGE.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "3107271", 200,
                          null, null, null, null, null, null, null,
                          null, null, null, null, null, LSC_SELECTED_SAMPLES, null,
-                        "src/test/resources/files/expectedPutReportReportsPSL.pdf", null},
+                        "expectedPutReportReportsPSL.pdf", null},
               /*  {CREATOR_USER_NAME, CREATOR_PASSWORD, "42981", 200,
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, LSC_SELECTED_SAMPLES, null,
-                        "src/test/resources/files/expectedPutReportReportsPSLWithCompactReportHandOffDate.pdf", null},*/
+                        "expectedPutReportReportsPSLWithCompactReportHandOffDate.pdf", null},*/
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 400,
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         null, "Error: Named parameter \":lsc_selected_samples\" has no value in the given object."},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541372", 200,
                         null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, null,
-                        "src/test/resources/files/expectedPutReportReportsTI.pdf", null},
+                        null, null, null, null, null, null, "This test conclusion.",
+                        "expectedPutReportReportsTI.pdf", null},
                 //Study Report with Approved Status
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", 200,
                         null, null, null, null, null, null, null,
@@ -311,11 +310,11 @@ public class StudyReportTests {
                /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         NOT_EXISTING_FIlE_ATTACHMENT_NAME, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "src/test/resources/files/expectedPutReportReports.pdf", null}*/
+                        "expectedPutReportReports.pdf", null}*/
                 };
     }
 
-    @Test(dataProvider = "putReportReportsDataProvider", enabled = true)
+    @Test(dataProvider = "putReportReportsDataProvider", enabled = isTestEnabled )
     void putReportReports(String userName, String userPassword, String studyReportId,
                           int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
                           String tumorFusionDetectedComment, String lowExpressedNsmComment,
@@ -339,14 +338,14 @@ public class StudyReportTests {
         switch(expectedReturnCode) {
             case 200:
                 if(expectedResponseFile != null) {
-                    convertBase64ToPdfFile("src/test/tmp/convertPdf.pdf",
+                    convertBase64ToPdfFile(String.format("src/test/tmp/%s", expectedResponseFile),
                             response.getBody().jsonPath().get(TestConstants.PDF).toString());
 
                     PDFUtil pdfUtil = new PDFUtil();
 
                     Assert.assertTrue(String.format("Put %s should retrieve file identical to %s file",
                             String.format(PUT_REPORT_REPORTS, studyReportId), expectedResponseFile),
-                            pdfUtil.compare(expectedResponseFile, "src/test/tmp/convertPdf.pdf"));
+                            pdfUtil.compare(String.format("src/test/resources/files/%s",expectedResponseFile), String.format("src/test/tmp/%s",expectedResponseFile)));
                 } else {
                     Assert.assertEquals(String.format("Error message should be %s", expectedErrorMessage),
                             expectedErrorMessage, response.jsonPath().get(MESSAGE));
@@ -360,8 +359,101 @@ public class StudyReportTests {
 
     }
 
+    //Study id 27651 for patient 0027
+    @DataProvider(name = "postReportReportsSaveDataProvider")
+    public Object[][] postReportReportsSaveDataProvider() {
+        return new Object[][]{
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, "This test conclusion.",
+                        "src/test/resources/files/expectedPutReportReports.pdf", null},
+
+        };
+    }
+
+    //Study id 27651 for patient 0027
+    @Test(dataProvider = "postReportReportsSaveDataProvider", enabled = true)
+    void postReportReportsSave(String userName, String userPassword, String studyReportId,
+                          int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
+                          String tumorFusionDetectedComment, String lowExpressedNsmComment,
+                          String lowTcByNgsPctComment, String recommendation, String amendments,
+                          String cancerType, String tumorType, String tumorLocation, String expId,
+                          String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion,
+                          String expectedResponseFile, String expectedErrorMessage) throws Exception {
+        RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
+
+        JSONObject requestObjectJSON = constructPutReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
+                tumorFusionDetectedComment, lowExpressedNsmComment, lowTcByNgsPctComment, recommendation, amendments,
+                cancerType, tumorType, tumorLocation, expId, tCellNonConfidentCount, lscSelectedSamples);
+        System.out.println("Body: " + requestObjectJSON.toJSONString());
+        System.out.println("Request:" + String.format(POST_REPORT_REPORTS_SAVE, studyReportId));
+        httpRequest.body(requestObjectJSON.toJSONString());
+
+        Response response = httpRequest.request(Method.POST, String.format(POST_REPORT_REPORTS_SAVE, studyReportId));
+        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
+                expectedReturnCode, response.getStatusCode());
+
+        switch(expectedReturnCode) {
+            case 200:
+                System.out.println("Response:" + removeTags(response.asPrettyString()).replaceAll("\\n", ""));
+                Assert.assertEquals(String.format("Request PUT %s should print '%s'",
+                        String.format(POST_REPORT_REPORTS_SAVE, studyReportId), "  Report saved successfully."),
+                        "  Report saved successfully.",
+                        TestUtilities.removeTags(response.asPrettyString()).replaceAll("\\n", ""));
+                readReport(userName, userPassword, studyReportId, "src/test/tmp/fetchDocsWithTokenTest1.pdf");
+                break;
+        }
+    }
+
+    @Test(dataProvider = "putReportReportsSubmitDataProvider", enabled = true)
+    @DataProvider(name = "putReportReportsSubmitDataProvider")
+    public Object[][] putReportReportsSubmitDataProvider() {
+        return new Object[][]{
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
+                        null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, "This test conclusion.",
+                        "src/test/resources/files/expectedPutReportReports.pdf", null},
+
+        };
+    }
+
+
+    void putReportReportsSubmit(String userName, String userPassword, String studyReportId,
+                               int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
+                               String tumorFusionDetectedComment, String lowExpressedNsmComment,
+                               String lowTcByNgsPctComment, String recommendation, String amendments,
+                               String cancerType, String tumorType, String tumorLocation, String expId,
+                               String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion,
+                               String expectedResponseFile, String expectedErrorMessage) throws Exception {
+        RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
+
+        JSONObject requestObjectJSON = constructPutReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
+                tumorFusionDetectedComment, lowExpressedNsmComment, lowTcByNgsPctComment, recommendation, amendments,
+                cancerType, tumorType, tumorLocation, expId, tCellNonConfidentCount, lscSelectedSamples);
+        System.out.println("Body: " + requestObjectJSON.toJSONString());
+        System.out.println("Request:" + String.format(PUT_REPORT_REPORTS_SUBMIT, studyReportId));
+        httpRequest.body(requestObjectJSON.toJSONString());
+
+        Response response = httpRequest.request(Method.POST, String.format(PUT_REPORT_REPORTS_SUBMIT , studyReportId));
+        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
+                expectedReturnCode, response.getStatusCode());
+
+        switch(expectedReturnCode) {
+            case 200:
+                System.out.println("Response:" + removeTags(response.asPrettyString()).replaceAll("\\n", ""));
+                Assert.assertEquals(String.format("Request PUT %s should print '%s'",
+                        String.format(POST_REPORT_REPORTS_SAVE, studyReportId), "  Report saved successfully."),
+                        "Report submitted successfully.",
+                        TestUtilities.removeTags(response.asPrettyString()).replaceAll("\\n", ""));
+                readReport(userName, userPassword, studyReportId, "src/test/tmp/fetchDocsWithTokenTest1.pdf");
+                break;
+        }
+    }
+
+
     /**
      * This method constructs request body for put /api/v1/report/reports/:id
+     * @param conclusion
      * @param fileAttachmentName
      * @param compactReportHandOffDate
      * @param tumorFusionDetectedComment

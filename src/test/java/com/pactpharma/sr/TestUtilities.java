@@ -15,8 +15,11 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import static com.pactpharma.sr.TestConstants.*;
+import io.restassured.http.ContentType;
 
 
 public class TestUtilities {
@@ -79,6 +82,9 @@ public class TestUtilities {
         String token = TestUtilities.getToken(userName, userPassword);
         httpRequest.header(AUTHORIZATION, String.format("Bearer %s", token));
         httpRequest.header("Content-Type", "application/json");
+        httpRequest.header("Accept", "application/json");
+        httpRequest.contentType(ContentType.JSON);
+
         return httpRequest;
     }
 
@@ -164,5 +170,28 @@ public class TestUtilities {
             jsonObject.put(arrayName, array);
         }
         return jsonObject;
+    }
+
+    public static String removeTags(String string) {
+        Pattern REMOVE_TAGS = Pattern.compile("<.+?>");
+        if (string == null || string.length() == 0) {
+            return string;
+        }
+
+        Matcher m = REMOVE_TAGS.matcher(string);
+        return m.replaceAll("");
+    }
+
+    public static void readReport(String userName, String userPassword, String studyReportId, String file) throws Exception{
+        RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
+        Response response = httpRequest.request(Method.GET, String.format(GET_FETCH_DOCS_URI, studyReportId));
+        Assert.assertEquals(String.format("Response code should be %s", 200),
+                200, response.getStatusCode());
+        String uri = response.jsonPath().get(URI).toString();
+        httpRequest.header(ACCEPT_ENCODING, GZIP);
+        Response getFetchDocsWithTokeResponse = httpRequest.request(Method.GET,
+                String.format(GET_FETCH_DOCS_URI + "/" + uri.substring(uri.lastIndexOf('/')+1),
+                        studyReportId));
+        TestUtilities.readResponseInPdf(getFetchDocsWithTokeResponse, file);
     }
 }
