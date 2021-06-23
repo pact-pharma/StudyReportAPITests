@@ -24,11 +24,13 @@ public class TestConstants {
     public static String PUT_REPORT_REPORTS = "/api/v1/report/reports/%s";
     public static String POST_REPORT_REPORTS_SAVE = "/api/v1/report/reports/%s/save";
     public static String PUT_REPORT_REPORTS_SUBMIT = "/api/v1/report/reports/%s/submit";
+    public static String GET_PDF_REPORT = "/api/v1/pdf/reports/%s";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";
     public static String PDF = "pdf";
-    public static String[] LSC_SELECTED_SAMPLES = {"MO1", "MO2"};
+    public static String[] LSC_SELECTED_SAMPLES = {"M01", "M02"};
+    public static String[] M02_LSC_SELECTED_SAMPLES = { "M02"};
     public static String[] NOT_EXISTING_FIlE_ATTACHMENT_NAME= {"XXXX.pdf"};
 
 }

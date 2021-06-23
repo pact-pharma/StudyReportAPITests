@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestUtilities.*;
 
@@ -364,22 +365,58 @@ public class StudyReportTests {
     public Object[][] postReportReportsSaveDataProvider() {
         return new Object[][]{
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
-                        null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, "This test conclusion.",
-                        "src/test/resources/files/expectedPutReportReports.pdf", null},
-
+                        "Protein Science(S)", "0027", "PACT407C",
+                        "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
+                        "Pending", null, "04/Dec/2020", null, null, null, null, null,
+                        null, null, null, "20001201", null, null, "This test conclusion.",
+                        null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", 200,
+                        "Bioinformatics", "0412", "PACT493C",
+                        "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
+                        "Pending", null, "04/Dec/2020",
+                        "This is tumor fusion Detected Comment",
+                        "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
+                        "This is test recommendation", "This is test amendments",
+                        "Melanoma", "Premalignant", "legs",
+                        null, null, null, "This test conclusion.", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3297225", 200,
+                        "imPACT", "0403", "PACT443C",
+                        "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
+                        "In Progress", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, "100", null, "This test conclusion.", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
+                        "Tumor Immunology", "0403", "PACT443C",
+                        "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This TI test conclusion.", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
+                        "Tumor Immunology", "0403", "PACT443C",
+                        "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This TI test conclusion.", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", 200,
+                        "Protein Science(L)", "0403", "PACT443C",
+                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, M02_LSC_SELECTED_SAMPLES, "Protein Science(L)", null}
         };
     }
 
     //Study id 27651 for patient 0027
     @Test(dataProvider = "postReportReportsSaveDataProvider", enabled = true)
     void postReportReportsSave(String userName, String userPassword, String studyReportId,
-                          int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
+                          int expectedReturnCode,
+                          String reportType, String patientNum, String patient,
+                          String reportName, String documentNames, String studyId, String status,
+                          String[] fileAttachmentName, String compactReportHandOffDate,
                           String tumorFusionDetectedComment, String lowExpressedNsmComment,
                           String lowTcByNgsPctComment, String recommendation, String amendments,
                           String cancerType, String tumorType, String tumorLocation, String expId,
-                          String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion,
-                          String expectedResponseFile, String expectedErrorMessage) throws Exception {
+                          String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
 
         JSONObject requestObjectJSON = constructPutReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
@@ -400,12 +437,19 @@ public class StudyReportTests {
                         String.format(POST_REPORT_REPORTS_SAVE, studyReportId), "  Report saved successfully."),
                         "  Report saved successfully.",
                         TestUtilities.removeTags(response.asPrettyString()).replaceAll("\\n", ""));
-                readReport(userName, userPassword, studyReportId, "src/test/tmp/fetchDocsWithTokenTest1.pdf");
+               // readReport(userName, userPassword, studyReportId, "src/test/tmp/fetchDocsWithTokenTest1.pdf");
+                validateReport(httpRequest, userName, userPassword, studyReportId, reportType,
+                        patientNum, patient, reportName, documentNames, studyId, status, expectedReturnCode,
+                        fileAttachmentName, compactReportHandOffDate,
+                    tumorFusionDetectedComment, lowExpressedNsmComment,
+                    lowTcByNgsPctComment, recommendation, amendments,
+                    cancerType, tumorType, tumorLocation, expId,
+                    tCellNonConfidentCount, lscSelectedSamples, conclusion);
                 break;
         }
     }
 
-    @Test(dataProvider = "putReportReportsSubmitDataProvider", enabled = true)
+
     @DataProvider(name = "putReportReportsSubmitDataProvider")
     public Object[][] putReportReportsSubmitDataProvider() {
         return new Object[][]{
@@ -417,7 +461,7 @@ public class StudyReportTests {
         };
     }
 
-
+    @Test(dataProvider = "putReportReportsSubmitDataProvider", enabled = false)
     void putReportReportsSubmit(String userName, String userPassword, String studyReportId,
                                int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
                                String tumorFusionDetectedComment, String lowExpressedNsmComment,
@@ -445,11 +489,81 @@ public class StudyReportTests {
                         String.format(POST_REPORT_REPORTS_SAVE, studyReportId), "  Report saved successfully."),
                         "Report submitted successfully.",
                         TestUtilities.removeTags(response.asPrettyString()).replaceAll("\\n", ""));
-                readReport(userName, userPassword, studyReportId, "src/test/tmp/fetchDocsWithTokenTest1.pdf");
+                //readReport(userName, userPassword, studyReportId, "src/test/tmp/fetchDocsWithTokenTest1.pdf");
                 break;
         }
     }
 
+    /**
+     * This method reads study report and validates it.
+     * @param httpRequest
+     * @param userName
+     * @param userPassword
+     * @param studyReportId
+     * @param reportType
+     * @param patientNum
+     * @param patient
+     * @param reportName
+     * @param documentNames
+     * @param studyId
+     * @param status
+     * @param expectedReturnCode
+     * @param fileAttachmentName
+     * @param compactReportHandOffDate
+     * @param tumorFusionDetectedComment
+     * @param lowExpressedNsmComment
+     * @param lowTcByNgsPctComment
+     * @param recommendation
+     * @param amendments
+     * @param cancerType
+     * @param tumorType
+     * @param tumorLocation
+     * @param expId
+     * @param tCellNonConfidentCount
+     * @param lscSelectedSamples
+     * @param conclusion
+     */
+    private void validateReport(RequestSpecification httpRequest, String userName, String userPassword, String studyReportId,
+                                String reportType, String patientNum, String patient,
+                                String reportName, String documentNames, String studyId, String status,
+                                int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
+                                String tumorFusionDetectedComment, String lowExpressedNsmComment,
+                                String lowTcByNgsPctComment, String recommendation, String amendments,
+                                String cancerType, String tumorType, String tumorLocation, String expId,
+                                String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion) {
+
+        Response response = httpRequest.request(Method.GET, String.format(GET_PDF_REPORT, studyReportId));
+        System.out.println("response" + response.asPrettyString());
+        validateValueFromResponse(response,"study.id", studyReportId);
+        System.out.println("Study Report Id: " + studyReportId);
+        validateValueFromResponse(response,"study.studyId", studyId);
+        validateValueFromResponse(response,"study.status", status);
+        validateValueFromResponse(response,"study.patient", patient);
+        validateValueFromResponse(response,"study.patient_num", patientNum);
+        validateValueFromResponse(response,"study.report_type", reportType);
+        validateValueFromResponse(response,"study.conclusion", conclusion);
+        readJSonArrayFromResponse(response, "study.document_name", documentNames );
+        switch(reportType) {
+            case "Protein Science(S)":
+                validateValueFromResponse(response, "reportDetails.compact.hand_off_date", compactReportHandOffDate);
+                validateValueFromResponse(response, "reportDetails.experiment.exp_id", expId);
+                break;
+            case "Bioinformatics":
+                validateValueFromResponse(response, "reportDetails.tumor_fusion_detected_comment", tumorFusionDetectedComment);
+                validateValueFromResponse(response, "reportDetails.low_expressed_nsm_comment", lowExpressedNsmComment);
+                validateValueFromResponse(response, "reportDetails.low_tc_by_ngs_pct_comment", lowTcByNgsPctComment);
+                validateValueFromResponse(response, "reportDetails.recommendation", recommendation);
+                break;
+            case "imPACT":
+                validateValueFromResponse(response, "reportDetails.t_cell_non_confident_count", null);
+                break;
+            case "Tumor Immunology":
+                break;
+            case "Protein Science(L)":
+                validateArrayFromResponse(response, "reportDetails.samples", lscSelectedSamples);
+                break;
+        }
+    }
 
     /**
      * This method constructs request body for put /api/v1/report/reports/:id
