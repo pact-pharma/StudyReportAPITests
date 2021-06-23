@@ -384,13 +384,7 @@ public class StudyReportTests {
                         "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
-                        null, "100", null, "This test conclusion.", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
-                        "Tumor Immunology", "0403", "PACT443C",
-                        "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
-                        "Pending", null, null,
-                        null, null, null, null, null, null, null, null,
-                        null, null, null, "This TI test conclusion.", null},
+                        null, "100.00", null, "This test conclusion.", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
@@ -402,7 +396,63 @@ public class StudyReportTests {
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
-                        null, null, M02_LSC_SELECTED_SAMPLES, "Protein Science(L)", null}
+                        null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.", null},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", 200,
+                        "Gene Editing", "0504", "PACT326C",
+                        "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This is test GE conclusion.", null},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", 400,
+                        "Gene Editing", "0504", "PACT326C",
+                        "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This is test GE conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does " +
+                                "not have permission to save report of type Gene Editing"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42993", 400,
+                        "Protein Science(L)", "0403", "PACT443C",
+                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not have permission to save " +
+                                "report of type Protein Science(L)"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541133", 400,
+                        "Tumor Immunology", "0403", "PACT443C",
+                        "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This TI test conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not have" +
+                                " permission to save report of type Tumor Immunology"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", 400,
+                        "imPACT", "0403", "PACT443C",
+                        "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
+                        "In Progress", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, "100.00", null, "This test conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not " +
+                                "have permission to save report of type imPACT"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2677093", 400,
+                        "Bioinformatics", "0412", "PACT493C",
+                        "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
+                        "Pending", null, "04/Dec/2020",
+                        "This is tumor fusion Detected Comment",
+                        "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
+                        "This is test recommendation", "This is test amendments",
+                        "Melanoma", "Premalignant", "legs",
+                        null, null, null, "This test conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not have " +
+                                "permission to save report of type Bioinformatics"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "27651", 400,
+                        "Protein Science(S)", "0027", "PACT407C",
+                        "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
+                        "Pending", null, "04/Dec/2020", null, null, null, null, null,
+                        null, null, null, "20001201", null, null, "This test conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not have permission " +
+                                "to save report of type Protein Science(S)"}
         };
     }
 
@@ -445,6 +495,8 @@ public class StudyReportTests {
                     lowTcByNgsPctComment, recommendation, amendments,
                     cancerType, tumorType, tumorLocation, expId,
                     tCellNonConfidentCount, lscSelectedSamples, conclusion);
+                break;
+            case 400:
                 break;
         }
     }
@@ -555,12 +607,16 @@ public class StudyReportTests {
                 validateValueFromResponse(response, "reportDetails.recommendation", recommendation);
                 break;
             case "imPACT":
-                validateValueFromResponse(response, "reportDetails.t_cell_non_confident_count", null);
+                validateValueFromResponse(response, "reportDetails.t_cell_non_confident_count", tCellNonConfidentCount);
                 break;
             case "Tumor Immunology":
                 break;
             case "Protein Science(L)":
                 validateArrayFromResponse(response, "reportDetails.samples", lscSelectedSamples);
+                break;
+            case "Gene Editing":
+                //validateValueFromResponse(response, "reportDetails.study.study_id", studyId);
+                //validateValueFromResponse(response, "reportDetails.study.pact_id", patient);
                 break;
         }
     }
@@ -589,20 +645,20 @@ public class StudyReportTests {
                                                      String cancerType, String tumorType, String tumorLocation, String expId,
                                                      String tCellNonConfidentCount, String[] lscSelectedSamples) {
         JSONObject requestParams = new JSONObject();
-        requestParams = addBodyParameter(requestParams, "conclusion", conclusion);
-        requestParams = addBodyArray(requestParams, "fileAttachmentName", fileAttachmentName);
-        requestParams = addBodyParameter(requestParams, "compact_report_hand_off_date", compactReportHandOffDate);
-        requestParams = addBodyParameter(requestParams, "tumor_fusion_detected_comment", tumorFusionDetectedComment);
-        requestParams = addBodyParameter(requestParams, "low_expressed_nsm_comment", lowExpressedNsmComment);
-        requestParams = addBodyParameter(requestParams, "low_tc_by_ngs_pct_comment", lowTcByNgsPctComment);
-        requestParams = addBodyParameter(requestParams, "recommendation", recommendation);
-        requestParams = addBodyParameter(requestParams, "amendments", amendments);
-        requestParams = addBodyParameter(requestParams, "cancer_type", cancerType);
-        requestParams = addBodyParameter(requestParams, "tumor_type", tumorType);
-        requestParams = addBodyParameter(requestParams, "tumor_location", tumorLocation);
-        requestParams = addBodyParameter(requestParams, "exp_id", expId);
-        requestParams = addBodyParameter(requestParams, "t_cell_non_confident_count", tCellNonConfidentCount);
-        requestParams = addBodyArray(requestParams, "lsc_selected_samples", lscSelectedSamples);
+        requestParams = addBodyParameter(requestParams, CONCLUSION, conclusion);
+        requestParams = addBodyArray(requestParams, FILE_ATTACHMENT_NAME, fileAttachmentName);
+        requestParams = addBodyParameter(requestParams, COMPACT_REPORT_HAND_OFF_DATE, compactReportHandOffDate);
+        requestParams = addBodyParameter(requestParams, TUMOR_FUSION_DETECTED_COMMENT, tumorFusionDetectedComment);
+        requestParams = addBodyParameter(requestParams, LOW_EXPRESSED_NSM_COMMENT, lowExpressedNsmComment);
+        requestParams = addBodyParameter(requestParams, LOW_TC_BY_NGS_PCT_COMMENT, lowTcByNgsPctComment);
+        requestParams = addBodyParameter(requestParams, RECOMMENDATION, recommendation);
+        requestParams = addBodyParameter(requestParams, AMENDMENTS, amendments);
+        requestParams = addBodyParameter(requestParams, CANCER_TYPE, cancerType);
+        requestParams = addBodyParameter(requestParams, TUMOR_TYPE, tumorType);
+        requestParams = addBodyParameter(requestParams, TUMOR_LOCATION, tumorLocation);
+        requestParams = addBodyParameter(requestParams, EXP_ID, expId);
+        requestParams = addBodyParameter(requestParams, T_CELL_NON_CONFIDENT_COUNT, tCellNonConfidentCount);
+        requestParams = addBodyArray(requestParams, SELECTED_LSC_SAMPLES, lscSelectedSamples);
         return requestParams;
     }
 }

@@ -7,11 +7,8 @@ import io.restassured.specification.RequestSpecification;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
-
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -40,11 +37,9 @@ public class TestUtilities {
         httpRequest.multiPart(USER_NAME, userName);
         httpRequest.multiPart(PASSWORD, password);
         httpRequest.multiPart(SCOPE, "openid profile");
-
         Response response = httpRequest.request(Method.POST);
         int statusCode = response.getStatusCode();
         Assert.assertEquals(200, statusCode);
-
         return response.jsonPath().get(ID_TOKEN);
     }
 
@@ -215,23 +210,6 @@ public class TestUtilities {
         } else {
             validateArrayFromResponse(response, valueJSONPath, null);
         }
-       /* ArrayList<String> array = (ArrayList)response.jsonPath().getJsonObject(valueJSONPath);
-        if(expectedData == null) {
-            Assert.assertTrue(String.format("%s array should be empty", valueJSONPath), array == null || array.size() == 0 );
-
-        } else {
-            Iterator<String> iterator = array.iterator();
-            String[] expectedArray = expectedData.split(",");
-            Assert.assertEquals(String.format("% Array should have %s elements",
-                    valueJSONPath,expectedArray.length ), expectedArray.length, array.size());
-            Set expectedSet = new HashSet<String>();
-            expectedSet.addAll(Arrays.asList(expectedArray));
-            Set actualSet = new HashSet<String>();
-            actualSet.addAll(array);
-
-            Assert.assertTrue(String.format("% array should contain values %s", expectedData), actualSet.equals(expectedSet));
-        }*/
-
     }
 
     /**
@@ -243,13 +221,19 @@ public class TestUtilities {
     public static void validateValueFromResponse(Response response, String valueJSONPath, String expectedValue) {
         if(expectedValue!=null) {
             Assert.assertEquals(String.format("%s Response value should be %s", valueJSONPath, expectedValue),
-                    response.jsonPath().get(valueJSONPath).toString(), expectedValue);
+                    expectedValue, response.jsonPath().get(valueJSONPath).toString());
         } else {
             Assert.assertEquals(String.format("%s Response value should be null", valueJSONPath),
                     response.jsonPath().get(valueJSONPath), null);
         }
     }
 
+    /**
+     * reads and validates JSON Array from response.
+     * @param response - response
+     * @param valueJSONPath - JSON path for array to validate
+     * @param expectedValue - expected Array
+     */
     public static void validateArrayFromResponse(Response response, String valueJSONPath, String[] expectedValue) {
         ArrayList<String> list = (ArrayList)response.jsonPath().getJsonObject(valueJSONPath);
         if(expectedValue!=null) {
@@ -258,7 +242,7 @@ public class TestUtilities {
             responseSet.addAll(list);
             expectedSet.addAll(Arrays.asList(expectedValue));
             Assert.assertTrue(String.format("%s array should contain values %s", valueJSONPath,
-                    Arrays.asList(expectedValue).toString()), responseSet.equals(expectedSet));
+                    Arrays.asList(expectedValue).toString()), expectedSet.equals(responseSet));
         } else {
             Assert.assertTrue(String.format("%s array should be empty", valueJSONPath), list == null || list.size() == 0 );
 

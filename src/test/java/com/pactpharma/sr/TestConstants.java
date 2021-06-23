@@ -8,7 +8,6 @@ public class TestConstants {
     public static String ACCEPT_ENCODING = "Accept-Encoding";
     public static String CLIENT_ID = "client_id";
     public static String CLIENT_SECRET = "client_secret";
-    public static String RESOURCE = "resource";
     public static String GRANT_TYPE = "grant_type";
     public static String AUTHORIZATION = "Authorization";
     public static String USER_NAME = "username";
@@ -32,5 +31,20 @@ public class TestConstants {
     public static String[] LSC_SELECTED_SAMPLES = {"M01", "M02"};
     public static String[] M02_LSC_SELECTED_SAMPLES = { "M02"};
     public static String[] NOT_EXISTING_FIlE_ATTACHMENT_NAME= {"XXXX.pdf"};
+    public static String CONCLUSION = "conclusion";
+    public static String FILE_ATTACHMENT_NAME = "fileAttachmentName";
+    public static String COMPACT_REPORT_HAND_OFF_DATE = "compact_report_hand_off_date";
+    public static String TUMOR_FUSION_DETECTED_COMMENT ="tumor_fusion_detected_comment";
+    public static String LOW_EXPRESSED_NSM_COMMENT = "low_expressed_nsm_comment";
+    public static String LOW_TC_BY_NGS_PCT_COMMENT  = "low_tc_by_ngs_pct_comment";
+    public static String RECOMMENDATION = "recommendation";
+    public static String AMENDMENTS = "amendments";
+    public static String CANCER_TYPE ="cancer_type";
+    public static String TUMOR_TYPE = "tumor_type";
+    public static String TUMOR_LOCATION = "tumor_location";
+    public static String EXP_ID = "exp_id";
+    public static String T_CELL_NON_CONFIDENT_COUNT = "t_cell_non_confident_count";
+    public static String SELECTED_LSC_SAMPLES ="lsc_selected_samples";
+
 
 }
