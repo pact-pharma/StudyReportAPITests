@@ -1,8 +1,8 @@
 {
     "studyIdFound": false,
-    "condidatesFound": false,
+    "candidatesFound": false,
     "studyReportId": null,
-    "condidates": {
+    "candidates": {
         "name": [
             "impact_sample_name",
             "exp_id"

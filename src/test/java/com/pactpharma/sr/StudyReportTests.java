@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-    final boolean isTestEnabled = false;
+    final boolean isTestEnabled = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -179,7 +179,7 @@ public class StudyReportTests {
                         200, "src/test/resources/files/expectedGetPdfSearchReportTIWithIncorrectStudyReportId.json"}
         };
     }
-    @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = isTestEnabled)
+    @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = true)
     void getPdfSearchReport(String userName, String userPassword, String reportType, String patientId,
                             String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier,
                             int expectedReturnCode,

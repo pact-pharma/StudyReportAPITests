@@ -1,10 +1,10 @@
 {
     "studyIdFound": true,
-    "condidatesFound": false,
+    "candidatesFound": false,
     "studyReportId": {
         "study_report_id": 3113604
     },
-    "condidates": {
+    "candidates": {
         "name": "",
         "values": []
     }
