@@ -18,7 +18,6 @@ import java.util.zip.GZIPInputStream;
 import static com.pactpharma.sr.TestConstants.*;
 import io.restassured.http.ContentType;
 
-
 public class TestUtilities {
 
     /**
@@ -167,12 +166,35 @@ public class TestUtilities {
         return jsonObject;
     }
 
+    /**
+     * This method removes HTML tags from string
+     * @param string
+     * @return return string with out HTML tags
+     */
     public static String removeTags(String string) {
-        Pattern REMOVE_TAGS = Pattern.compile("<.+?>");
+        return removePattern(string, "<.+?>" );
+    }
+
+    /**
+     * This method removes new line characters from string
+     * @param string - string with new line characters
+     * @return - string without new lines
+     */
+    public static String removeNewLine(String string) {
+        return removePattern(string, "\n" );
+    }
+
+    /**
+     * This method removes pattern from string
+     * @param string - string
+     * @param pattern - pattern to remove from string
+     * @return - string without pattern
+     */
+    private static String removePattern(String string, String pattern) {
         if (string == null || string.length() == 0) {
             return string;
         }
-
+        Pattern REMOVE_TAGS = Pattern.compile(pattern);
         Matcher m = REMOVE_TAGS.matcher(string);
         return m.replaceAll("");
     }
