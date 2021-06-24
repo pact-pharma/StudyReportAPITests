@@ -1,8 +1,8 @@
 {
     "studyIdFound": false,
-    "condidatesFound": true,
+    "candidatesFound": true,
     "studyReportId": null,
-    "condidates": {
+    "candidates": {
         "name": [
             "sample_name",
             "hgx_identifier",
