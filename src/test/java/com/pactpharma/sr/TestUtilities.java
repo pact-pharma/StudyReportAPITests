@@ -257,11 +257,16 @@ public class TestUtilities {
      * @param expectedValue - expected Array
      */
     public static void validateArrayFromResponse(Response response, String valueJSONPath, String[] expectedValue) {
-        ArrayList<String> list = (ArrayList)response.jsonPath().getJsonObject(valueJSONPath);
+        ArrayList<Map<String, String>> list = (ArrayList)response.jsonPath().getJsonObject(valueJSONPath);
         if(expectedValue!=null) {
             Set<String> responseSet = new HashSet<String>();
             Set<String> expectedSet = new HashSet<String>();
-            responseSet.addAll(list);
+            for(int i=0; i < list.size(); i++) {
+              Map entryMap = list.get(i);
+              responseSet.addAll(entryMap.values());
+
+            }
+           // responseSet.addAll(list);
             expectedSet.addAll(Arrays.asList(expectedValue));
             Assert.assertTrue(String.format("%s array should contain values %s", valueJSONPath,
                     Arrays.asList(expectedValue).toString()), expectedSet.equals(responseSet));

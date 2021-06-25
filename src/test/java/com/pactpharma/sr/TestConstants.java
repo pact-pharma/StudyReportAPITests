@@ -24,6 +24,7 @@ public class TestConstants {
     public static String POST_REPORT_REPORTS_SAVE = "/api/v1/report/reports/%s/save";
     public static String PUT_REPORT_REPORTS_SUBMIT = "/api/v1/report/reports/%s/submit";
     public static String GET_PDF_REPORT = "/api/v1/pdf/reports/%s";
+    public static String POST_REPORT_REPORTS_STATUS = "/api/v1/report/reports/%s/status/%s";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";

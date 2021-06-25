@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-    final boolean isTestEnabled = true;
+    final boolean isTestEnabled = false;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -179,7 +179,7 @@ public class StudyReportTests {
                         200, "src/test/resources/files/expectedGetPdfSearchReportTIWithIncorrectStudyReportId.json"}
         };
     }
-    @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = true)
+    @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = isTestEnabled)
     void getPdfSearchReport(String userName, String userPassword, String reportType, String patientId,
                             String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier,
                             int expectedReturnCode,
@@ -199,6 +199,7 @@ public class StudyReportTests {
                 requestUrl, expectedResponse), expectedResponse, response.asPrettyString(), false);
 
     }
+
 
     private String constructPdfSearchReportUrl(String reportType, String patientId,
        String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier) {
@@ -503,16 +504,102 @@ public class StudyReportTests {
     @DataProvider(name = "putReportReportsSubmitDataProvider")
     public Object[][] putReportReportsSubmitDataProvider() {
         return new Object[][]{
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
+              /*  {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
-                        "  Report submitted successfully."}
+                        "  Report submitted successfully."},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", 200,
+                        "Bioinformatics", "0412", "PACT493C",
+                        "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
+                        "Pending", null, "04/Dec/2020",
+                        "This is tumor submit fusion Detected Comment",
+                        "This is submit Low Expressed Nsm Comment",
+                        "This is submit Low Tc By Ngs Pct Comment",
+                        "This is submit test recommendation", "This is submit test amendments",
+                        "Melanoma", "Premalignant", "legs",
+                        null, null, null, "This test Bioinformatics conclusion.",
+                        "  Report submitted successfully."},*/
+               /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "3297225", 200,
+                        "imPACT", "0403", "PACT443C",
+                        "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, "100.00", null, "This submit imPact test conclusion.", "  Report submitted successfully."},*/
+               /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
+                        "Tumor Immunology", "0403", "PACT443C",
+                        "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This submit TI test conclusion.",  "  Report submitted successfully."},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", 200,
+                        "Protein Science(L)", "0403", "PACT443C",
+                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
+                        "  Report submitted successfully."},*/
+              /*  {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", 200,
+                        "Gene Editing", "0504", "PACT326C",
+                        "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This is test GE conclusion.", "  Report submitted successfully."},*/
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", 400,
+                        "Gene Editing", "0504", "PACT326C",
+                        "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This is test GE conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does " +
+                                "not have permission to submit report of type Gene Editing"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42993", 400,
+                        "Protein Science(L)", "0403", "PACT443C",
+                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not have permission to submit " +
+                                "report of type Protein Science(L)"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541133", 400,
+                        "Tumor Immunology", "0403", "PACT443C",
+                        "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
+                        "Pending", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, null, null, "This TI test conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not have" +
+                                " permission to submit report of type Tumor Immunology"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", 400,
+                        "imPACT", "0403", "PACT443C",
+                        "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
+                        "In Progress", null, null,
+                        null, null, null, null, null, null, null, null,
+                        null, "100.00", null, "This test conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not " +
+                                "have permission to submit report of type imPACT"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2677093", 400,
+                        "Bioinformatics", "0412", "PACT493C",
+                        "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
+                        "Pending", null, "04/Dec/2020",
+                        "This is tumor fusion Detected Comment",
+                        "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
+                        "This is test recommendation", "This is test amendments",
+                        "Melanoma", "Premalignant", "legs",
+                        null, null, null, "This test conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not have " +
+                                "permission to submit report of type Bioinformatics"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "27651", 400,
+                        "Protein Science(S)", "0027", "PACT407C",
+                        "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
+                        "Pending", null, "04/Dec/2020", null, null, null, null, null,
+                        null, null, null, "20001201", null, null, "This test conclusion.",
+                        "User svc-study-report-approval@pactpharma.com does not have permission " +
+                                "to submit report of type Protein Science(S)"}
         };
     }
 
-    @Test(dataProvider = "putReportReportsSubmitDataProvider", enabled = true)
+    @Test(dataProvider = "putReportReportsSubmitDataProvider", enabled = isTestEnabled)
     void putReportReportsSubmit(String userName, String userPassword, String studyReportId,
                                 int expectedReturnCode,
                                 String reportType, String patientNum, String patient,
@@ -532,7 +619,7 @@ public class StudyReportTests {
         System.out.println("Request:" + String.format(PUT_REPORT_REPORTS_SUBMIT, studyReportId));
         httpRequest.body(requestObjectJSON.toJSONString());
 
-        Response response = httpRequest.request(Method.PUT, String.format(PUT_REPORT_REPORTS_SUBMIT , studyReportId));
+        Response response = httpRequest.request(Method.POST, String.format(PUT_REPORT_REPORTS_SUBMIT , studyReportId));
         Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
                 expectedReturnCode, response.getStatusCode());
 
@@ -554,6 +641,82 @@ public class StudyReportTests {
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
         }
+    }
+
+    @DataProvider(name = "postReportReportsStatusDataProvider")
+    public Object[][] postReportReportsStatusDataProvider() {
+        return new Object[][]{
+               {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3119233", 200,
+                        "Approved", null, "imPACT", "0037", "PACT506C",
+                        "21-117_0037_PACT506C_imPACT.pdf", null, "21-117",
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, "  Report has been successfully approved."},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", 200,
+                        "Reject", null, "Tumor Immunology", "0015", "PACT299C",
+                        "20-085_0015_PACT299C_Tumor Immunology.pdf", null, "20-085",
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, "  Report has been successfully rejected."},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", 200,
+                        "Reject", "0", "Gene Editing", "0512", "PACT463C",
+                        "20-637_0512_PACT463C_Gene Editing.pdf", "2517325_sample.pdf", "20-637",
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, "  Report has been successfully rejected."},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", 200,
+                        "Reject", "1", "Bioinformatics", "0611", "PACT507C",
+                        "21-107_0611_PACT507C_Bioinformatics.pdf", null, "21-107",
+                        null, null, null, null, null, null, null,
+                        "sdsda", "dsadadasasa", "adadasad",
+                        null, null, null, null, "  Report has been successfully rejected."}
+        };
+    }
+
+    /*
+    Run before test execution:
+         "UPDATE report_dev.study_report SET status="In Progress" where id=3119233;"
+         "UPDATE report_dev.study_report SET status="In Progress" where id=3118773;"
+         "UPDATE report_dev.study_report SET status="In Progress" where id=2517325;"
+         "UPDATE report_dev.study_report SET status="In Progress" where id=2792633;"
+     */
+    @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = true)
+    void postReportReportsStatus(String userName, String userPassword, String studyReportId,
+                                 int expectedReturnCode, String status, String failureReason,
+                                 String reportType, String patientNum, String patient,
+                                 String reportName, String documentNames, String studyId,
+                                 String[] fileAttachmentName, String compactReportHandOffDate,
+                                 String tumorFusionDetectedComment, String lowExpressedNsmComment,
+                                 String lowTcByNgsPctComment, String recommendation, String amendments,
+                                 String cancerType, String tumorType, String tumorLocation, String expId,
+                                 String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion,
+                                 String expectedMessage) throws Exception {
+        RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
+        System.out.println("Request:" + String.format(POST_REPORT_REPORTS_STATUS, studyReportId, status));
+
+        if(failureReason != null) {
+            JSONObject requestObjectJSON = constructStatusRejectBody(failureReason);
+            httpRequest.body(requestObjectJSON.toJSONString());
+            System.out.println("Body: " + requestObjectJSON.toJSONString());
+        }
+        Response response = httpRequest.request(Method.POST,
+                    String.format(POST_REPORT_REPORTS_STATUS, studyReportId, status));
+        System.out.println("Message: " + (removeNewLine(removeTags(response.body().asPrettyString()))));
+
+        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
+                expectedReturnCode, response.getStatusCode());
+        switch(expectedReturnCode) {
+            case 200:
+                Assert.assertTrue(String.format("Request POST %s should print '%s'",
+                        String.format(POST_REPORT_REPORTS_STATUS, studyReportId, status), expectedMessage),
+                        expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
+                validateReport(httpRequest, userName, userPassword, studyReportId, reportType,
+                        patientNum, patient, reportName, documentNames, studyId, status, expectedReturnCode,
+                        fileAttachmentName, compactReportHandOffDate,
+                        tumorFusionDetectedComment, lowExpressedNsmComment,
+                        lowTcByNgsPctComment, recommendation, amendments,
+                        cancerType, tumorType, tumorLocation, expId,
+                        tCellNonConfidentCount, lscSelectedSamples, conclusion);
+                break;
+        }
+
     }
 
     /**
@@ -614,8 +777,15 @@ public class StudyReportTests {
                 validateValueFromResponse(response, "reportDetails.low_expressed_nsm_comment", lowExpressedNsmComment);
                 validateValueFromResponse(response, "reportDetails.low_tc_by_ngs_pct_comment", lowTcByNgsPctComment);
                 validateValueFromResponse(response, "reportDetails.recommendation", recommendation);
+                validateValueFromResponse(response, "reportDetails.tumor_type", tumorType);
+                validateValueFromResponse(response, "reportDetails.cancer_type", cancerType);
+                validateValueFromResponse(response, "reportDetails.tumor_location", tumorLocation);
+
                 break;
             case "imPACT":
+                if(tCellNonConfidentCount == null) {
+                    tCellNonConfidentCount = "0.00";
+                }
                 validateValueFromResponse(response, "reportDetails.t_cell_non_confident_count", tCellNonConfidentCount);
                 break;
             case "Tumor Immunology":
@@ -668,6 +838,17 @@ public class StudyReportTests {
         requestParams = addBodyParameter(requestParams, EXP_ID, expId);
         requestParams = addBodyParameter(requestParams, T_CELL_NON_CONFIDENT_COUNT, tCellNonConfidentCount);
         requestParams = addBodyArray(requestParams, SELECTED_LSC_SAMPLES, lscSelectedSamples);
+        return requestParams;
+    }
+
+    /**
+     * This method constructs request body for POST /report/reports/{id}/status/{status}
+     * @param rejectReason - reject reason
+     * @return  - request body JSON File
+     */
+    private JSONObject constructStatusRejectBody(String rejectReason) {
+        JSONObject requestParams = new JSONObject();
+        requestParams = addBodyParameter(requestParams, "reason", rejectReason);
         return requestParams;
     }
 }
