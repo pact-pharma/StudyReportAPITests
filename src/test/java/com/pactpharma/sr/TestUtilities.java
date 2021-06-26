@@ -251,12 +251,12 @@ public class TestUtilities {
     }
 
     /**
-     * reads and validates JSON Array from response.
+     * reads and validates Key Value JSON Array from response.
      * @param response - response
      * @param valueJSONPath - JSON path for array to validate
      * @param expectedValue - expected Array
      */
-    public static void validateArrayFromResponse(Response response, String valueJSONPath, String[] expectedValue) {
+    public static void validateKeyValueArrayFromResponse(Response response, String valueJSONPath, String expectedValue) {
         ArrayList<Map<String, String>> list = (ArrayList)response.jsonPath().getJsonObject(valueJSONPath);
         if(expectedValue!=null) {
             Set<String> responseSet = new HashSet<String>();
@@ -266,12 +266,33 @@ public class TestUtilities {
               responseSet.addAll(entryMap.values());
 
             }
-           // responseSet.addAll(list);
-            expectedSet.addAll(Arrays.asList(expectedValue));
+
+            expectedSet.addAll(Arrays.asList(expectedValue.split(",")));
             Assert.assertTrue(String.format("%s array should contain values %s", valueJSONPath,
                     Arrays.asList(expectedValue).toString()), expectedSet.equals(responseSet));
         } else {
             Assert.assertTrue(String.format("%s array should be empty", valueJSONPath), list == null || list.size() == 0 );
+
+        }
+    }
+
+    /**
+     * reads and validates JSON Array from response.
+     * @param response - response
+     * @param valueJSONPath - JSON path for array to validate
+     * @param expectedValue - expected Array
+     */
+    public static void validateArrayFromResponse(Response response, String valueJSONPath, String[] expectedValue) {
+        ArrayList<String> list = (ArrayList) response.jsonPath().getJsonObject(valueJSONPath);
+        if (expectedValue != null) {
+            Set<String> responseSet = new HashSet<String>();
+            Set<String> expectedSet = new HashSet<String>();
+            responseSet.addAll(list);
+            expectedSet.addAll(Arrays.asList(expectedValue));
+            Assert.assertTrue(String.format("%s array should contain values %s", valueJSONPath,
+                    Arrays.asList(expectedValue).toString()), expectedSet.equals(responseSet));
+        } else {
+            Assert.assertTrue(String.format("%s array should be empty", valueJSONPath), list == null || list.size() == 0);
 
         }
     }

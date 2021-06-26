@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-    final boolean isTestEnabled = false;
+final boolean isTestEnabled = false;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -22,7 +22,7 @@ public class StudyReportTests {
                 {GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         400, "125046", null, null, "Error: No such report found!"},
                 {GET_FETCH_DOCS_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        400, "25046", null, null, "User svc-study-report-approval@pactpharma.com does not have permission " +
+                        400, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"},
                 {GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         200, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).word.tar.gz",
@@ -30,7 +30,7 @@ public class StudyReportTests {
                 {GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD ,
                         400, "125046", null, null, "Error: No such report found!"},
                 {GET_FETCH_IN_WORD_FORMAT_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD ,
-                        400, "25046", null, null, "User svc-study-report-approval@pactpharma.com does not have permission " +
+                        400, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"}
         };
 
@@ -271,40 +271,40 @@ public class StudyReportTests {
                         null, null, null, null, null, null, "This test conclusion.",
                         "expectedPutReportReportsTI.pdf", null},
                 //Study Report with Approved Status
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        null, "Modifications to approved report are disallowed!"},
+                        null, "Error: Modifications to approved report are disallowed!"},
                 //Study Report with USER APPROVAL permissions
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "User svc-study-report-approval@pactpharma.com does not have permission to " +
+                        "Error: User svc-study-report-approval@pactpharma.com does not have permission to " +
                                 "update report of type Tumor Immunology"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "24682", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "User svc-study-report-approval@pactpharma.com does " +
+                        "Error: User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to update report of type Protein Science(S)"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "51930", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "User svc-study-report-approval@pactpharma.com does not " +
+                        "Error: User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to update report of type Bioinformatics"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42954", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "User svc-study-report-approval@pactpharma.com " +
+                        "Error: User svc-study-report-approval@pactpharma.com " +
                                 "does not have permission to update report of type Protein Science(L)"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3017400", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "User svc-study-report-approval@pactpharma.com does not have " +
+                        "Error: User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to update report of type Gene Editing"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "User svc-study-report-approval@pactpharma.com does not have " +
+                        "Error: User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to update report of type Tumor Immunology"},
                /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         NOT_EXISTING_FIlE_ATTACHMENT_NAME, null, null, null, null, null, null,
@@ -504,7 +504,7 @@ public class StudyReportTests {
     @DataProvider(name = "putReportReportsSubmitDataProvider")
     public Object[][] putReportReportsSubmitDataProvider() {
         return new Object[][]{
-              /*  {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
@@ -520,14 +520,14 @@ public class StudyReportTests {
                         "This is submit test recommendation", "This is submit test amendments",
                         "Melanoma", "Premalignant", "legs",
                         null, null, null, "This test Bioinformatics conclusion.",
-                        "  Report submitted successfully."},*/
+                        "  Report submitted successfully."},
                /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "3297225", 200,
                         "imPACT", "0403", "PACT443C",
                         "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This submit imPact test conclusion.", "  Report submitted successfully."},*/
-               /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "Pending", null, null,
@@ -539,20 +539,20 @@ public class StudyReportTests {
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
-                        "  Report submitted successfully."},*/
-              /*  {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", 200,
+                        "  Report submitted successfully."},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", 200,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
-                        null, null, null, "This is test GE conclusion.", "  Report submitted successfully."},*/
+                        null, null, null, "This is test GE conclusion.", "  Report submitted successfully."},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", 400,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.",
-                        "User svc-study-report-approval@pactpharma.com does " +
+                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to submit report of type Gene Editing"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42993", 400,
                         "Protein Science(L)", "0403", "PACT443C",
@@ -560,7 +560,7 @@ public class StudyReportTests {
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
-                        "User svc-study-report-approval@pactpharma.com does not have permission to submit " +
+                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not have permission to submit " +
                                 "report of type Protein Science(L)"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541133", 400,
                         "Tumor Immunology", "0403", "PACT443C",
@@ -568,7 +568,7 @@ public class StudyReportTests {
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This TI test conclusion.",
-                        "User svc-study-report-approval@pactpharma.com does not have" +
+                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not have" +
                                 " permission to submit report of type Tumor Immunology"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", 400,
                         "imPACT", "0403", "PACT443C",
@@ -576,7 +576,7 @@ public class StudyReportTests {
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This test conclusion.",
-                        "User svc-study-report-approval@pactpharma.com does not " +
+                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to submit report of type imPACT"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2677093", 400,
                         "Bioinformatics", "0412", "PACT493C",
@@ -587,14 +587,14 @@ public class StudyReportTests {
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs",
                         null, null, null, "This test conclusion.",
-                        "User svc-study-report-approval@pactpharma.com does not have " +
+                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to submit report of type Bioinformatics"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "27651", 400,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
-                        "User svc-study-report-approval@pactpharma.com does not have permission " +
+                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not have permission " +
                                 "to submit report of type Protein Science(S)"}
         };
     }
@@ -619,7 +619,7 @@ public class StudyReportTests {
         System.out.println("Request:" + String.format(PUT_REPORT_REPORTS_SUBMIT, studyReportId));
         httpRequest.body(requestObjectJSON.toJSONString());
 
-        Response response = httpRequest.request(Method.POST, String.format(PUT_REPORT_REPORTS_SUBMIT , studyReportId));
+        Response response = httpRequest.request(Method.PUT, String.format(PUT_REPORT_REPORTS_SUBMIT , studyReportId));
         Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
                 expectedReturnCode, response.getStatusCode());
 
@@ -766,7 +766,7 @@ public class StudyReportTests {
         validateValueFromResponse(response,"study.patient_num", patientNum);
         validateValueFromResponse(response,"study.report_type", reportType);
         validateValueFromResponse(response,"study.conclusion", conclusion);
-        readJSonArrayFromResponse(response, "study.document_name", documentNames );
+        validateKeyValueArrayFromResponse(response, "study.document_name", documentNames );
         switch(reportType) {
             case "Protein Science(S)":
                 validateValueFromResponse(response, "reportDetails.compact.hand_off_date", compactReportHandOffDate);
