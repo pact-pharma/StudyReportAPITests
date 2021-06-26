@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-final boolean isTestEnabled = false;
+final boolean isTestEnabled = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
