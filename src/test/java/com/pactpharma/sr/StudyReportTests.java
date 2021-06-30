@@ -64,11 +64,11 @@ final boolean isTestEnabled = true;
         return new Object[][] {{CREATOR_USER_NAME, CREATOR_PASSWORD ,
                 200, "25046", "25046", false, "src/test/resources/files/test.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                 400, "25046", "25046", true, null, "Error: Invalid report archive token!"},
+                 400, "25046", "25046", true, null, "Invalid report archive token!"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                400, "25046", "125046", false, null, "Error: No such report found!"},
+                400, "25046", "125046", false, null, "No such report found!"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                 400, "25046", "125046", true, null, "Error: Invalid report archive token!"}
+                 400, "25046", "125046", true, null, "Invalid report archive token!"}
         };
     }
 
@@ -200,20 +200,6 @@ final boolean isTestEnabled = true;
 
     }
 
-
-    private String constructPdfSearchReportUrl(String reportType, String patientId,
-       String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier) {
-        StringBuilder strBuilderUrl
-                = new StringBuilder();
-        strBuilderUrl.append(String.format(GET_PDF_SEARCH_REPORT, reportType, patientId));
-        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, experimentId, "&exp_id=%s");
-        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, impactSampleName, "&impact_sample_name=%s");
-        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, sampleName, "&sample_name=%s");
-        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  studyId, "&study_id=%s");
-        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  hgxIdentifier, "&hgx_identifier=%s");
-        return strBuilderUrl.toString();
-    }
-
     //Study Id 51930 belongs to patient 0411 (BIOINFORMATICS)
     //Study Id 24682 belongs to patient 0403 (Protein Science S)
     //Study Id 3017400 belongs to patient 0030 (GE)
@@ -265,7 +251,7 @@ final boolean isTestEnabled = true;
                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 400,
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        null, "Error: Named parameter \":lsc_selected_samples\" has no value in the given object."},
+                        null, "Named parameter \":lsc_selected_samples\" has no value in the given object."},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541372", 200,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, "This test conclusion.",
@@ -274,37 +260,37 @@ final boolean isTestEnabled = true;
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        null, "Error: Modifications to approved report are disallowed!"},
+                        null, "Modifications to approved report are disallowed!"},
                 //Study Report with USER APPROVAL permissions
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "Error: User svc-study-report-approval@pactpharma.com does not have permission to " +
+                        "User svc-study-report-approval@pactpharma.com does not have permission to " +
                                 "update report of type Tumor Immunology"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "24682", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "Error: User svc-study-report-approval@pactpharma.com does " +
+                        "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to update report of type Protein Science(S)"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "51930", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "Error: User svc-study-report-approval@pactpharma.com does not " +
+                        "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to update report of type Bioinformatics"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42954", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "Error: User svc-study-report-approval@pactpharma.com " +
+                        "User svc-study-report-approval@pactpharma.com " +
                                 "does not have permission to update report of type Protein Science(L)"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3017400", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "Error: User svc-study-report-approval@pactpharma.com does not have " +
+                        "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to update report of type Gene Editing"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
-                        "Error: User svc-study-report-approval@pactpharma.com does not have " +
+                        "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to update report of type Tumor Immunology"},
                /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         NOT_EXISTING_FIlE_ATTACHMENT_NAME, null, null, null, null, null, null,
@@ -365,13 +351,13 @@ final boolean isTestEnabled = true;
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
-                        "Pending", null, "04/Dec/2020", null, null, null, null, null,
+                        "In Progress", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "  Report saved successfully."},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", 200,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
-                        "Pending", null, "04/Dec/2020",
+                        "In Progress", null, "04/Dec/2020",
                         "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
@@ -386,20 +372,20 @@ final boolean isTestEnabled = true;
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
-                        "Pending", null, null,
+                        "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This TI test conclusion.", "  Report saved successfully."},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", 200,
                         "Protein Science(L)", "0403", "PACT443C",
-                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
-                        "Pending", null, null,
+                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", "42993_ge-0030.pdf", "20-545",
+                        "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "  Report saved successfully."},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", 200,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
-                        "Pending", null, null,
+                        "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.", "  Report saved successfully."},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", 400,
@@ -500,7 +486,21 @@ final boolean isTestEnabled = true;
         }
     }
 
-
+        /* UPDATE report_dev.study_report SET status="In Progress" where id=27651;
+           UPDATE report_dev.study_report SET status="In Progress" where id=2677093;
+           UPDATE report_dev.study_report SET status="In Progress" where id=2541133;
+           UPDATE report_dev.study_report SET status="In Progress" where id=42993;
+           UPDATE report_dev.study_report SET status="In Progress" where id=2542290;
+           UPDATE report_dev.study_report SET status="In Progress" where id=42993;
+           UPDATE report_dev.study_report SET status="In Progress" where id=2541133;
+           UPDATE report_dev.study_report SET status="In Progress" where id=3297225;
+           UPDATE report_dev.study_report SET status="In Progress" where id=267709;
+           UPDATE report_dev.study_report SET status="In Progress" where id=2517281;
+           UPDATE report_dev.study_report SET status="In Progress" where id=2641522;
+           UPDATE report_dev.study_report SET status="In Progress" where id=2739606;
+           UPDATE report_dev.study_report SET status="In Progress" where id=34183;
+           UPDATE report_dev.study_report SET status="In Progress" where id=42963;
+           "*/
     @DataProvider(name = "putReportReportsSubmitDataProvider")
     public Object[][] putReportReportsSubmitDataProvider() {
         return new Object[][]{
@@ -535,7 +535,7 @@ final boolean isTestEnabled = true;
                         null, null, null, "This submit TI test conclusion.",  "  Report submitted successfully."},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", 200,
                         "Protein Science(L)", "0403", "PACT443C",
-                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
+                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", "42993_ge-0030.pdf", "20-545",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
@@ -546,29 +546,29 @@ final boolean isTestEnabled = true;
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.", "  Report submitted successfully."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517281", 400,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.",
-                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does " +
+                        "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to submit report of type Gene Editing"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42993", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42963", 400,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
-                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not have permission to submit " +
+                        "User svc-study-report-approval@pactpharma.com does not have permission to submit " +
                                 "report of type Protein Science(L)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541133", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2739606", 400,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This TI test conclusion.",
-                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not have" +
+                        "User svc-study-report-approval@pactpharma.com does not have" +
                                 " permission to submit report of type Tumor Immunology"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", 400,
                         "imPACT", "0403", "PACT443C",
@@ -576,9 +576,9 @@ final boolean isTestEnabled = true;
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This test conclusion.",
-                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not " +
+                        "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to submit report of type imPACT"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2677093", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2641522", 400,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "Pending", null, "04/Dec/2020",
@@ -587,14 +587,14 @@ final boolean isTestEnabled = true;
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs",
                         null, null, null, "This test conclusion.",
-                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not have " +
+                        "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to submit report of type Bioinformatics"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "27651", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "34183", 400,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
-                        "Something went wrong  Error: User svc-study-report-approval@pactpharma.com does not have permission " +
+                        "User svc-study-report-approval@pactpharma.com does not have permission " +
                                 "to submit report of type Protein Science(S)"}
         };
     }
@@ -677,7 +677,7 @@ final boolean isTestEnabled = true;
          "UPDATE report_dev.study_report SET status="In Progress" where id=2517325;"
          "UPDATE report_dev.study_report SET status="In Progress" where id=2792633;"
      */
-    @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = true)
+    @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = isTestEnabled)
     void postReportReportsStatus(String userName, String userPassword, String studyReportId,
                                  int expectedReturnCode, String status, String failureReason,
                                  String reportType, String patientNum, String patient,
@@ -850,5 +850,29 @@ final boolean isTestEnabled = true;
         JSONObject requestParams = new JSONObject();
         requestParams = addBodyParameter(requestParams, "reason", rejectReason);
         return requestParams;
+    }
+
+    /**
+     * This method constructs /api/v1/pdf/search/reports?report_type=%s&patient_id=%s
+     * @param reportType
+     * @param patientId
+     * @param experimentId
+     * @param impactSampleName
+     * @param sampleName
+     * @param studyId
+     * @param hgxIdentifier
+     * @return
+     */
+    private String constructPdfSearchReportUrl(String reportType, String patientId,
+                                               String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier) {
+        StringBuilder strBuilderUrl
+                = new StringBuilder();
+        strBuilderUrl.append(String.format(GET_PDF_SEARCH_REPORT, reportType, patientId));
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, experimentId, "&exp_id=%s");
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, impactSampleName, "&impact_sample_name=%s");
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl, sampleName, "&sample_name=%s");
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  studyId, "&study_id=%s");
+        strBuilderUrl = TestUtilities.constructPartOfUrl(strBuilderUrl,  hgxIdentifier, "&hgx_identifier=%s");
+        return strBuilderUrl.toString();
     }
 }
