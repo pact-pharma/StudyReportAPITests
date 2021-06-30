@@ -260,7 +260,7 @@ final boolean isTestEnabled = true;
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", 400,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        null, "Modifications to approved report are disallowed!"},
+                        null, "Modification to approved report is disallowed!"},
                 //Study Report with USER APPROVAL permissions
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
                         null, null, null, null, null, null, null,
@@ -650,12 +650,12 @@ final boolean isTestEnabled = true;
                         "Approved", null, "imPACT", "0037", "PACT506C",
                         "21-117_0037_PACT506C_imPACT.pdf", null, "21-117",
                         null, null, null, null, null, null, null, null, null, null,
-                        null, null, null, null, "  Report has been successfully approved."},
+                        null, "1.00", null, null, "  Report has been successfully approved."},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", 200,
                         "Reject", null, "Tumor Immunology", "0015", "PACT299C",
                         "20-085_0015_PACT299C_Tumor Immunology.pdf", null, "20-085",
                         null, null, null, null, null, null, null, null, null, null,
-                        null, null, null, null, "  Report has been successfully rejected."},
+                        null, null, null, "This test conclusion.", "  Report has been successfully rejected."},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", 200,
                         "Reject", "0", "Gene Editing", "0512", "PACT463C",
                         "20-637_0512_PACT463C_Gene Editing.pdf", "2517325_sample.pdf", "20-637",
@@ -672,10 +672,10 @@ final boolean isTestEnabled = true;
 
     /*
     Run before test execution:
-         "UPDATE report_dev.study_report SET status="In Progress" where id=3119233;"
-         "UPDATE report_dev.study_report SET status="In Progress" where id=3118773;"
-         "UPDATE report_dev.study_report SET status="In Progress" where id=2517325;"
-         "UPDATE report_dev.study_report SET status="In Progress" where id=2792633;"
+         UPDATE report_dev.study_report SET status="Pending" where id=3119233;
+         UPDATE report_dev.study_report SET status="Pending" where id=3118773;
+         UPDATE report_dev.study_report SET status="Pending" where id=2517325;
+         UPDATE report_dev.study_report SET status="Pending" where id=2792633;
      */
     @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = isTestEnabled)
     void postReportReportsStatus(String userName, String userPassword, String studyReportId,
