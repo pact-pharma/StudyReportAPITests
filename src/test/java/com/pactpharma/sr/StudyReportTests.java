@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import java.util.*;
 
 import static com.pactpharma.sr.TestConstants.*;
+import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
 final boolean isTestEnabled = false;
@@ -769,10 +770,14 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "getPdfSearchPatientDataProvider")
     public Object[][] getPdfSearchPatientDataProvider() {
         return new Object[][]{
-                {GET_PDF_SEARCH_PATIENT, 200, "332C",CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {GET_PDF_SEARCH_PATIENT, 200, "332C", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithOneReport.json"},
-                {GET_PDF_SEARCH_PATIENT, 200, "255C",CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        "src/test/resources/files/getPdfSearchPatientWithSeveralReport.json"}
+                {GET_PDF_SEARCH_PATIENT, 200, "255C", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "src/test/resources/files/getPdfSearchPatientWithSeveralReport.json"},
+                {GET_PDF_SEARCH_PATIENT, 200, "332C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                        "src/test/resources/files/getPdfSearchPatientWithOneReport.json"},
+                {GET_PDF_SEARCH_PATIENT, 200, "255C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                        "src/test/resources/files/getPdfSearchPatientWithApprovalRole.json"}
         };
     }
 
@@ -790,6 +795,11 @@ final boolean isTestEnabled = false;
         JSONAssert.assertEquals(String.format("API:%s %s\nResponse should be %s", "GET",
                 String.format(GET_PDF_SEARCH_PATIENT, patientId), expectedResponse), expectedResponse,
                 response.asPrettyString(), false);
+    }
+
+    @Test(enabled = false)
+    public void getPdfPatient() {
+
     }
     /**
      * This method validates GET PDF ALL Response

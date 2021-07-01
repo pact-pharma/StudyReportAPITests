@@ -1,0 +1,37 @@
+{
+  "page": "1",
+  "pages": 1,
+  "result": [
+    {
+      "id": 3119131,
+      "study_id": "19-407",
+      "report_name": "19-407_0002_PACT255C_imPACT.pdf",
+      "review_date": null,
+      "report_date": "2021-06-24T09:42:09.000Z",
+      "status": "In Progress",
+      "patient_id": "PACT255C",
+      "report_type": "imPACT"
+    },
+    {
+      "id": 42963,
+      "study_id": "19-430",
+      "report_name": "19-430: Large-Scale comPACT production for PACT255C_0002_Protein Science(L)_PACT255C.pdf",
+      "review_date": "2020-11-24T09:00:39.000Z",
+      "report_date": "2020-11-24T09:00:08.000Z",
+      "status": "In Progress",
+      "patient_id": "PACT255C",
+      "report_type": "Protein Science(L)"
+    },
+    {
+      "id": 28560,
+      "study_id": "19-375",
+      "report_name": "19-375_0002_Protein Science(S)_PACT255C.pdf",
+      "review_date": "2020-11-10T11:08:00.000Z",
+      "report_date": "2020-11-10T11:08:00.000Z",
+      "status": "Approved",
+      "patient_id": "PACT255C",
+      "report_type": "Protein Science(S)"
+    }
+  ],
+  "count": 3
+}
