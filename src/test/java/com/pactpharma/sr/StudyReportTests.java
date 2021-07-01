@@ -4,15 +4,19 @@ import com.testautomationguru.utility.PDFUtil;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.util.*;
+
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-final boolean isTestEnabled = true;
+final boolean isTestEnabled = false;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -716,7 +720,86 @@ final boolean isTestEnabled = true;
                         tCellNonConfidentCount, lscSelectedSamples, conclusion);
                 break;
         }
+    }
 
+    @DataProvider(name = "getPdfAllDataProvider")
+    public Object[][] getPdfAllDataProvider() {
+        return new Object[][]{
+                {GET_PDF_ALL, null, 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending,In Progress,Approved,Reject",
+                        "pending,progress,approved,reject", 1},
+                {GET_PDF_ALL, "status[]=pending&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending",
+                        "pending", 1},
+                {GET_PDF_ALL, "status[]=progress&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "In Progress",
+                        "progress", 2},
+                {GET_PDF_ALL, "status[]=approved&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved",
+                        "approved", 2},
+                {GET_PDF_ALL, "status[]=reject&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Reject",
+                        "reject", 1},
+                {GET_PDF_ALL, "status[]=approved&status[]=reject&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject",
+                        "approved,reject", 2},
+                {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&page=3", 200,
+                        CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,In Progress", "approved,reject,progress", 3},
+                {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", 200,
+                        CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,Pending", "approved,reject,pending", 1},
+                {GET_PDF_ALL, "page=4", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending,In Progress,Approved,Reject",
+                        "pending,progress,approved,reject", 4},
+                {GET_PDF_ALL, null, 200, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "Pending,In Progress,Approved,Reject",
+                        "pending,progress,approved,reject", 1}
+        };
+    }
+    @Test(dataProvider = "getPdfAllDataProvider",enabled = true)
+    public void getPdfAll(String baseUrl, String parameters, int expectedReturnCode, String userName, String userPassword,
+                          String expectedStatus, String expectedStatusQuery, int currentPage ) {
+        RequestSpecification httpRequest =
+                TestUtilities.generateRequestSpecification(userName, userPassword);
+        String url = baseUrl;
+        if(parameters != null) {
+            url = String.format("%s?%s", baseUrl, parameters);
+        }
+        Response response = httpRequest.request(Method.GET, url);
+        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
+                expectedReturnCode, response.getStatusCode());
+        Assert.assertTrue(String.format("GET %s response should contains records with statuses %s, " +
+                        "current page %s and expected status query %s", url, expectedStatus,
+                currentPage,expectedStatusQuery),
+                validateGetPdfAllResponse(response,expectedStatus, expectedStatusQuery,currentPage));
+    }
+
+    /**
+     * This method validates GET PDF ALL Response
+     * @param response - response
+     * @param expectedStatus - expected status
+     * @param expectedStatusQuery - expected status query
+     * @param expectedCurrentPage - expected current page
+     * @return
+     */
+    private boolean validateGetPdfAllResponse(Response response, String expectedStatus, String expectedStatusQuery,
+                                              int expectedCurrentPage ) {
+        Set<String> expectedStatusSet = new HashSet<String>(Arrays.asList(expectedStatus.split(",")));
+        Set<String> expectedStatusQuerySet = new HashSet<String>(Arrays.asList(expectedStatusQuery.split(",")));
+        ArrayList<JSONObject> resultArray = (ArrayList<JSONObject>)response.jsonPath().get(RESULT);
+        int size = resultArray.size();
+
+        for(int i=0; i<size; i++) {
+            Map<String, String> result = resultArray.get(i);
+            if(!expectedStatus.contains(result.get(STATUS))) {
+                System.out.println
+                        (String.format("Respond should contain % statuses. However, it contains %s status.", expectedStatus,
+                                result.get(STATUS).toString()));
+                return false;
+            }
+        }
+        if(response.body().jsonPath().getInt(CURRENT_PAGE)!= expectedCurrentPage) {
+            System.out.println(String.format("Current page should be %s", expectedCurrentPage));
+            return false;
+        }
+        List<String> statusQueryList = response.body().jsonPath().getList(STATUS_QUERY);
+        Set<String> statusQuerySet = new HashSet<String>(statusQueryList);
+        if(!expectedStatusQuerySet.equals(statusQuerySet)) {
+            System.out.print(String.format("Status query should contain %s", expectedStatusQuery));
+            return false;
+        }
+        return true;
     }
 
     /**
