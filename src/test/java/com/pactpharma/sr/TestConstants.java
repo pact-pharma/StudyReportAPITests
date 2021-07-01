@@ -26,6 +26,7 @@ public class TestConstants {
     public static String GET_PDF_REPORT = "/api/v1/pdf/reports/%s";
     public static String POST_REPORT_REPORTS_STATUS = "/api/v1/report/reports/%s/status/%s";
     public static String GET_PDF_ALL = "/api/v1/pdf/all";
+    public static String GET_PDF_SEARCH_PATIENT = "/api/v1/pdf/search/patient/%s";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";

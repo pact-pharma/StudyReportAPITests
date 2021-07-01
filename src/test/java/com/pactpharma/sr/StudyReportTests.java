@@ -747,7 +747,8 @@ final boolean isTestEnabled = false;
                         "pending,progress,approved,reject", 1}
         };
     }
-    @Test(dataProvider = "getPdfAllDataProvider",enabled = true)
+
+    @Test(dataProvider = "getPdfAllDataProvider",enabled = isTestEnabled)
     public void getPdfAll(String baseUrl, String parameters, int expectedReturnCode, String userName, String userPassword,
                           String expectedStatus, String expectedStatusQuery, int currentPage ) {
         RequestSpecification httpRequest =
@@ -765,6 +766,31 @@ final boolean isTestEnabled = false;
                 validateGetPdfAllResponse(response,expectedStatus, expectedStatusQuery,currentPage));
     }
 
+    @DataProvider(name = "getPdfSearchPatientDataProvider")
+    public Object[][] getPdfSearchPatientDataProvider() {
+        return new Object[][]{
+                {GET_PDF_SEARCH_PATIENT, 200, "332C",CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "src/test/resources/files/getPdfSearchPatientWithOneReport.json"},
+                {GET_PDF_SEARCH_PATIENT, 200, "255C",CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "src/test/resources/files/getPdfSearchPatientWithSeveralReport.json"}
+        };
+    }
+
+    @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = true)
+    public void getPdfSearchPatient(String baseUrl, int expectedReturnCode, String patientId, String userName,
+                                    String userPassword, String expectedResponseFile) throws Exception {
+        RequestSpecification httpRequest =
+                TestUtilities.generateRequestSpecification(userName, userPassword);
+        Response response = httpRequest.request(Method.GET, String.format(baseUrl, patientId));
+        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
+                expectedReturnCode, response.getStatusCode());
+        System.out.println("***Response: " + response.asPrettyString());
+        String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
+
+        JSONAssert.assertEquals(String.format("API:%s %s\nResponse should be %s", "GET",
+                String.format(GET_PDF_SEARCH_PATIENT, patientId), expectedResponse), expectedResponse,
+                response.asPrettyString(), false);
+    }
     /**
      * This method validates GET PDF ALL Response
      * @param response - response
