@@ -1,0 +1,395 @@
+{
+  "result": [
+    {
+      "pact_id": "PACT255C",
+      "patient_num": "0002",
+      "id": 14
+    },
+    {
+      "pact_id": "PACT256C",
+      "patient_num": "0003",
+      "id": 15
+    },
+    {
+      "pact_id": "PACT265C",
+      "patient_num": "0004",
+      "id": 16
+    },
+    {
+      "pact_id": "PACT267C",
+      "patient_num": "0006",
+      "id": 18
+    },
+    {
+      "pact_id": "PACT275C",
+      "patient_num": "0008",
+      "id": 20
+    },
+    {
+      "pact_id": "PACT276C",
+      "patient_num": "0009",
+      "id": 21
+    },
+    {
+      "pact_id": "PACT280C",
+      "patient_num": "0010",
+      "id": 22
+    },
+    {
+      "pact_id": "PACT278C",
+      "patient_num": "0011",
+      "id": 23
+    },
+    {
+      "pact_id": "PACT288C",
+      "patient_num": "0013",
+      "id": 25
+    },
+    {
+      "pact_id": "PACT298C",
+      "patient_num": "0014",
+      "id": 30
+    },
+    {
+      "pact_id": "PACT299C",
+      "patient_num": "0015",
+      "id": 31
+    },
+    {
+      "pact_id": "PACT304C",
+      "patient_num": "0016",
+      "id": 36
+    },
+    {
+      "pact_id": "PACT306C",
+      "patient_num": "0018",
+      "id": 38
+    },
+    {
+      "pact_id": "PACT341C",
+      "patient_num": "0020",
+      "id": 48
+    },
+    {
+      "pact_id": "PACT339C",
+      "patient_num": "0021",
+      "id": 49
+    },
+    {
+      "pact_id": "PACT345C",
+      "patient_num": "0022",
+      "id": 52
+    },
+    {
+      "pact_id": "PACT349C",
+      "patient_num": "0023",
+      "id": 53
+    },
+    {
+      "pact_id": "PACT0001002C",
+      "patient_num": "0024",
+      "id": 56
+    },
+    {
+      "pact_id": "PACT367C",
+      "patient_num": "0025",
+      "id": 59
+    },
+    {
+      "pact_id": "PACT369C",
+      "patient_num": "0026",
+      "id": 60
+    },
+    {
+      "pact_id": "PACT407C",
+      "patient_num": "0027",
+      "id": 62
+    },
+    {
+      "pact_id": "PACT413C",
+      "patient_num": "0028",
+      "id": 63
+    },
+    {
+      "pact_id": "PACT424C",
+      "patient_num": "0030",
+      "id": 72
+    },
+    {
+      "pact_id": "PACT425C",
+      "patient_num": "0031",
+      "id": 76
+    },
+    {
+      "pact_id": "PACT472C",
+      "patient_num": "0032",
+      "id": 86
+    },
+    {
+      "pact_id": "PACT483C",
+      "patient_num": "0033",
+      "id": 48641
+    },
+    {
+      "pact_id": "PACT487C",
+      "patient_num": "0034",
+      "id": 48642
+    },
+    {
+      "pact_id": "PACT495C",
+      "patient_num": "0035",
+      "id": 52734
+    },
+    {
+      "pact_id": "PACT506C",
+      "patient_num": "0037",
+      "id": 52733
+    },
+    {
+      "pact_id": "PACT508C",
+      "patient_num": "0038",
+      "id": 53817
+    },
+    {
+      "pact_id": "PACT513C",
+      "patient_num": "0039",
+      "id": 2035360
+    },
+    {
+      "pact_id": "PACT0001000C",
+      "patient_num": "0040",
+      "id": 3012931
+    },
+    {
+      "pact_id": "PACT0001003C",
+      "patient_num": "0041",
+      "id": 3012932
+    },
+    {
+      "pact_id": "PACT329C",
+      "patient_num": "0302",
+      "id": 43
+    },
+    {
+      "pact_id": "PACT332C",
+      "patient_num": "0303",
+      "id": 45
+    },
+    {
+      "pact_id": "PACT410C",
+      "patient_num": "0306",
+      "id": 64
+    },
+    {
+      "pact_id": "PACT416C",
+      "patient_num": "0307",
+      "id": 69
+    },
+    {
+      "pact_id": "PACT466C",
+      "patient_num": "0309",
+      "id": 91
+    },
+    {
+      "pact_id": "PACT471C",
+      "patient_num": "0311",
+      "id": 85
+    },
+    {
+      "pact_id": "PACT481C",
+      "patient_num": "0314",
+      "id": 52728
+    },
+    {
+      "pact_id": "PACT510C",
+      "patient_num": "0315",
+      "id": 2676981
+    },
+    {
+      "pact_id": "PACT0001005C",
+      "patient_num": "0317",
+      "id": 2676983
+    },
+    {
+      "pact_id": "PACT522C",
+      "patient_num": "0319",
+      "id": 3022783
+    },
+    {
+      "pact_id": "PACT0001006C",
+      "patient_num": "0321",
+      "id": 3105676
+    },
+    {
+      "pact_id": "PACT391C",
+      "patient_num": "0401",
+      "id": 61
+    },
+    {
+      "pact_id": "PACT415C",
+      "patient_num": "0402",
+      "id": 65
+    },
+    {
+      "pact_id": "PACT443C",
+      "patient_num": "0403",
+      "id": 71
+    },
+    {
+      "pact_id": "PACT444C",
+      "patient_num": "0404",
+      "id": 73
+    },
+    {
+      "pact_id": "PACT446C",
+      "patient_num": "0405",
+      "id": 74
+    },
+    {
+      "pact_id": "PACT458C",
+      "patient_num": "0408",
+      "id": 78
+    },
+    {
+      "pact_id": "PACT459C",
+      "patient_num": "0409",
+      "id": 79
+    },
+    {
+      "pact_id": "PACT470C",
+      "patient_num": "0410",
+      "id": 84
+    },
+    {
+      "pact_id": "PACT482C",
+      "patient_num": "0411",
+      "id": 88
+    },
+    {
+      "pact_id": "PACT493C",
+      "patient_num": "0412",
+      "id": 92
+    },
+    {
+      "pact_id": "PACT0001001C",
+      "patient_num": "0414",
+      "id": 3106667
+    },
+    {
+      "pact_id": "PACT317C",
+      "patient_num": "0502",
+      "id": 34
+    },
+    {
+      "pact_id": "PACT328C",
+      "patient_num": "0503",
+      "id": 35
+    },
+    {
+      "pact_id": "PACT326C",
+      "patient_num": "0504",
+      "id": 39
+    },
+    {
+      "pact_id": "PACT318C",
+      "patient_num": "0506",
+      "id": 41
+    },
+    {
+      "pact_id": "PACT357C",
+      "patient_num": "0507",
+      "id": 46
+    },
+    {
+      "pact_id": "PACT371C",
+      "patient_num": "0509",
+      "id": 58
+    },
+    {
+      "pact_id": "PACT442C",
+      "patient_num": "0510",
+      "id": 66
+    },
+    {
+      "pact_id": "PACT463C",
+      "patient_num": "0512",
+      "id": 83
+    },
+    {
+      "pact_id": "PACT478C",
+      "patient_num": "0513",
+      "id": 52730
+    },
+    {
+      "pact_id": "PACT505C",
+      "patient_num": "0514",
+      "id": 1144669
+    },
+    {
+      "pact_id": "PACT517C",
+      "patient_num": "0516",
+      "id": 2539653
+    },
+    {
+      "pact_id": "PACT294C",
+      "patient_num": "0602",
+      "id": 27
+    },
+    {
+      "pact_id": "PACT303C",
+      "patient_num": "0603",
+      "id": 28
+    },
+    {
+      "pact_id": "PACT297C",
+      "patient_num": "0604",
+      "id": 29
+    },
+    {
+      "pact_id": "PACT301C",
+      "patient_num": "0605",
+      "id": 32
+    },
+    {
+      "pact_id": "PACT355C",
+      "patient_num": "0607",
+      "id": 55
+    },
+    {
+      "pact_id": "PACT491C",
+      "patient_num": "0610",
+      "id": 80
+    },
+    {
+      "pact_id": "PACT507C",
+      "patient_num": "0611",
+      "id": 52729
+    },
+    {
+      "pact_id": "PACT499C",
+      "patient_num": "0612",
+      "id": 2383964
+    },
+    {
+      "pact_id": "PACT490C",
+      "patient_num": "0613",
+      "id": 2677046
+    },
+    {
+      "pact_id": "PACT494C",
+      "patient_num": "0614",
+      "id": 52731
+    },
+    {
+      "pact_id": "PACT1010C",
+      "patient_num": "0616",
+      "id": 3118896
+    },
+    {
+      "pact_id": "PACT1027C",
+      "patient_num": "1005",
+      "id": 3444723
+    }
+  ],
+  "count": 78
+}

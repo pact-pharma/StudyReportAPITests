@@ -15,7 +15,7 @@ import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-final boolean isTestEnabled = false;
+final boolean isTestEnabled = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -777,7 +777,7 @@ final boolean isTestEnabled = false;
         };
     }
 
-    @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = true)
+    @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = isTestEnabled)
     public void getPdfSearchPatient(String url, int expectedReturnCode, String patientId, String userName,
                                     String userPassword, String expectedResponseFile) throws Exception {
         executeUrlAndValidateJsonResponse(Method.GET, String.format(url, patientId), expectedReturnCode, userName,
@@ -793,7 +793,7 @@ final boolean isTestEnabled = false;
                         "src/test/resources/files/getPdfPatient.json"}
         };
      }
-    @Test(dataProvider = "getPdfPatientDataProvider", enabled = true)
+    @Test(dataProvider = "getPdfPatientDataProvider", enabled = isTestEnabled)
     public void getPdfPatient(String url, int expectedReturnCode, String userName,
                               String userPassword, String expectedResponseFile) throws Exception{
         executeUrlAndValidateJsonResponse(Method.GET, url, expectedReturnCode, userName,
