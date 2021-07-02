@@ -4,13 +4,11 @@ import com.testautomationguru.utility.PDFUtil;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import java.util.*;
 
 import static com.pactpharma.sr.TestConstants.*;
@@ -38,7 +36,6 @@ final boolean isTestEnabled = false;
                         400, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"}
         };
-
     }
     @Test(dataProvider = "getFetchDocsDataProvider", enabled = isTestEnabled)
     void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedReturnCode, String studyReportId,
@@ -48,7 +45,6 @@ final boolean isTestEnabled = false;
 
         Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
                                                          expectedReturnCode, response.getStatusCode());
-        System.out.println("response" + response.asPrettyString());
         switch(expectedReturnCode) {
             case 200:
                 Assert.assertEquals(String.format("Archive name should be %s", expectedArchiveName),
@@ -811,6 +807,7 @@ final boolean isTestEnabled = false;
         Response response = httpRequest.request(method, url);
         Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
                 expectedReturnCode, response.getStatusCode());
+        System.out.println("Expected data:" + response.asPrettyString());
 
         String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
         JSONAssert.assertEquals(String.format("API:%s %s\nResponse should be %s", method,
