@@ -15,7 +15,7 @@ import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-final boolean isTestEnabled = true;
+final boolean isTestEnabled = false;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -644,46 +644,62 @@ final boolean isTestEnabled = true;
         }
     }
 
-    /*
-     * UPDATE report_dev.study_report SET status="Pending" where id=29641;
-     */
     @DataProvider(name = "postReportReportsStatusDataProvider")
     public Object[][] postReportReportsStatusDataProvider() {
         return new Object[][]{
-               {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3119233", 200,
+               {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3119233", false, 200,
                         "Approved", null, "imPACT", "0037", "PACT506C",
                         "21-117_0037_PACT506C_imPACT.pdf", null, "21-117",
                         null, null, null, null, null, null, null, null, null, null,
                         null, "1.00", null, null, "  Report has been successfully approved."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", 200,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", false, 200,
                         "Reject", null, "Tumor Immunology", "0015", "PACT299C",
                         "20-085_0015_PACT299C_Tumor Immunology.pdf", null, "20-085",
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, "This test conclusion.", "  Report has been successfully rejected."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", 200,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", false, 200,
                         "Reject", "0", "Gene Editing", "0512", "PACT463C",
                         "20-637_0512_PACT463C_Gene Editing.pdf", "2517325_sample.pdf", "20-637",
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, "  Report has been successfully rejected."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", 200,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", false, 200,
                         "Reject", "1", "Bioinformatics", "0611", "PACT507C",
                         "21-107_0611_PACT507C_Bioinformatics.pdf", null, "21-107",
                         null, null, null, null, null, null, null,
                         "sdsda", "dsadadasasa", "adadasad",
                         null, null, null, null, "  Report has been successfully rejected."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", 400,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, 400,
                         "Reject", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "User svc-study-report-creator@pactpharma.com does not have permission to " +
                                 "approve report of type Protein Science(S)"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", 400,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, 400,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "User svc-study-report-creator@pactpharma.com does not have permission to " +
-                                "approve report of type Protein Science(S)"}
-
+                                "approve report of type Protein Science(S)"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, 400,
+                        "Approved", null, null, null, null,
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "Modification to approved report is disallowed!"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, 400,
+                        "Approved", null, null, null, null,
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "Modification to approved report is disallowed!"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, 400,
+                        "Approved", null, null, null, null,
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "Report has not been submitted yet for approval"},
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, 400,
+                        "Reject", null, null, null, null,
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "Report has not been submitted yet for approval"}
         };
     }
 
@@ -693,9 +709,13 @@ final boolean isTestEnabled = true;
          UPDATE report_dev.study_report SET status="Pending" where id=3118773;
          UPDATE report_dev.study_report SET status="Pending" where id=2517325;
          UPDATE report_dev.study_report SET status="Pending" where id=2792633;
+         UPDATE report_dev.study_report SET status="Pending" where id=29641;
+         UPDATE report_dev.study_report SET status="Pending" where id=30738;
+         UPDATE report_dev.study_report SET status="In Progress" where id=28374;
+
      */
-    @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = isTestEnabled)
-    void postReportReportsStatus(String userName, String userPassword, String studyReportId,
+    @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = true)
+    void postReportReportsStatus(String userName, String userPassword, String studyReportId, boolean repeat,
                                  int expectedReturnCode, String status, String failureReason,
                                  String reportType, String patientNum, String patient,
                                  String reportName, String documentNames, String studyId,
@@ -715,6 +735,11 @@ final boolean isTestEnabled = true;
         }
         Response response = httpRequest.request(Method.POST,
                     String.format(POST_REPORT_REPORTS_STATUS, studyReportId, status));
+        if(repeat) {
+            response = httpRequest.request(Method.POST,
+                    String.format(POST_REPORT_REPORTS_STATUS, studyReportId, status));
+        }
+
         System.out.println("Message: " + (removeNewLine(removeTags(response.body().asPrettyString()))));
 
         Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
