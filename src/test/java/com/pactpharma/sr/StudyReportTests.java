@@ -310,7 +310,7 @@ final boolean isTestEnabled = true;
                           String expectedResponseFile, String expectedErrorMessage) throws Exception{
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
 
-        JSONObject requestObjectJSON = constructPutReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
+        JSONObject requestObjectJSON = constructReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
                 tumorFusionDetectedComment, lowExpressedNsmComment, lowTcByNgsPctComment, recommendation, amendments,
                 cancerType, tumorType, tumorLocation, expId, tCellNonConfidentCount, lscSelectedSamples);
         System.out.println("Body: " + requestObjectJSON.toJSONString());
@@ -455,7 +455,7 @@ final boolean isTestEnabled = true;
                           String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion, String expectedMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
 
-        JSONObject requestObjectJSON = constructPutReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
+        JSONObject requestObjectJSON = constructReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
                 tumorFusionDetectedComment, lowExpressedNsmComment, lowTcByNgsPctComment, recommendation, amendments,
                 cancerType, tumorType, tumorLocation, expId, tCellNonConfidentCount, lscSelectedSamples);
         System.out.println("Body: " + requestObjectJSON.toJSONString());
@@ -613,7 +613,7 @@ final boolean isTestEnabled = true;
                                 String expectedMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
 
-        JSONObject requestObjectJSON = constructPutReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
+        JSONObject requestObjectJSON = constructReportReportsBody(conclusion, fileAttachmentName, compactReportHandOffDate,
                 tumorFusionDetectedComment, lowExpressedNsmComment, lowTcByNgsPctComment, recommendation, amendments,
                 cancerType, tumorType, tumorLocation, expId, tCellNonConfidentCount, lscSelectedSamples);
         System.out.println("Body: " + requestObjectJSON.toJSONString());
@@ -951,7 +951,7 @@ final boolean isTestEnabled = true;
      * @param lscSelectedSamples
      * @return - Request body JSON File
      */
-    private JSONObject constructPutReportReportsBody(String conclusion, String[] fileAttachmentName, String compactReportHandOffDate,
+    private JSONObject constructReportReportsBody(String conclusion, String[] fileAttachmentName, String compactReportHandOffDate,
                                                      String tumorFusionDetectedComment, String lowExpressedNsmComment,
                                                      String lowTcByNgsPctComment, String recommendation, String amendments,
                                                      String cancerType, String tumorType, String tumorLocation, String expId,
