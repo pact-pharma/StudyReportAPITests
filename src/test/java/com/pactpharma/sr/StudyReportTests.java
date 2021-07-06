@@ -714,7 +714,7 @@ final boolean isTestEnabled = false;
          UPDATE report_dev.study_report SET status="In Progress" where id=28374;
 
      */
-    @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = true)
+    @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = isTestEnabled)
     void postReportReportsStatus(String userName, String userPassword, String studyReportId, boolean repeat,
                                  int expectedReturnCode, String status, String failureReason,
                                  String reportType, String patientNum, String patient,
@@ -774,12 +774,12 @@ final boolean isTestEnabled = false;
                         "pending", 1},
                 {GET_PDF_ALL, "status[]=progress&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "In Progress",
                         "progress", 2},
-                {GET_PDF_ALL, "status[]=approved&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved",
-                        "approved", 2},
+                {GET_PDF_ALL, "status[]=approved&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved",
+                        "approved", 1},
                 {GET_PDF_ALL, "status[]=reject&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Reject",
                         "reject", 1},
-                {GET_PDF_ALL, "status[]=approved&status[]=reject&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject",
-                        "approved,reject", 2},
+                {GET_PDF_ALL, "status[]=approved&status[]=reject&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject",
+                        "approved,reject", 1},
                 {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&page=3", 200,
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,In Progress", "approved,reject,progress", 3},
                 {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", 200,
@@ -787,11 +787,13 @@ final boolean isTestEnabled = false;
                 {GET_PDF_ALL, "page=4", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending,In Progress,Approved,Reject",
                         "pending,progress,approved,reject", 4},
                 {GET_PDF_ALL, null, 200, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "Pending,In Progress,Approved,Reject",
-                        "pending,progress,approved,reject", 1}
+                        "pending,progress,approved,reject", 1},
+                {GET_PDF_ALL, "status[]=INCORRECT&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 2}
         };
     }
 
-    @Test(dataProvider = "getPdfAllDataProvider",enabled = isTestEnabled)
+    @Test(dataProvider = "getPdfAllDataProvider",enabled = true)
     public void getPdfAll(String baseUrl, String parameters, int expectedReturnCode, String userName, String userPassword,
                           String expectedStatus, String expectedStatusQuery, int currentPage ) {
         RequestSpecification httpRequest =
