@@ -644,6 +644,9 @@ final boolean isTestEnabled = true;
         }
     }
 
+    /*
+     * UPDATE report_dev.study_report SET status="Pending" where id=29641;
+     */
     @DataProvider(name = "postReportReportsStatusDataProvider")
     public Object[][] postReportReportsStatusDataProvider() {
         return new Object[][]{
@@ -667,7 +670,20 @@ final boolean isTestEnabled = true;
                         "21-107_0611_PACT507C_Bioinformatics.pdf", null, "21-107",
                         null, null, null, null, null, null, null,
                         "sdsda", "dsadadasasa", "adadasad",
-                        null, null, null, null, "  Report has been successfully rejected."}
+                        null, null, null, null, "  Report has been successfully rejected."},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", 400,
+                        "Reject", null, null, null, null,
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "User svc-study-report-creator@pactpharma.com does not have permission to " +
+                                "approve report of type Protein Science(S)"},
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", 400,
+                        "Approved", null, null, null, null,
+                        null, null, null, null, null, null, null, null, null, null,
+                        null, null, null, null, null, null, null,
+                        "User svc-study-report-creator@pactpharma.com does not have permission to " +
+                                "approve report of type Protein Science(S)"}
+
         };
     }
 
@@ -716,6 +732,11 @@ final boolean isTestEnabled = true;
                         cancerType, tumorType, tumorLocation, expId,
                         tCellNonConfidentCount, lscSelectedSamples, conclusion);
                 break;
+            case 400:
+                Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
+                        expectedMessage, response.jsonPath().get(MESSAGE));
+                break;
+
         }
     }
 

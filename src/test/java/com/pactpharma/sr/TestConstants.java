@@ -53,6 +53,4 @@ public class TestConstants {
     public static String EXP_ID = "exp_id";
     public static String T_CELL_NON_CONFIDENT_COUNT = "t_cell_non_confident_count";
     public static String SELECTED_LSC_SAMPLES ="lsc_selected_samples";
-
-
 }
