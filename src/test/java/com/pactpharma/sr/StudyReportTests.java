@@ -855,21 +855,26 @@ final boolean isTestEnabled = false;
     public Object[][] postUploadReportsDocumentsDataProvider() {
         return new Object[][]{
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        200, "dummy.txt", "dummy.txt"}
+                        200, "dummy.txt", "dummy.txt", null},
+                {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        400, null, null, "No files received"}
         };
     }
 
     @Test(dataProvider = "postUploadReportsDocumentsDataProvider", enabled = true)
     public void postUploadReportsDocuments(String url, String studyReportId, String userName, String userPassword,
-                                           int expectedResponseCode, String filesToUpload, String expectedFiles) {
+                                           int expectedResponseCode, String filesToUpload, String expectedFiles,
+                                           String expectedMessage) {
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(CREATOR_USER_NAME, CREATOR_PASSWORD);
-        httpRequest.header(CONTENT_TYPE, "multipart/form-data");
 
-        String[] fileNamesArray = filesToUpload.split(",");
-        for(String fileName: fileNamesArray) {
-            File fileToUpload = new File("src/test/resources/files/" + fileName);
-            httpRequest.multiPart(FILE, fileToUpload);
+        if(filesToUpload != null) {
+            httpRequest.header(CONTENT_TYPE, "multipart/form-data");
+            String[] fileNamesArray = filesToUpload.split(",");
+            for (String fileName : fileNamesArray) {
+                File fileToUpload = new File("src/test/resources/files/" + fileName);
+                httpRequest.multiPart(FILE, fileToUpload);
+            }
         }
         Response response = httpRequest.request(Method.POST, String.format(url, studyReportId));
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
@@ -887,10 +892,12 @@ final boolean isTestEnabled = false;
                             String.format(url, studyReportId), expectedFiles), expectedFileSet.equals(actualFileSet));
                 }
                 break;
+            case 400:
+                Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
+                        expectedMessage, response.jsonPath().get(MESSAGE));
+                break;
         }
 
-        System.out.println(response.asPrettyString());
-        List<Object> files = response.getBody().jsonPath().getList(".");
     }
 
     /**
