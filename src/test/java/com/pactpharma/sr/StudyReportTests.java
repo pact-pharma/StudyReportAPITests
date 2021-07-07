@@ -859,7 +859,10 @@ final boolean isTestEnabled = false;
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         400, null, null, "No files received"},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                200, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null}
+                200, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null},
+                {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                        400, "dummy.txt", "dummy.txt", "User svc-study-report-approval@pactpharma.com\n" +
+                        "        does not have permission to upload supporting document of type Protein Science(S)"}
         };
     }
 
@@ -868,7 +871,7 @@ final boolean isTestEnabled = false;
                                            int expectedResponseCode, String filesToUpload, String expectedFiles,
                                            String expectedMessage) {
         RequestSpecification httpRequest =
-                TestUtilities.generateRequestSpecification(CREATOR_USER_NAME, CREATOR_PASSWORD);
+                TestUtilities.generateRequestSpecification(userName, userPassword);
 
         if(filesToUpload != null) {
             httpRequest.header(CONTENT_TYPE, "multipart/form-data");
