@@ -872,7 +872,6 @@ final boolean isTestEnabled = false;
                                            String expectedMessage) {
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
-
         if(filesToUpload != null) {
             httpRequest.header(CONTENT_TYPE, "multipart/form-data");
             String[] fileNamesArray = filesToUpload.split(",");
@@ -884,7 +883,6 @@ final boolean isTestEnabled = false;
         Response response = httpRequest.request(Method.POST, String.format(url, studyReportId));
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
-
         switch(expectedResponseCode) {
             case 200:
                 List<Object> files = response.getBody().jsonPath().getList(".");
@@ -900,7 +898,6 @@ final boolean isTestEnabled = false;
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
         }
-
     }
 
     /**
@@ -920,12 +917,9 @@ final boolean isTestEnabled = false;
         Response response = httpRequest.request(method, url);
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
-        System.out.println("Expected data:" + response.asPrettyString());
-
         String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
         JSONAssert.assertEquals(String.format("API:%s %s\nResponse should be %s", method,
                 url, expectedResponse), expectedResponse, response.asPrettyString(), false);
-
     }
 
     /**
