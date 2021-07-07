@@ -9,6 +9,8 @@ import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import java.io.File;
 import java.util.*;
 
 import static com.pactpharma.sr.TestConstants.*;
@@ -38,14 +40,14 @@ final boolean isTestEnabled = false;
         };
     }
     @Test(dataProvider = "getFetchDocsDataProvider", enabled = isTestEnabled)
-    void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedReturnCode, String studyReportId,
+    void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedResponseCode, String studyReportId,
                     String expectedArchiveName, String expectedUriPrefix, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
         Response response = httpRequest.request(Method.GET, String.format(fetchDocsUri, studyReportId));
 
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
-                                                         expectedReturnCode, response.getStatusCode());
-        switch(expectedReturnCode) {
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
+        switch(expectedResponseCode) {
             case 200:
                 Assert.assertEquals(String.format("Archive name should be %s", expectedArchiveName),
                         expectedArchiveName, response.jsonPath().get("archiveName"));
@@ -74,12 +76,12 @@ final boolean isTestEnabled = false;
     }
 
     @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = isTestEnabled)
-    void getFetchWithToken(String userName, String userPassword, int expectedReturnCode, String studyReportId,
+    void getFetchWithToken(String userName, String userPassword, int expectedResponseCode, String studyReportId,
                            String secondStudyReportId, boolean sleep,
                            String expectedPdfFile, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
         Response response = httpRequest.request(Method.GET, String.format(GET_FETCH_DOCS_URI, studyReportId));
-        Assert.assertEquals(String.format("Response code should be %s", 200),
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 200, response.getStatusCode());
 
         String uri = response.jsonPath().get(URI).toString();
@@ -93,10 +95,10 @@ final boolean isTestEnabled = false;
         Response getFetchDocsWithTokeResponse = httpRequest.request(Method.GET,
                 String.format(GET_FETCH_DOCS_URI + "/" + uri.substring(uri.lastIndexOf('/')+1),
                         secondStudyReportId));
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
-                expectedReturnCode, getFetchDocsWithTokeResponse.getStatusCode());
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, getFetchDocsWithTokeResponse.getStatusCode());
 
-        switch(expectedReturnCode) {
+        switch(expectedResponseCode) {
             case 200:
                 TestUtilities.readResponseInPdf(getFetchDocsWithTokeResponse, "src/test/tmp/fetchDocsWithTokenTest.pdf");
                 PDFUtil pdfUtil = new PDFUtil();
@@ -183,7 +185,7 @@ final boolean isTestEnabled = false;
     @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = isTestEnabled)
     void getPdfSearchReport(String userName, String userPassword, String reportType, String patientId,
                             String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier,
-                            int expectedReturnCode,
+                            int expectedResponseCode,
                             String expectedResponseFile) throws Exception{
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
         String requestUrl = constructPdfSearchReportUrl(reportType, patientId,
@@ -192,8 +194,8 @@ final boolean isTestEnabled = false;
         System.out.println("URL: " + requestUrl);
         Response response = httpRequest.request(Method.GET, requestUrl);
 
-        Assert.assertEquals(String.format("API:%s\nResponse code should be %s", requestUrl, expectedReturnCode),
-                expectedReturnCode, response.getStatusCode());
+        Assert.assertEquals(String.format("API:%s\nResponse code should be %s", requestUrl, expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
         String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
 
         JSONAssert.assertEquals(String.format("API:%s\nResponse should be %s",
@@ -302,7 +304,7 @@ final boolean isTestEnabled = false;
 
     @Test(dataProvider = "putReportReportsDataProvider", enabled = isTestEnabled )
     void putReportReports(String userName, String userPassword, String studyReportId,
-                          int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
+                          int expectedResponseCode, String[] fileAttachmentName, String compactReportHandOffDate,
                           String tumorFusionDetectedComment, String lowExpressedNsmComment,
                           String lowTcByNgsPctComment, String recommendation, String amendments,
                           String cancerType, String tumorType, String tumorLocation, String expId,
@@ -318,10 +320,10 @@ final boolean isTestEnabled = false;
         httpRequest.body(requestObjectJSON.toJSONString());
 
         Response response = httpRequest.request(Method.PUT, String.format(PUT_REPORT_REPORTS , studyReportId));
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
-                expectedReturnCode, response.getStatusCode());
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
 
-        switch(expectedReturnCode) {
+        switch(expectedResponseCode) {
             case 200:
                 if(expectedResponseFile != null) {
                     convertBase64ToPdfFile(String.format("src/test/tmp/%s", expectedResponseFile),
@@ -445,7 +447,7 @@ final boolean isTestEnabled = false;
     //Study id 27651 for patient 0027
     @Test(dataProvider = "postReportReportsSaveDataProvider", enabled = isTestEnabled)
     void postReportReportsSave(String userName, String userPassword, String studyReportId,
-                          int expectedReturnCode,
+                          int expectedResponseCode,
                           String reportType, String patientNum, String patient,
                           String reportName, String documentNames, String studyId, String status,
                           String[] fileAttachmentName, String compactReportHandOffDate,
@@ -463,17 +465,17 @@ final boolean isTestEnabled = false;
         httpRequest.body(requestObjectJSON.toJSONString());
 
         Response response = httpRequest.request(Method.POST, String.format(POST_REPORT_REPORTS_SAVE, studyReportId));
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
-                expectedReturnCode, response.getStatusCode());
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
 
 
-        switch(expectedReturnCode) {
+        switch(expectedResponseCode) {
             case 200:
                 Assert.assertTrue(String.format("Request PUT %s should print '%s'",
                         String.format(POST_REPORT_REPORTS_SAVE, studyReportId), expectedMessage),
                         expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
                 validateReport(httpRequest, userName, userPassword, studyReportId, reportType,
-                        patientNum, patient, reportName, documentNames, studyId, status, expectedReturnCode,
+                        patientNum, patient, reportName, documentNames, studyId, status,
                         fileAttachmentName, compactReportHandOffDate,
                     tumorFusionDetectedComment, lowExpressedNsmComment,
                     lowTcByNgsPctComment, recommendation, amendments,
@@ -602,7 +604,7 @@ final boolean isTestEnabled = false;
 
     @Test(dataProvider = "putReportReportsSubmitDataProvider", enabled = isTestEnabled)
     void putReportReportsSubmit(String userName, String userPassword, String studyReportId,
-                                int expectedReturnCode,
+                                int expectedResponseCode,
                                 String reportType, String patientNum, String patient,
                                 String reportName, String documentNames, String studyId, String status,
                                 String[] fileAttachmentName, String compactReportHandOffDate,
@@ -621,16 +623,16 @@ final boolean isTestEnabled = false;
         httpRequest.body(requestObjectJSON.toJSONString());
 
         Response response = httpRequest.request(Method.PUT, String.format(PUT_REPORT_REPORTS_SUBMIT , studyReportId));
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
-                expectedReturnCode, response.getStatusCode());
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
 
-        switch(expectedReturnCode) {
+        switch(expectedResponseCode) {
             case 200:
                 Assert.assertTrue(String.format("Request PUT %s should print '%s'",
                         String.format(POST_REPORT_REPORTS_SAVE, studyReportId), expectedMessage),
                         expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
                 validateReport(httpRequest, userName, userPassword, studyReportId, reportType,
-                        patientNum, patient, reportName, documentNames, studyId, status, expectedReturnCode,
+                        patientNum, patient, reportName, documentNames, studyId, status,
                         fileAttachmentName, compactReportHandOffDate,
                         tumorFusionDetectedComment, lowExpressedNsmComment,
                         lowTcByNgsPctComment, recommendation, amendments,
@@ -716,7 +718,7 @@ final boolean isTestEnabled = false;
      */
     @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = isTestEnabled)
     void postReportReportsStatus(String userName, String userPassword, String studyReportId, boolean repeat,
-                                 int expectedReturnCode, String status, String failureReason,
+                                 int expectedResponseCode, String status, String failureReason,
                                  String reportType, String patientNum, String patient,
                                  String reportName, String documentNames, String studyId,
                                  String[] fileAttachmentName, String compactReportHandOffDate,
@@ -742,15 +744,15 @@ final boolean isTestEnabled = false;
 
         System.out.println("Message: " + (removeNewLine(removeTags(response.body().asPrettyString()))));
 
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
-                expectedReturnCode, response.getStatusCode());
-        switch(expectedReturnCode) {
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
+        switch(expectedResponseCode) {
             case 200:
                 Assert.assertTrue(String.format("Request POST %s should print '%s'",
                         String.format(POST_REPORT_REPORTS_STATUS, studyReportId, status), expectedMessage),
                         expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
                 validateReport(httpRequest, userName, userPassword, studyReportId, reportType,
-                        patientNum, patient, reportName, documentNames, studyId, status, expectedReturnCode,
+                        patientNum, patient, reportName, documentNames, studyId, status,
                         fileAttachmentName, compactReportHandOffDate,
                         tumorFusionDetectedComment, lowExpressedNsmComment,
                         lowTcByNgsPctComment, recommendation, amendments,
@@ -793,8 +795,8 @@ final boolean isTestEnabled = false;
         };
     }
 
-    @Test(dataProvider = "getPdfAllDataProvider",enabled = true)
-    public void getPdfAll(String baseUrl, String parameters, int expectedReturnCode, String userName, String userPassword,
+    @Test(dataProvider = "getPdfAllDataProvider",enabled = isTestEnabled)
+    public void getPdfAll(String baseUrl, String parameters, int expectedResponseCode, String userName, String userPassword,
                           String expectedStatus, String expectedStatusQuery, int currentPage ) {
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
@@ -803,8 +805,8 @@ final boolean isTestEnabled = false;
             url = String.format("%s?%s", baseUrl, parameters);
         }
         Response response = httpRequest.request(Method.GET, url);
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
-                expectedReturnCode, response.getStatusCode());
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
         Assert.assertTrue(String.format("GET %s response should contains records with statuses %s, " +
                         "current page %s and expected status query %s", url, expectedStatus,
                 currentPage,expectedStatusQuery),
@@ -826,9 +828,9 @@ final boolean isTestEnabled = false;
     }
 
     @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = isTestEnabled)
-    public void getPdfSearchPatient(String url, int expectedReturnCode, String patientId, String userName,
+    public void getPdfSearchPatient(String url, int expectedResponseCode, String patientId, String userName,
                                     String userPassword, String expectedResponseFile) throws Exception {
-        executeUrlAndValidateJsonResponse(Method.GET, String.format(url, patientId), expectedReturnCode, userName,
+        executeUrlAndValidateJsonResponse(Method.GET, String.format(url, patientId), expectedResponseCode, userName,
                 userPassword, expectedResponseFile);
     }
 
@@ -842,19 +844,72 @@ final boolean isTestEnabled = false;
         };
      }
     @Test(dataProvider = "getPdfPatientDataProvider", enabled = isTestEnabled)
-    public void getPdfPatient(String url, int expectedReturnCode, String userName,
+    public void getPdfPatient(String url, int expectedResponseCode, String userName,
                               String userPassword, String expectedResponseFile) throws Exception{
-        executeUrlAndValidateJsonResponse(Method.GET, url, expectedReturnCode, userName,
+        executeUrlAndValidateJsonResponse(Method.GET, url, expectedResponseCode, userName,
                 userPassword, expectedResponseFile);
 
     }
-    private void executeUrlAndValidateJsonResponse(Method method, String url, int expectedReturnCode, String userName,
+
+    @DataProvider(name = "postUploadReportsDocumentsDataProvider")
+    public Object[][] postUploadReportsDocumentsDataProvider() {
+        return new Object[][]{
+                {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        200, "dummy.txt", "dummy.txt"}
+        };
+    }
+
+    @Test(dataProvider = "postUploadReportsDocumentsDataProvider", enabled = true)
+    public void postUploadReportsDocuments(String url, String studyReportId, String userName, String userPassword,
+                                           int expectedResponseCode, String filesToUpload, String expectedFiles) {
+        RequestSpecification httpRequest =
+                TestUtilities.generateRequestSpecification(CREATOR_USER_NAME, CREATOR_PASSWORD);
+        httpRequest.header(CONTENT_TYPE, "multipart/form-data");
+
+        String[] fileNamesArray = filesToUpload.split(",");
+        for(String fileName: fileNamesArray) {
+            File fileToUpload = new File("src/test/resources/files/" + fileName);
+            httpRequest.multiPart(FILE, fileToUpload);
+        }
+        Response response = httpRequest.request(Method.POST, String.format(url, studyReportId));
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
+
+        switch(expectedResponseCode) {
+            case 200:
+                if(filesToUpload != null) {
+                    List<Object> files = response.getBody().jsonPath().getList(".");
+                    Set<String> actualFileSet = new HashSet<>();
+                    Set<String> expectedFileSet = new HashSet<>();
+                    files.stream().forEach(obj -> actualFileSet.add((String) obj));
+                    expectedFileSet.addAll(Arrays.asList(expectedFiles.split(",")));
+                    Assert.assertTrue(String.format("POST %s response should contain %s files",
+                            String.format(url, studyReportId), expectedFiles), expectedFileSet.equals(actualFileSet));
+                }
+                break;
+        }
+
+        System.out.println(response.asPrettyString());
+        List<Object> files = response.getBody().jsonPath().getList(".");
+    }
+
+    /**
+     * This method executes HTTP method and compares results with expected JSON file.
+     * @param method
+     * @param url
+     * @param expectedResponseCode
+     * @param userName
+     * @param userPassword
+     * @param expectedResponseFile
+     * @throws Exception
+     */
+    private void executeUrlAndValidateJsonResponse(Method method, String url, int expectedResponseCode, String userName,
                                                    String userPassword, String expectedResponseFile) throws Exception{
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
         Response response = httpRequest.request(method, url);
-        Assert.assertEquals(String.format("Response code should be %s", expectedReturnCode),
-                expectedReturnCode, response.getStatusCode());
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
         System.out.println("Expected data:" + response.asPrettyString());
 
         String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
@@ -913,7 +968,6 @@ final boolean isTestEnabled = false;
      * @param documentNames
      * @param studyId
      * @param status
-     * @param expectedReturnCode
      * @param fileAttachmentName
      * @param compactReportHandOffDate
      * @param tumorFusionDetectedComment
@@ -932,14 +986,13 @@ final boolean isTestEnabled = false;
     private void validateReport(RequestSpecification httpRequest, String userName, String userPassword, String studyReportId,
                                 String reportType, String patientNum, String patient,
                                 String reportName, String documentNames, String studyId, String status,
-                                int expectedReturnCode, String[] fileAttachmentName, String compactReportHandOffDate,
+                                String[] fileAttachmentName, String compactReportHandOffDate,
                                 String tumorFusionDetectedComment, String lowExpressedNsmComment,
                                 String lowTcByNgsPctComment, String recommendation, String amendments,
                                 String cancerType, String tumorType, String tumorLocation, String expId,
                                 String tCellNonConfidentCount, String[] lscSelectedSamples, String conclusion) {
 
         Response response = httpRequest.request(Method.GET, String.format(GET_PDF_REPORT, studyReportId));
-        System.out.println("response" + response.asPrettyString());
         validateValueFromResponse(response,"study.id", studyReportId);
         validateValueFromResponse(response,"study.studyId", studyId);
         validateValueFromResponse(response,"study.status", status);

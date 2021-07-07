@@ -13,6 +13,7 @@ public class TestConstants {
     public static String USER_NAME = "username";
     public static String PASSWORD = "password";
     public static String SCOPE = "scope";
+    public static String FILE = "file";
     public static String CREATOR_USER_NAME = "svc-study-report-creator@pactpharma.com";
     public static String CREATOR_PASSWORD = "GRv0n0t!7hdL";
     public static String APPROVAL_USER_NAME = "svc-study-report-approval@pactpharma.com";
@@ -28,6 +29,7 @@ public class TestConstants {
     public static String GET_PDF_ALL = "/api/v1/pdf/all";
     public static String GET_PDF_SEARCH_PATIENT = "/api/v1/pdf/search/patient/%s";
     public static String GET_PDF_PATIENT = "/api/v1/pdf/patient";
+    public static String POST_UPLOAD_REPORTS_DOCUMENTS = "/api/v1/upload/reports/%s/documents";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";
