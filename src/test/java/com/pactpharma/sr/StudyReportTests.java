@@ -17,7 +17,7 @@ import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-final boolean isTestEnabled = false;
+final boolean isTestEnabled = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -216,6 +216,8 @@ final boolean isTestEnabled = false;
     //select * from report_dev.study_report where report_name LIKE '%imPACT%' and status='Pending';
     //select * from report_dev.study_report where report_name LIKE '%Protein Science(L)%' and status='Pending';
     //select id, report_name from report_dev.study_report where report_name LIKE "%Tumor%" and status='Pending';
+    //UPDATE report_dev.study_report SET status="Approved" where id=38465;
+    //
     @DataProvider(name = "putReportReportsDataProvider")
     public Object[][] putReportReportsDataProvider() {
         return new Object[][]{
@@ -763,7 +765,6 @@ final boolean isTestEnabled = false;
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
-
         }
     }
 
@@ -795,7 +796,7 @@ final boolean isTestEnabled = false;
         };
     }
 
-    @Test(dataProvider = "getPdfAllDataProvider",enabled = isTestEnabled)
+    @Test(dataProvider = "getPdfAllDataProvider",enabled = false)
     public void getPdfAll(String baseUrl, String parameters, int expectedResponseCode, String userName, String userPassword,
                           String expectedStatus, String expectedStatusQuery, int currentPage ) {
         RequestSpecification httpRequest =
@@ -827,6 +828,10 @@ final boolean isTestEnabled = false;
         };
     }
 
+    /*
+    UPDATE report_dev.study_report SET status="Pending" where id=29279;
+    UPDATE report_dev.study_report SET status="Pending" where id=28560;
+     */
     @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = isTestEnabled)
     public void getPdfSearchPatient(String url, int expectedResponseCode, String patientId, String userName,
                                     String userPassword, String expectedResponseFile) throws Exception {
@@ -848,7 +853,6 @@ final boolean isTestEnabled = false;
                               String userPassword, String expectedResponseFile) throws Exception{
         executeUrlAndValidateJsonResponse(Method.GET, url, expectedResponseCode, userName,
                 userPassword, expectedResponseFile);
-
     }
 
     @DataProvider(name = "postUploadReportsDocumentsDataProvider")
