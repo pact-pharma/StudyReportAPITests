@@ -857,11 +857,13 @@ final boolean isTestEnabled = false;
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         200, "dummy.txt", "dummy.txt", null},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        400, null, null, "No files received"}
+                        400, null, null, "No files received"},
+                {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                200, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null}
         };
     }
 
-    @Test(dataProvider = "postUploadReportsDocumentsDataProvider", enabled = true)
+    @Test(dataProvider = "postUploadReportsDocumentsDataProvider", enabled = isTestEnabled)
     public void postUploadReportsDocuments(String url, String studyReportId, String userName, String userPassword,
                                            int expectedResponseCode, String filesToUpload, String expectedFiles,
                                            String expectedMessage) {
@@ -882,15 +884,13 @@ final boolean isTestEnabled = false;
 
         switch(expectedResponseCode) {
             case 200:
-                if(filesToUpload != null) {
-                    List<Object> files = response.getBody().jsonPath().getList(".");
-                    Set<String> actualFileSet = new HashSet<>();
-                    Set<String> expectedFileSet = new HashSet<>();
-                    files.stream().forEach(obj -> actualFileSet.add((String) obj));
-                    expectedFileSet.addAll(Arrays.asList(expectedFiles.split(",")));
-                    Assert.assertTrue(String.format("POST %s response should contain %s files",
+                List<Object> files = response.getBody().jsonPath().getList(".");
+                Set<String> actualFileSet = new HashSet<>();
+                Set<String> expectedFileSet = new HashSet<>();
+                files.stream().forEach(obj -> actualFileSet.add((String) obj));
+                expectedFileSet.addAll(Arrays.asList(expectedFiles.split(",")));
+                Assert.assertTrue(String.format("POST %s response should contain %s files",
                             String.format(url, studyReportId), expectedFiles), expectedFileSet.equals(actualFileSet));
-                }
                 break;
             case 400:
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
