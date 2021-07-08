@@ -23,20 +23,20 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
         return new Object[][] {{GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                200, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).tar.gz",
+                HttpStatus.SC_OK, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).tar.gz",
                 "https://study-report.zest.pactpharma.com/api/v1/report/reports/25046/fetchdocs/", null},
                 {GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        400, "125046", null, null, "Error: No such report found!"},
+                        HttpStatus.SC_BAD_REQUEST, "125046", null, null, "Error: No such report found!"},
                 {GET_FETCH_DOCS_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        400, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
+                        HttpStatus.SC_BAD_REQUEST, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"},
                 {GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        200, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).word.tar.gz",
+                        HttpStatus.SC_OK, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).word.tar.gz",
                         "https://study-report.zest.pactpharma.com/api/v1/report/reports/25046/fetchinwordformat/", null},
                 {GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                        400, "125046", null, null, "Error: No such report found!"},
+                        HttpStatus.SC_BAD_REQUEST, "125046", null, null, "Error: No such report found!"},
                 {GET_FETCH_IN_WORD_FORMAT_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD ,
-                        400, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
+                        HttpStatus.SC_BAD_REQUEST, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"}
         };
     }
@@ -49,13 +49,13 @@ final boolean isTestEnabled = false;
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
         switch(expectedResponseCode) {
-            case 200:
+            case HttpStatus.SC_OK:
                 Assert.assertEquals(String.format("Archive name should be %s", expectedArchiveName),
                         expectedArchiveName, response.jsonPath().get("archiveName"));
                 Assert.assertTrue(String.format("URI string should starts with %s", expectedUriPrefix),
                         response.jsonPath().get(URI).toString().startsWith(expectedUriPrefix));
                 break;
-            case 400:
+            case HttpStatus.SC_BAD_REQUEST:
                 System.out.println("Error Message:" + response.jsonPath().get("message"));
                 Assert.assertEquals(String.format("Error message should be %s", expectedErrorMessage),
                         expectedErrorMessage, response.jsonPath().get(MESSAGE));
@@ -66,13 +66,13 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "getFetchDocsWithTokenDataProvider")
     public Object[][] getFetchDocsWithTokenDataProvider(){
         return new Object[][] {{CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                200, "25046", "25046", false, "src/test/resources/files/test.pdf", null},
+                HttpStatus.SC_OK, "25046", "25046", false, "src/test/resources/files/test.pdf", null},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                 400, "25046", "25046", true, null, "Invalid report archive token!"},
+                 HttpStatus.SC_BAD_REQUEST, "25046", "25046", true, null, "Invalid report archive token!"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                400, "25046", "125046", false, null, "No such report found!"},
+                        HttpStatus.SC_BAD_REQUEST, "25046", "125046", false, null, "No such report found!"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                 400, "25046", "125046", true, null, "Invalid report archive token!"}
+                        HttpStatus.SC_BAD_REQUEST, "25046", "125046", true, null, "Invalid report archive token!"}
         };
     }
 
@@ -83,7 +83,7 @@ final boolean isTestEnabled = false;
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
         Response response = httpRequest.request(Method.GET, String.format(GET_FETCH_DOCS_URI, studyReportId));
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
-                200, response.getStatusCode());
+                HttpStatus.SC_OK, response.getStatusCode());
 
         String uri = response.jsonPath().get(URI).toString();
         httpRequest.header(ACCEPT_ENCODING, GZIP);
@@ -100,7 +100,7 @@ final boolean isTestEnabled = false;
                 expectedResponseCode, getFetchDocsWithTokeResponse.getStatusCode());
 
         switch(expectedResponseCode) {
-            case 200:
+            case HttpStatus.SC_OK:
                 TestUtilities.readResponseInPdf(getFetchDocsWithTokeResponse, "src/test/tmp/fetchDocsWithTokenTest.pdf");
                 PDFUtil pdfUtil = new PDFUtil();
 
@@ -108,7 +108,7 @@ final boolean isTestEnabled = false;
                         GET_FETCH_DOCS_URI, uri.substring(uri.lastIndexOf('/')+1),
                         expectedPdfFile),pdfUtil.compare(expectedPdfFile, "src/test/tmp/fetchDocsWithTokenTest.pdf"));
                 break;
-            case 400:
+            case HttpStatus.SC_BAD_REQUEST:
                 Assert.assertEquals(String.format("Error message should be %s", expectedErrorMessage),
                         expectedErrorMessage, getFetchDocsWithTokeResponse.jsonPath().get(MESSAGE));
                 break;
@@ -120,67 +120,67 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "getPdfSearchReportDataProvider")
     public Object[][] getPdfSearchReportDataProvider(){
         return new Object[][]{{CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, null, null,
-                200, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
+                HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", "M01", null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentIdAndImpactSampleName.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentIdAndImpactSampleName.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "M01", null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImPactWithImpactSampleName.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithImpactSampleName.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, "21-006", null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, "PP001146", null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, "PP001146", "21-006", null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", "M01", "PP001146", "21-006", null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentIdAndImpactSampleName.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentIdAndImpactSampleName.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "5500000", null, null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectPatientId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectPatientId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "0.001", null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "XXXX", null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectImpactSampleName.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectImpactSampleName.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "5500000", "XXXX", null, null, null,
                         400, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentIdAndImpactName.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformatics.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformatics.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", "20-628", "12860102C",
-                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithSampleNameStudyIdHgxIdentifier.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithSampleNameStudyIdHgxIdentifier.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001584", "20-627", "12860102",
-                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithIncorrectSampleNameStudyIdHgxIdentifier.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithIncorrectSampleNameStudyIdHgxIdentifier.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", "20002337", "XXXX", "PP001585", "20-628", "12860102C",
-                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithAllParameters.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithAllParameters.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithSampleName.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithSampleName.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, "20-628", null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithStudyId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithStudyId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, "12860102C",
-                        200, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithHgxIdentifier.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithHgxIdentifier.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", null, null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportPSS.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSS.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "2035300", null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportPSSWithExpId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSSWithExpId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "203530011", null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportWithIncorrectPSSWithExpId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportWithIncorrectPSSWithExpId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", null, null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportPSL.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSL.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", "3118938", null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportPSLWithExpId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSLWithExpId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", "311893800", null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportPSLWithIncorrectExpId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSLWithIncorrectExpId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportGE.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportGE.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088", null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportGEWithStudyReportId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportGEWithStudyReportId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088XX", null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportGEWithIncorrectStudyReportId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportGEWithIncorrectStudyReportId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, null, null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportTI.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportTI.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, "21-247", null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportTIWithStudyReportId.json"},
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportTIWithStudyReportId.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, "21-247XX", null,
-                        200, "src/test/resources/files/expectedGetPdfSearchReportTIWithIncorrectStudyReportId.json"}
+                        HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportTIWithIncorrectStudyReportId.json"}
         };
     }
     @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = isTestEnabled)
@@ -222,31 +222,31 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "putReportReportsDataProvider")
     public Object[][] putReportReportsDataProvider() {
         return new Object[][]{
-               {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
+               {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
                 null, null, null, null, null, null, null,
                 null, null, null, null, null, null, "This test conclusion.",
                 "expectedPutReportReports.pdf", null},
-               {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
+               {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
                         null, "06/May/21", null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "expectedPutReportReportsWithHandOffDate.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
                         null, "06/May/21","This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs", "30748", "11905", null, null,
                         "expectedPutReportReportsWithHandOffDate.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "51930", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "51930", HttpStatus.SC_OK,
                         null, null, "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs", null, null, null, "This test conclusion.",
                         "expectedPutReportReportsBioinformaticsWithCommentsRecommendationsAmendmentsCancerAndTumorTypes.pdf", null},
-               {CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", 200,
+               {CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", HttpStatus.SC_OK,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "expectedReportReportsGE.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3107271", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3107271", HttpStatus.SC_OK,
                          null, null, null, null, null, null, null,
                          null, null, null, null, null, LSC_SELECTED_SAMPLES, null,
                         "expectedPutReportReportsPSL.pdf", null},
@@ -254,46 +254,46 @@ final boolean isTestEnabled = false;
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, LSC_SELECTED_SAMPLES, null,
                         "expectedPutReportReportsPSLWithCompactReportHandOffDate.pdf", null},*/
-               {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", 400,
+               {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", HttpStatus.SC_BAD_REQUEST,
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         null, "Named parameter \":lsc_selected_samples\" has no value in the given object."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541372", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541372", HttpStatus.SC_OK,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, "This test conclusion.",
                         "expectedPutReportReportsTI.pdf", null},
                 //Study Report with Approved Status
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", 400,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         null, "Modification to approved report is disallowed!"},
                 //Study Report with USER APPROVAL permissions
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have permission to " +
                                 "update report of type Tumor Immunology"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "24682", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "24682", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to update report of type Protein Science(S)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "51930", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "51930", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to update report of type Bioinformatics"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42954", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42954", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com " +
                                 "does not have permission to update report of type Protein Science(L)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3017400", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3017400", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to update report of type Gene Editing"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have " +
@@ -327,7 +327,7 @@ final boolean isTestEnabled = false;
                 expectedResponseCode, response.getStatusCode());
 
         switch(expectedResponseCode) {
-            case 200:
+            case HttpStatus.SC_OK:
                 if(expectedResponseFile != null) {
                     convertBase64ToPdfFile(String.format("src/test/tmp/%s", expectedResponseFile),
                             response.getBody().jsonPath().get(TestConstants.PDF).toString());
@@ -342,7 +342,7 @@ final boolean isTestEnabled = false;
                             expectedErrorMessage, response.jsonPath().get(MESSAGE));
                 }
                 break;
-            case 400:
+            case HttpStatus.SC_BAD_REQUEST:
                 Assert.assertEquals(String.format("Error message should be %s", expectedErrorMessage),
                         expectedErrorMessage, response.jsonPath().get(MESSAGE));
                 break;
@@ -354,13 +354,13 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "postReportReportsSaveDataProvider")
     public Object[][] postReportReportsSaveDataProvider() {
         return new Object[][]{
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", HttpStatus.SC_OK,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "In Progress", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", HttpStatus.SC_OK,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "In Progress", null, "04/Dec/2020",
@@ -369,32 +369,32 @@ final boolean isTestEnabled = false;
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs",
                         null, null, null, "This test conclusion.", "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3297225", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3297225", HttpStatus.SC_OK,
                         "imPACT", "0403", "PACT443C",
                         "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This test conclusion.", "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", HttpStatus.SC_OK,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This TI test conclusion.", "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", HttpStatus.SC_OK,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", "42993_ge-0030.pdf", "20-545",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", HttpStatus.SC_OK,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.", "  Report saved successfully."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", HttpStatus.SC_BAD_REQUEST,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
@@ -402,7 +402,7 @@ final boolean isTestEnabled = false;
                         null, null, null, "This is test GE conclusion.",
                         "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to save report of type Gene Editing"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42993", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42993", HttpStatus.SC_BAD_REQUEST,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
                         "Pending", null, null,
@@ -410,7 +410,7 @@ final boolean isTestEnabled = false;
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have permission to save " +
                                 "report of type Protein Science(L)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541133", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541133", HttpStatus.SC_BAD_REQUEST,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "Pending", null, null,
@@ -418,7 +418,7 @@ final boolean isTestEnabled = false;
                         null, null, null, "This TI test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have" +
                                 " permission to save report of type Tumor Immunology"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", HttpStatus.SC_BAD_REQUEST,
                         "imPACT", "0403", "PACT443C",
                         "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
                         "In Progress", null, null,
@@ -426,7 +426,7 @@ final boolean isTestEnabled = false;
                         null, "100.00", null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to save report of type imPACT"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2677093", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2677093", HttpStatus.SC_BAD_REQUEST,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "Pending", null, "04/Dec/2020",
@@ -437,7 +437,7 @@ final boolean isTestEnabled = false;
                         null, null, null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to save report of type Bioinformatics"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "27651", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "27651", HttpStatus.SC_BAD_REQUEST,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
@@ -473,7 +473,7 @@ final boolean isTestEnabled = false;
 
 
         switch(expectedResponseCode) {
-            case 200:
+            case HttpStatus.SC_OK:
                 Assert.assertTrue(String.format("Request PUT %s should print '%s'",
                         String.format(POST_REPORT_REPORTS_SAVE, studyReportId), expectedMessage),
                         expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
@@ -485,7 +485,7 @@ final boolean isTestEnabled = false;
                     cancerType, tumorType, tumorLocation, expId,
                     tCellNonConfidentCount, lscSelectedSamples, conclusion);
                 break;
-            case 400:
+            case HttpStatus.SC_BAD_REQUEST:
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
@@ -510,13 +510,13 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "putReportReportsSubmitDataProvider")
     public Object[][] putReportReportsSubmitDataProvider() {
         return new Object[][]{
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", HttpStatus.SC_OK,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "  Report submitted successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", HttpStatus.SC_OK,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "Pending", null, "04/Dec/2020",
@@ -533,26 +533,26 @@ final boolean isTestEnabled = false;
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This submit imPact test conclusion.", "  Report submitted successfully."},*/
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", HttpStatus.SC_OK,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This submit TI test conclusion.",  "  Report submitted successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", HttpStatus.SC_OK,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", "42993_ge-0030.pdf", "20-545",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "  Report submitted successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", 200,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", HttpStatus.SC_OK,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.", "  Report submitted successfully."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517281", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517281", HttpStatus.SC_BAD_REQUEST,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
@@ -560,7 +560,7 @@ final boolean isTestEnabled = false;
                         null, null, null, "This is test GE conclusion.",
                         "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to submit report of type Gene Editing"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42963", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42963", HttpStatus.SC_BAD_REQUEST,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
                         "Pending", null, null,
@@ -568,7 +568,7 @@ final boolean isTestEnabled = false;
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have permission to submit " +
                                 "report of type Protein Science(L)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2739606", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2739606", HttpStatus.SC_BAD_REQUEST,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "Pending", null, null,
@@ -576,7 +576,7 @@ final boolean isTestEnabled = false;
                         null, null, null, "This TI test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have" +
                                 " permission to submit report of type Tumor Immunology"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", HttpStatus.SC_BAD_REQUEST,
                         "imPACT", "0403", "PACT443C",
                         "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
                         "In Progress", null, null,
@@ -584,7 +584,7 @@ final boolean isTestEnabled = false;
                         null, "100.00", null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to submit report of type imPACT"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2641522", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2641522", HttpStatus.SC_BAD_REQUEST,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "Pending", null, "04/Dec/2020",
@@ -595,7 +595,7 @@ final boolean isTestEnabled = false;
                         null, null, null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to submit report of type Bioinformatics"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "34183", 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "34183", HttpStatus.SC_BAD_REQUEST,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
@@ -630,7 +630,7 @@ final boolean isTestEnabled = false;
                 expectedResponseCode, response.getStatusCode());
 
         switch(expectedResponseCode) {
-            case 200:
+            case HttpStatus.SC_OK:
                 Assert.assertTrue(String.format("Request PUT %s should print '%s'",
                         String.format(PUT_REPORT_REPORTS_SUBMIT, studyReportId), expectedMessage),
                         expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
@@ -642,7 +642,7 @@ final boolean isTestEnabled = false;
                         cancerType, tumorType, tumorLocation, expId,
                         tCellNonConfidentCount, lscSelectedSamples, conclusion);
                 break;
-            case 400:
+            case HttpStatus.SC_BAD_REQUEST:
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
@@ -652,55 +652,55 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "postReportReportsStatusDataProvider")
     public Object[][] postReportReportsStatusDataProvider() {
         return new Object[][]{
-               {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3119233", false, 200,
+               {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3119233", false, HttpStatus.SC_OK,
                         "Approved", null, "imPACT", "0037", "PACT506C",
                         "21-117_0037_PACT506C_imPACT.pdf", null, "21-117",
                         null, null, null, null, null, null, null, null, null, null,
                         null, "1.00", null, null, "  Report has been successfully approved."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", false, 200,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", false, HttpStatus.SC_OK,
                         "Reject", null, "Tumor Immunology", "0015", "PACT299C",
                         "20-085_0015_PACT299C_Tumor Immunology.pdf", null, "20-085",
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, "This test conclusion.", "  Report has been successfully rejected."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", false, 200,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", false, HttpStatus.SC_OK,
                         "Reject", "0", "Gene Editing", "0512", "PACT463C",
                         "20-637_0512_PACT463C_Gene Editing.pdf", "2517325_sample.pdf", "20-637",
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, "  Report has been successfully rejected."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", false, 200,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", false, HttpStatus.SC_OK,
                         "Reject", "1", "Bioinformatics", "0611", "PACT507C",
                         "21-107_0611_PACT507C_Bioinformatics.pdf", null, "21-107",
                         null, null, null, null, null, null, null,
                         "sdsda", "dsadadasasa", "adadasad",
                         null, null, null, null, "  Report has been successfully rejected."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, 400,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
                         "Reject", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "User svc-study-report-creator@pactpharma.com does not have permission to " +
                                 "approve report of type Protein Science(S)"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, 400,
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "User svc-study-report-creator@pactpharma.com does not have permission to " +
                                 "approve report of type Protein Science(S)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "Modification to approved report is disallowed!"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "Modification to approved report is disallowed!"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "Report has not been submitted yet for approval"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, 400,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, HttpStatus.SC_BAD_REQUEST,
                         "Reject", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
@@ -750,7 +750,7 @@ final boolean isTestEnabled = false;
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
         switch(expectedResponseCode) {
-            case 200:
+            case HttpStatus.SC_OK:
                 Assert.assertTrue(String.format("Request POST %s should print '%s'",
                         String.format(POST_REPORT_REPORTS_STATUS, studyReportId, status), expectedMessage),
                         expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
@@ -762,7 +762,7 @@ final boolean isTestEnabled = false;
                         cancerType, tumorType, tumorLocation, expId,
                         tCellNonConfidentCount, lscSelectedSamples, conclusion);
                 break;
-            case 400:
+            case HttpStatus.SC_BAD_REQUEST:
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
@@ -772,27 +772,27 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "getPdfAllDataProvider")
     public Object[][] getPdfAllDataProvider() {
         return new Object[][]{
-                {GET_PDF_ALL, null, 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending,In Progress,Approved,Reject",
-                        "pending,progress,approved,reject", 1},
-                {GET_PDF_ALL, "status[]=pending&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending",
+                {GET_PDF_ALL, null, HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1},
+                {GET_PDF_ALL, "status[]=pending&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending",
                         "pending", 1},
-                {GET_PDF_ALL, "status[]=progress&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "In Progress",
-                        "progress", 2},
-                {GET_PDF_ALL, "status[]=approved&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved",
-                        "approved", 1},
-                {GET_PDF_ALL, "status[]=reject&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Reject",
+                {GET_PDF_ALL, "status[]=progress&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "In Progress", "progress", 2},
+                {GET_PDF_ALL, "status[]=approved&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "Approved", "approved", 1},
+                {GET_PDF_ALL, "status[]=reject&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Reject",
                         "reject", 1},
-                {GET_PDF_ALL, "status[]=approved&status[]=reject&page=1", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject",
-                        "approved,reject", 1},
-                {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&page=3", 200,
+                {GET_PDF_ALL, "status[]=approved&status[]=reject&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME,
+                        CREATOR_PASSWORD, "Approved,Reject", "approved,reject", 1},
+                {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&page=3", HttpStatus.SC_OK,
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,In Progress", "approved,reject,progress", 3},
-                {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", 200,
+                {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", HttpStatus.SC_OK,
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,Pending", "approved,reject,pending", 1},
-                {GET_PDF_ALL, "page=4", 200, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending,In Progress,Approved,Reject",
-                        "pending,progress,approved,reject", 4},
-                {GET_PDF_ALL, null, 200, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "Pending,In Progress,Approved,Reject",
-                        "pending,progress,approved,reject", 1},
-                {GET_PDF_ALL, "status[]=INCORRECT&page=2", 200, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {GET_PDF_ALL, "page=4", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 4},
+                {GET_PDF_ALL, null, HttpStatus.SC_OK, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1},
+                {GET_PDF_ALL, "status[]=INCORRECT&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 2}
         };
     }
@@ -818,13 +818,13 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "getPdfSearchPatientDataProvider")
     public Object[][] getPdfSearchPatientDataProvider() {
         return new Object[][]{
-                {GET_PDF_SEARCH_PATIENT, 200, "332C", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "332C", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithOneReport.json"},
-                {GET_PDF_SEARCH_PATIENT, 200, "255C", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "255C", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithSeveralReport.json"},
-                {GET_PDF_SEARCH_PATIENT, 200, "332C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "332C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithOneReport.json"},
-                {GET_PDF_SEARCH_PATIENT, 200, "255C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "255C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithApprovalRole.json"}
         };
     }
@@ -843,9 +843,9 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "getPdfPatientDataProvider")
     public Object[][] getPdfPatientPatientDataProvider() {
         return new Object[][]{
-                {GET_PDF_PATIENT, 200, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {GET_PDF_PATIENT, HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "src/test/resources/files/getPdfPatient.json"},
-                {GET_PDF_PATIENT, 200, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {GET_PDF_PATIENT, HttpStatus.SC_OK, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         "src/test/resources/files/getPdfPatient.json"}
         };
      }
@@ -860,14 +860,14 @@ final boolean isTestEnabled = false;
     public Object[][] postUploadReportsDocumentsDataProvider() {
         return new Object[][]{
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        200, "dummy.txt", "dummy.txt", null, "32272_dummy.txt"},
+                        HttpStatus.SC_OK, "dummy.txt", "dummy.txt", null, "32272_dummy.txt"},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        400, null, null, "No files received", null},
+                        HttpStatus.SC_BAD_REQUEST, null, null, "No files received", null},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                200, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null,
+                        HttpStatus.SC_OK, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null,
                         "32272_dummy.txt,32272_dummy1.txt,32272_dummy2.txt"},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        400, "dummy.txt", "dummy.txt", "User svc-study-report-approval@pactpharma.com\n" +
+                        HttpStatus.SC_BAD_REQUEST, "dummy.txt", "dummy.txt", "User svc-study-report-approval@pactpharma.com\n" +
                         "        does not have permission to upload supporting document of type Protein Science(S)",
                         null}
         };
@@ -892,7 +892,7 @@ final boolean isTestEnabled = false;
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
         switch(expectedResponseCode) {
-            case 200:
+            case HttpStatus.SC_OK:
                 List<Object> files = response.getBody().jsonPath().getList(".");
                 Set<String> actualFileSet = new HashSet<>();
                 Set<String> expectedFileSet = new HashSet<>();
@@ -906,14 +906,44 @@ final boolean isTestEnabled = false;
                 executePutUploadReportsDocument(userName, userPassword,
                         studyReportId, expectedFilesFromGetRequest.split(","), HttpStatus.SC_OK,
                         "  File has deleted");
+                validateKeyValueArrayFromResponse(response, "study.document_name", expectedFilesFromGetRequest);
                 break;
-            case 400:
+            case HttpStatus.SC_BAD_REQUEST:
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
         }
     }
 
+    @DataProvider(name = "putUploadReportsDocumentsDataProvider")
+    public Object[][] putUploadReportsDocumentsDataProvider() {
+        return new Object[][]{
+                {"32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        HttpStatus.SC_OK, "dymmy.txt", "  File has deleted"},
+                {"32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                        HttpStatus.SC_BAD_REQUEST, "dymmy.txt", "User svc-study-report-approval@pactpharma.com does not have permission " +
+                        "to upload supporting document of type Protein Science(S)"},
+                {"32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        HttpStatus.SC_BAD_REQUEST, null, "fileNames.map is not a function"}
+        };
+    }
+
+    @Test(dataProvider = "putUploadReportsDocumentsDataProvider", enabled = true)
+    public void putUploadReportsDocuments(String studyReportId, String userName, String userPassword,
+                                           int expectedResponseCode, String filesToUpload, String expectedMessage) {
+        switch(expectedResponseCode) {
+            case HttpStatus.SC_OK:
+                executePutUploadReportsDocument(userName, userPassword,
+                        studyReportId, filesToUpload.split(","), HttpStatus.SC_OK,
+                        expectedMessage);
+                break;
+            case HttpStatus.SC_BAD_REQUEST:
+                executePutUploadReportsDocument(userName, userPassword,
+                        studyReportId, null, expectedResponseCode,
+                        expectedMessage);
+                break;
+        }
+    }
     /**
      * This method builds Request Body and executes PUT /api/v1/upload/reports/{id}/documents.
      * Body should contains array of files to delete.
@@ -930,15 +960,23 @@ final boolean isTestEnabled = false;
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
         JSONArray fileArray = new JSONArray();
-        Arrays.stream(fileNamesArray).forEach(s->fileArray.add(s));
-        httpRequest.body(fileArray.toJSONString());
+        if(fileNamesArray != null) {
+            Arrays.stream(fileNamesArray).forEach(s -> fileArray.add(s));
+            httpRequest.body(fileArray.toJSONString());
+        }
         Response response = httpRequest.request(Method.PUT, String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId));
         Assert.assertEquals(String.format("PUT %s status code should be %s",
                 String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId), expectedResponseStatusCode),
                 expectedResponseStatusCode, response.statusCode());
-        Assert.assertTrue(String.format("Request PUT %s should print '%s'",
-                String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId), expectedMessage),
-                expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
+        if(expectedResponseStatusCode == 200) {
+            Assert.assertTrue(String.format("Request PUT %s should print '%s'",
+                    String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId), expectedMessage),
+                    expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
+        } else {
+            Assert.assertTrue(String.format("Request PUT %s should print '%s'",
+                    String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId), expectedMessage),
+                    expectedMessage.equalsIgnoreCase(response.jsonPath().get(MESSAGE)));
+        }
     }
 
     /**
