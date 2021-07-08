@@ -4,12 +4,13 @@ import com.testautomationguru.utility.PDFUtil;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.apache.http.HttpStatus;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import java.io.File;
 import java.util.*;
 
@@ -17,7 +18,7 @@ import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
 public class StudyReportTests {
-final boolean isTestEnabled = true;
+final boolean isTestEnabled = false;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -631,7 +632,7 @@ final boolean isTestEnabled = true;
         switch(expectedResponseCode) {
             case 200:
                 Assert.assertTrue(String.format("Request PUT %s should print '%s'",
-                        String.format(POST_REPORT_REPORTS_SAVE, studyReportId), expectedMessage),
+                        String.format(PUT_REPORT_REPORTS_SUBMIT, studyReportId), expectedMessage),
                         expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
                 validateReport(httpRequest, userName, userPassword, studyReportId, reportType,
                         patientNum, patient, reportName, documentNames, studyId, status,
@@ -859,26 +860,29 @@ final boolean isTestEnabled = true;
     public Object[][] postUploadReportsDocumentsDataProvider() {
         return new Object[][]{
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        200, "dummy.txt", "dummy.txt", null},
+                        200, "dummy.txt", "dummy.txt", null, "32272_dummy.txt"},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        400, null, null, "No files received"},
+                        400, null, null, "No files received", null},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                200, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null},
+                200, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null,
+                        "32272_dummy.txt,32272_dummy1.txt,32272_dummy2.txt"},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         400, "dummy.txt", "dummy.txt", "User svc-study-report-approval@pactpharma.com\n" +
-                        "        does not have permission to upload supporting document of type Protein Science(S)"}
+                        "        does not have permission to upload supporting document of type Protein Science(S)",
+                        null}
         };
     }
 
     @Test(dataProvider = "postUploadReportsDocumentsDataProvider", enabled = isTestEnabled)
     public void postUploadReportsDocuments(String url, String studyReportId, String userName, String userPassword,
                                            int expectedResponseCode, String filesToUpload, String expectedFiles,
-                                           String expectedMessage) {
+                                           String expectedMessage, String expectedFilesFromGetRequest) {
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
+        String[] fileNamesArray = null;
         if(filesToUpload != null) {
             httpRequest.header(CONTENT_TYPE, "multipart/form-data");
-            String[] fileNamesArray = filesToUpload.split(",");
+            fileNamesArray = filesToUpload.split(",");
             for (String fileName : fileNamesArray) {
                 File fileToUpload = new File("src/test/resources/files/" + fileName);
                 httpRequest.multiPart(FILE, fileToUpload);
@@ -896,6 +900,12 @@ final boolean isTestEnabled = true;
                 expectedFileSet.addAll(Arrays.asList(expectedFiles.split(",")));
                 Assert.assertTrue(String.format("POST %s response should contain %s files",
                             String.format(url, studyReportId), expectedFiles), expectedFileSet.equals(actualFileSet));
+                putSaveAndSubmitReport(userName, userPassword, studyReportId, fileNamesArray);
+                response = httpRequest.request(Method.GET, String.format(GET_PDF_REPORT, studyReportId));
+                validateKeyValueArrayFromResponse(response, "study.document_name", expectedFilesFromGetRequest);
+                executePutUploadReportsDocument(userName, userPassword,
+                        studyReportId, expectedFilesFromGetRequest.split(","), HttpStatus.SC_OK,
+                        "  File has deleted");
                 break;
             case 400:
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
@@ -903,6 +913,62 @@ final boolean isTestEnabled = true;
                 break;
         }
     }
+
+    /**
+     * This method builds Request Body and executes PUT /api/v1/upload/reports/{id}/documents.
+     * Body should contains array of files to delete.
+     * @param userName - user name to generate token
+     * @param userPassword - password to generate token
+     * @param studyReportId - study report id
+     * @param fileNamesArray - array of files to delete
+     * @param expectedResponseStatusCode - expected response status code
+     * @param expectedMessage - expected messages
+     */
+    private void executePutUploadReportsDocument(String userName, String userPassword,
+                                                 String studyReportId, String[] fileNamesArray, int expectedResponseStatusCode,
+                                                 String expectedMessage) {
+        RequestSpecification httpRequest =
+                TestUtilities.generateRequestSpecification(userName, userPassword);
+        JSONArray fileArray = new JSONArray();
+        Arrays.stream(fileNamesArray).forEach(s->fileArray.add(s));
+        httpRequest.body(fileArray.toJSONString());
+        Response response = httpRequest.request(Method.PUT, String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId));
+        Assert.assertEquals(String.format("PUT %s status code should be %s",
+                String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId), expectedResponseStatusCode),
+                expectedResponseStatusCode, response.statusCode());
+        Assert.assertTrue(String.format("Request PUT %s should print '%s'",
+                String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId), expectedMessage),
+                expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
+    }
+
+    /**
+     * This method constructs request body and executes PUT /api/v1/report/reports/{id}, POST /api/v1/report/reports/{id}/save and
+     * Body should contains array of File Attachment Names.
+     * @param userName - user name
+     * @param userPassword - user password
+     * @param studyReportId - study report Id
+     * @param fileNamesArray - file name
+     */
+    private void putSaveAndSubmitReport(String userName, String userPassword, String studyReportId, String[] fileNamesArray) {
+        JSONObject requestObjectJSON = constructReportReportsBody(null, fileNamesArray, null,
+                null, null, null, null, null,
+                null, null, null, null, null, null);
+        RequestSpecification httpRequest =
+                TestUtilities.generateRequestSpecification(userName, userPassword);
+        Assert.assertEquals(String.format("API PUT %s should return status code %s",
+                String.format(PUT_REPORT_REPORTS, studyReportId), HttpStatus.SC_OK), HttpStatus.SC_OK,
+                httpRequest.body(requestObjectJSON.toJSONString())
+                .request(Method.PUT,String.format(PUT_REPORT_REPORTS, studyReportId)).getStatusCode());
+        Assert.assertEquals(String.format("API POST %s should return status code %s",
+                String.format(POST_REPORT_REPORTS_SAVE, studyReportId), HttpStatus.SC_OK),
+                HttpStatus.SC_OK, httpRequest.body(requestObjectJSON.toJSONString())
+                .request(Method.POST,String.format(POST_REPORT_REPORTS_SAVE, studyReportId)).getStatusCode());
+        Assert.assertEquals(String.format("API PUT %s should return status code %s",
+                String.format(PUT_REPORT_REPORTS_SUBMIT, studyReportId), HttpStatus.SC_OK),
+                HttpStatus.SC_OK, httpRequest.body(requestObjectJSON.toJSONString())
+                .request(Method.PUT,String.format(PUT_REPORT_REPORTS_SUBMIT, studyReportId)).getStatusCode());
+    }
+
 
     /**
      * This method executes HTTP method and compares results with expected JSON file.
@@ -1045,7 +1111,7 @@ final boolean isTestEnabled = true;
     /**
      * This method constructs request body for put /api/v1/report/reports/:id
      * @param conclusion
-     * @param fileAttachmentName
+     * @param fileAttachmentNames
      * @param compactReportHandOffDate
      * @param tumorFusionDetectedComment
      * @param lowExpressedNsmComment
@@ -1060,14 +1126,14 @@ final boolean isTestEnabled = true;
      * @param lscSelectedSamples
      * @return - Request body JSON File
      */
-    private JSONObject constructReportReportsBody(String conclusion, String[] fileAttachmentName, String compactReportHandOffDate,
+    private JSONObject constructReportReportsBody(String conclusion, String[] fileAttachmentNames, String compactReportHandOffDate,
                                                      String tumorFusionDetectedComment, String lowExpressedNsmComment,
                                                      String lowTcByNgsPctComment, String recommendation, String amendments,
                                                      String cancerType, String tumorType, String tumorLocation, String expId,
                                                      String tCellNonConfidentCount, String[] lscSelectedSamples) {
         JSONObject requestParams = new JSONObject();
         requestParams = addBodyParameter(requestParams, CONCLUSION, conclusion);
-        requestParams = addBodyArray(requestParams, FILE_ATTACHMENT_NAME, fileAttachmentName);
+        requestParams = addBodyArray(requestParams, FILE_ATTACHMENT_NAME, fileAttachmentNames);
         requestParams = addBodyParameter(requestParams, COMPACT_REPORT_HAND_OFF_DATE, compactReportHandOffDate);
         requestParams = addBodyParameter(requestParams, TUMOR_FUSION_DETECTED_COMMENT, tumorFusionDetectedComment);
         requestParams = addBodyParameter(requestParams, LOW_EXPRESSED_NSM_COMMENT, lowExpressedNsmComment);

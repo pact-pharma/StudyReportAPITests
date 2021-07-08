@@ -30,6 +30,7 @@ public class TestConstants {
     public static String GET_PDF_SEARCH_PATIENT = "/api/v1/pdf/search/patient/%s";
     public static String GET_PDF_PATIENT = "/api/v1/pdf/patient";
     public static String POST_UPLOAD_REPORTS_DOCUMENTS = "/api/v1/upload/reports/%s/documents";
+    public static String PUT_UPLOAD_REPORTS_DOCUMENTS = "/api/v1/upload/reports/%s/documents";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";
