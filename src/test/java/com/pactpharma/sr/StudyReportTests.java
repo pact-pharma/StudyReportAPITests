@@ -1,6 +1,8 @@
 package com.pactpharma.sr;
 
 import com.testautomationguru.utility.PDFUtil;
+import com.testrail.listeners.TestNgTestRailListener;
+import com.testrail.util.UseAsTestRailId;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -10,6 +12,7 @@ import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import java.io.File;
 import java.util.*;
@@ -17,6 +20,8 @@ import java.util.*;
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
+
+@Listeners(TestNgTestRailListener.class)
 public class StudyReportTests {
 final boolean isTestEnabled = false;
 
@@ -919,15 +924,16 @@ final boolean isTestEnabled = false;
     public Object[][] putUploadReportsDocumentsDataProvider() {
         return new Object[][]{
                 {"32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        HttpStatus.SC_OK, "dymmy.txt", "  File has deleted"},
+                        HttpStatus.SC_OK, "dymmy.txt", "  File(s) has been deleted"},
                 {"32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        HttpStatus.SC_BAD_REQUEST, "dymmy.txt", "User svc-study-report-approval@pactpharma.com does not have permission " +
+                        HttpStatus.SC_UNPROCESSABLE_ENTITY, "32272_dymmy.txt", "User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to upload supporting document of type Protein Science(S)"},
                 {"32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        HttpStatus.SC_BAD_REQUEST, null, "fileNames.map is not a function"}
+                        HttpStatus.SC_UNPROCESSABLE_ENTITY, null, "\"body\" must be an array"}
         };
     }
 
+    @UseAsTestRailId(testRailId = 2216)
     @Test(dataProvider = "putUploadReportsDocumentsDataProvider", enabled = true)
     public void putUploadReportsDocuments(String studyReportId, String userName, String userPassword,
                                            int expectedResponseCode, String filesToUpload, String expectedMessage) {
@@ -968,7 +974,7 @@ final boolean isTestEnabled = false;
         Assert.assertEquals(String.format("PUT %s status code should be %s",
                 String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId), expectedResponseStatusCode),
                 expectedResponseStatusCode, response.statusCode());
-        if(expectedResponseStatusCode == 200) {
+        if(expectedResponseStatusCode == HttpStatus.SC_OK) {
             Assert.assertTrue(String.format("Request PUT %s should print '%s'",
                     String.format(PUT_UPLOAD_REPORTS_DOCUMENTS, studyReportId), expectedMessage),
                     expectedMessage.equalsIgnoreCase(removeNewLine(removeTags(response.body().asPrettyString()))));
