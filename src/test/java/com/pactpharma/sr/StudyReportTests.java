@@ -45,6 +45,8 @@ final boolean isTestEnabled = false;
                         "to download report of type Protein Science(S)"}
         };
     }
+
+    @UseAsTestRailId(testRailId = 2218)
     @Test(dataProvider = "getFetchDocsDataProvider", enabled = isTestEnabled)
     void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedResponseCode, String studyReportId,
                     String expectedArchiveName, String expectedUriPrefix, String expectedErrorMessage) throws Exception {
@@ -81,6 +83,7 @@ final boolean isTestEnabled = false;
         };
     }
 
+    @UseAsTestRailId(testRailId = 2219)
     @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = isTestEnabled)
     void getFetchWithToken(String userName, String userPassword, int expectedResponseCode, String studyReportId,
                            String secondStudyReportId, boolean sleep,
