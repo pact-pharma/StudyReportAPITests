@@ -303,11 +303,11 @@ final boolean isTestEnabled = false;
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to update report of type Gene Editing"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", HttpStatus.SC_BAD_REQUEST,
+                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3107271", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have " +
-                                "permission to update report of type Tumor Immunology"},
+                                "permission to update report of type imPACT"},
                /* {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", 200,
                         NOT_EXISTING_FIlE_ATTACHMENT_NAME, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
@@ -315,6 +315,7 @@ final boolean isTestEnabled = false;
                 };
     }
 
+    @UseAsTestRailId(testRailId = 2221)
     @Test(dataProvider = "putReportReportsDataProvider", enabled = isTestEnabled )
     void putReportReports(String userName, String userPassword, String studyReportId,
                           int expectedResponseCode, String[] fileAttachmentName, String compactReportHandOffDate,
