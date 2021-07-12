@@ -872,8 +872,8 @@ final boolean isTestEnabled = false;
                         HttpStatus.SC_OK, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null,
                         "32272_dummy.txt,32272_dummy1.txt,32272_dummy2.txt"},
                 {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        HttpStatus.SC_BAD_REQUEST, "dummy.txt", "dummy.txt", "User svc-study-report-approval@pactpharma.com\n" +
-                        "        does not have permission to upload supporting document of type Protein Science(S)",
+                        HttpStatus.SC_BAD_REQUEST, "dummy.txt", "dummy.txt", "User svc-study-report-approval@pactpharma.com " +
+                        "does not have permission to upload supporting document of type Protein Science(S)",
                         null}
         };
     }
@@ -910,7 +910,7 @@ final boolean isTestEnabled = false;
                 validateKeyValueArrayFromResponse(response, "study.document_name", expectedFilesFromGetRequest);
                 executePutUploadReportsDocument(userName, userPassword,
                         studyReportId, expectedFilesFromGetRequest.split(","), HttpStatus.SC_OK,
-                        "  File has deleted");
+                        "  File(s) has been deleted");
                 validateKeyValueArrayFromResponse(response, "study.document_name", expectedFilesFromGetRequest);
                 break;
             case HttpStatus.SC_BAD_REQUEST:
@@ -934,7 +934,7 @@ final boolean isTestEnabled = false;
     }
 
     @UseAsTestRailId(testRailId = 2216)
-    @Test(dataProvider = "putUploadReportsDocumentsDataProvider", enabled = true)
+    @Test(dataProvider = "putUploadReportsDocumentsDataProvider", enabled = isTestEnabled)
     public void putUploadReportsDocuments(String studyReportId, String userName, String userPassword,
                                            int expectedResponseCode, String filesToUpload, String expectedMessage) {
         switch(expectedResponseCode) {

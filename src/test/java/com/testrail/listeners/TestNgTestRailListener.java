@@ -19,15 +19,17 @@ public class TestNgTestRailListener implements IInvokedMethodListener {
             UseAsTestRailId useAsTestRailId =
                     method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(UseAsTestRailId.class);
             //Data driven tests need to be handled differently
-            if (method.getTestMethod().isDataDriven()) {
-                // Get the Parameters from the Result
-                Object[] parameters = testResult.getParameters();
-                // Post the result to Test Rail
-                new PostResults().postTestRailResult(
-                        useAsTestRailId.testRailId(), testResult, Arrays.toString(parameters));
-            } else {
-                new PostResults().postTestRailResult(useAsTestRailId.testRailId(), testResult);
-            }
+           if(useAsTestRailId != null) {
+               if (method.getTestMethod().isDataDriven()) {
+                   // Get the Parameters from the Result
+                   Object[] parameters = testResult.getParameters();
+                   // Post the result to Test Rail
+                   new PostResults().postTestRailResult(
+                           useAsTestRailId.testRailId(), testResult, Arrays.toString(parameters));
+               } else {
+                   new PostResults().postTestRailResult(useAsTestRailId.testRailId(), testResult);
+               }
+           }
     }
 
 }

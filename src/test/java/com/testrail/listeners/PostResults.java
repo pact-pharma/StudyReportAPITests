@@ -8,7 +8,6 @@ import org.testng.ITestResult;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
 import static com.testrail.listeners.TestRailVariables.*;
 import static com.testrail.util.TestRailConstants.*;
 
