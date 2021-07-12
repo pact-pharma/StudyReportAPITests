@@ -18,11 +18,10 @@ public class PostResults {
     /**
      * This method posts Test Rail Results.
      *
-     * @param testRailId
-     * @param result
+     * @param testRailId - Test Rail test ID
+     * @param result - test result
      */
     public void postTestRailResult(int testRailId, ITestResult result) {
-        // Post To TestRail
         System.out.println(String.format("Test case Id %s with Status::%s", testRailId, TestRailStatusID.getResult(result.getStatus())));
         post(testRailId, getTestRailMetaData(result));
     }
@@ -30,26 +29,25 @@ public class PostResults {
     /**
      * This method posts Test Rail Results with the Parameters
      *
-     * @param testRailId - test Id
-     * @param result
-     * @param parameters
+     * @param testRailId - - Test Rail test ID
+     * @param result - test result
+     * @param parameters - test parameter
      */
     public void postTestRailResult(int testRailId, ITestResult result, String parameters) {
-        // Post To TestRail
         System.out.println(String.format("TestId %s with parameter %s with Status::%s", testRailId, parameters,
                 TestRailStatusID.getResult(result.getStatus())));
         post(testRailId, getTestRailMetaData(result, parameters));
     }
 
     /**
-     * Create a Map object which contains the MetaData for the Test which needs to be updated in Test Rail.
+     * This methd creates a Map object which contains the MetaData for the Test which needs to be updated in Test Rail.
      * This is with the Parameters.
      *
      * @param result
      * @return
      */
     private Map getTestRailMetaData(ITestResult result, String parameters) {
-        //Set the status_id for the test Rail for Pass, Fail and Skip status.
+        //Set the status_id for the test Rail for Pass and Fail.
         Map dataTestRail = new HashMap();
         if (result.getStatus() == ITestResult.SUCCESS) {
             dataTestRail.put(STATUS_ID, TestRailStatusID.PASS);
