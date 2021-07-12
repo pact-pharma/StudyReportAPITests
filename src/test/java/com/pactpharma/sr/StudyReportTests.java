@@ -150,7 +150,7 @@ final boolean isTestEnabled = false;
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "XXXX", null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectImpactSampleName.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "5500000", "XXXX", null, null, null,
-                        400, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentIdAndImpactName.json"},
+                        HttpStatus.SC_BAD_REQUEST, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentIdAndImpactName.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformatics.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", "20-628", "12860102C",
@@ -191,6 +191,8 @@ final boolean isTestEnabled = false;
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportTIWithIncorrectStudyReportId.json"}
         };
     }
+
+    @UseAsTestRailId(testRailId = 2220)
     @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = isTestEnabled)
     void getPdfSearchReport(String userName, String userPassword, String reportType, String patientId,
                             String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier,
