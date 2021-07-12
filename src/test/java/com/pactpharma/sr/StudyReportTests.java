@@ -878,6 +878,7 @@ final boolean isTestEnabled = false;
         };
     }
 
+    @UseAsTestRailId(testRailId = 2217)
     @Test(dataProvider = "postUploadReportsDocumentsDataProvider", enabled = isTestEnabled)
     public void postUploadReportsDocuments(String url, String studyReportId, String userName, String userPassword,
                                            int expectedResponseCode, String filesToUpload, String expectedFiles,
