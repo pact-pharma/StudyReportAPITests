@@ -459,6 +459,7 @@ final boolean isTestEnabled = false;
     }
 
     //Study id 27651 for patient 0027
+    @UseAsTestRailId(testRailId = 2222)
     @Test(dataProvider = "postReportReportsSaveDataProvider", enabled = isTestEnabled)
     void postReportReportsSave(String userName, String userPassword, String studyReportId,
                           int expectedResponseCode,
