@@ -23,7 +23,7 @@ import static com.pactpharma.sr.TestUtilities.*;
 
 @Listeners(TestNgTestRailListener.class)
 public class StudyReportTests {
-final boolean isTestEnabled = false;
+final boolean isTestEnabled = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -617,6 +617,7 @@ final boolean isTestEnabled = false;
         };
     }
 
+    @UseAsTestRailId(testRailId = 2223)
     @Test(dataProvider = "putReportReportsSubmitDataProvider", enabled = isTestEnabled)
     void putReportReportsSubmit(String userName, String userPassword, String studyReportId,
                                 int expectedResponseCode,
@@ -668,7 +669,7 @@ final boolean isTestEnabled = false;
                         "Approved", null, "imPACT", "0037", "PACT506C",
                         "21-117_0037_PACT506C_imPACT.pdf", null, "21-117",
                         null, null, null, null, null, null, null, null, null, null,
-                        null, "1.00", null, null, "  Report has been successfully approved."},
+                        null, "0.00", null, null, "  Report has been successfully approved."},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", false, HttpStatus.SC_OK,
                         "Reject", null, "Tumor Immunology", "0015", "PACT299C",
                         "20-085_0015_PACT299C_Tumor Immunology.pdf", null, "20-085",
@@ -689,19 +690,14 @@ final boolean isTestEnabled = false;
                         "Reject", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "User svc-study-report-creator@pactpharma.com does not have permission to " +
-                                "approve report of type Protein Science(S)"},
+                        "User svc-study-report-creator@pactpharma.com does not have permission to" +
+                                " approve or reject the reports of type Protein Science(S)"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "User svc-study-report-creator@pactpharma.com does not have permission to " +
-                                "approve report of type Protein Science(S)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, HttpStatus.SC_BAD_REQUEST,
-                        "Approved", null, null, null, null,
-                        null, null, null, null, null, null, null, null, null, null,
-                        null, null, null, null, null, null, null,
-                        "Modification to approved report is disallowed!"},
+                        "User svc-study-report-creator@pactpharma.com does not have permission to approve or " +
+                                "reject the reports of type Protein Science(S)"},
                 {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
@@ -728,9 +724,12 @@ final boolean isTestEnabled = false;
          UPDATE report_dev.study_report SET status="Pending" where id=2792633;
          UPDATE report_dev.study_report SET status="Pending" where id=29641;
          UPDATE report_dev.study_report SET status="Pending" where id=30738;
+         UPDATE report_dev.study_report SET status="Pending" where id=3150377;
          UPDATE report_dev.study_report SET status="In Progress" where id=28374;
 
      */
+
+    @UseAsTestRailId(testRailId = 2224)
     @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = isTestEnabled)
     void postReportReportsStatus(String userName, String userPassword, String studyReportId, boolean repeat,
                                  int expectedResponseCode, String status, String failureReason,
@@ -784,34 +783,35 @@ final boolean isTestEnabled = false;
     @DataProvider(name = "getPdfAllDataProvider")
     public Object[][] getPdfAllDataProvider() {
         return new Object[][]{
-                {GET_PDF_ALL, null, HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1},
+                {GET_PDF_ALL, null, HttpStatus.SC_UNPROCESSABLE_ENTITY, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1, "\"query.status\" is required"},
                 {GET_PDF_ALL, "status[]=pending&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending",
-                        "pending", 1},
+                        "pending", 1, null},
                 {GET_PDF_ALL, "status[]=progress&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        "In Progress", "progress", 2},
+                        "In Progress", "progress", 2, null},
                 {GET_PDF_ALL, "status[]=approved&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        "Approved", "approved", 1},
+                        "Approved", "approved", 1, null},
                 {GET_PDF_ALL, "status[]=reject&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Reject",
-                        "reject", 1},
+                        "reject", 1, null},
                 {GET_PDF_ALL, "status[]=approved&status[]=reject&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME,
-                        CREATOR_PASSWORD, "Approved,Reject", "approved,reject", 1},
+                        CREATOR_PASSWORD, "Approved,Reject", "approved,reject", 1, null},
                 {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&page=3", HttpStatus.SC_OK,
-                        CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,In Progress", "approved,reject,progress", 3},
+                        CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,In Progress", "approved,reject,progress", 3, null},
                 {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", HttpStatus.SC_OK,
-                        CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,Pending", "approved,reject,pending", 1},
+                        CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,Pending", "approved,reject,pending", 1, null},
                 {GET_PDF_ALL, "page=4", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 4},
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 4, null},
                 {GET_PDF_ALL, null, HttpStatus.SC_OK, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1},
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1, null},
                 {GET_PDF_ALL, "status[]=INCORRECT&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 2}
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 2, null}
         };
     }
 
-    @Test(dataProvider = "getPdfAllDataProvider",enabled = false)
+    @UseAsTestRailId(testRailId = 2225)
+    @Test(dataProvider = "getPdfAllDataProvider", enabled = isTestEnabled)
     public void getPdfAll(String baseUrl, String parameters, int expectedResponseCode, String userName, String userPassword,
-                          String expectedStatus, String expectedStatusQuery, int currentPage ) {
+                          String expectedStatus, String expectedStatusQuery, int currentPage, String expectedMessage ) {
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
         String url = baseUrl;
@@ -821,10 +821,21 @@ final boolean isTestEnabled = false;
         Response response = httpRequest.request(Method.GET, url);
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
-        Assert.assertTrue(String.format("GET %s response should contains records with statuses %s, " +
-                        "current page %s and expected status query %s", url, expectedStatus,
-                currentPage,expectedStatusQuery),
-                validateGetPdfAllResponse(response,expectedStatus, expectedStatusQuery,currentPage));
+        switch(expectedResponseCode) {
+            case HttpStatus.SC_OK:
+            Assert.assertTrue(String.format("GET %s response should contains records with statuses %s, " +
+                            "current page %s and expected status query %s", url, expectedStatus,
+                    currentPage, expectedStatusQuery),
+                    validateGetPdfAllResponse(response, expectedStatus, expectedStatusQuery, currentPage));
+            break;
+            case HttpStatus.SC_UNPROCESSABLE_ENTITY:
+            case HttpStatus.SC_BAD_REQUEST:
+                Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
+                        expectedMessage, response.jsonPath().get(MESSAGE));
+                break;
+
+
+        }
     }
 
     @DataProvider(name = "getPdfSearchPatientDataProvider")
@@ -845,7 +856,8 @@ final boolean isTestEnabled = false;
     UPDATE report_dev.study_report SET status="Pending" where id=29279;
     UPDATE report_dev.study_report SET status="Pending" where id=28560;
      */
-    @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = isTestEnabled)
+    @UseAsTestRailId(testRailId = 2226)
+    @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = true)
     public void getPdfSearchPatient(String url, int expectedResponseCode, String patientId, String userName,
                                     String userPassword, String expectedResponseFile) throws Exception {
         executeUrlAndValidateJsonResponse(Method.GET, String.format(url, patientId), expectedResponseCode, userName,
@@ -861,7 +873,9 @@ final boolean isTestEnabled = false;
                         "src/test/resources/files/getPdfPatient.json"}
         };
      }
-    @Test(dataProvider = "getPdfPatientDataProvider", enabled = isTestEnabled)
+
+    @UseAsTestRailId(testRailId = 2227)
+    @Test(dataProvider = "getPdfPatientDataProvider", enabled = true)
     public void getPdfPatient(String url, int expectedResponseCode, String userName,
                               String userPassword, String expectedResponseFile) throws Exception{
         executeUrlAndValidateJsonResponse(Method.GET, url, expectedResponseCode, userName,
