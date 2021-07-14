@@ -127,7 +127,8 @@ final boolean isTestEnabled = true;
     //Patient 0612 has is 2383964
     @DataProvider(name = "getPdfSearchReportDataProvider")
     public Object[][] getPdfSearchReportDataProvider(){
-        return new Object[][]{{CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, null, null,
+        return new Object[][]{
+                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, null, null,
                 HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
                 {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentId.json"},
