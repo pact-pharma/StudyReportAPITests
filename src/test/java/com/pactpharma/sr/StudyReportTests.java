@@ -2,6 +2,7 @@ package com.pactpharma.sr;
 
 import com.testautomationguru.utility.PDFUtil;
 import com.testrail.listeners.TestNgTestRailListener;
+import com.testrail.util.UseAsTestRailEnabled;
 import com.testrail.util.UseAsTestRailId;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
@@ -16,7 +17,6 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import java.io.File;
 import java.util.*;
-
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
@@ -24,31 +24,32 @@ import static com.pactpharma.sr.TestUtilities.*;
 @Listeners(TestNgTestRailListener.class)
 public class StudyReportTests {
 final boolean isTestEnabled = true;
+final boolean isTestRailEnabledFlag = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
-        return new Object[][] {{GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
+        return new Object[][] {{2218, GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                 HttpStatus.SC_OK, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).tar.gz",
                 "https://study-report.zest.pactpharma.com/api/v1/report/reports/25046/fetchdocs/", null},
-                {GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2228, GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_BAD_REQUEST, "125046", null, null, "Error: No such report found!"},
-                {GET_FETCH_DOCS_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {2229, GET_FETCH_DOCS_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         HttpStatus.SC_BAD_REQUEST, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"},
-                {GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2230, GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_OK, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).word.tar.gz",
                         "https://study-report.zest.pactpharma.com/api/v1/report/reports/25046/fetchinwordformat/", null},
-                {GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD ,
+                {2232, GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD ,
                         HttpStatus.SC_BAD_REQUEST, "125046", null, null, "Error: No such report found!"},
-                {GET_FETCH_IN_WORD_FORMAT_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD ,
+                {2231, GET_FETCH_IN_WORD_FORMAT_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD ,
                         HttpStatus.SC_BAD_REQUEST, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"}
         };
     }
 
-    @UseAsTestRailId(testRailId = 2218)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "getFetchDocsDataProvider", enabled = isTestEnabled)
-    void getFetchDocsTest(String fetchDocsUri, String userName, String userPassword, int expectedResponseCode, String studyReportId,
+    void getFetchDocsTest(int testRailId, String fetchDocsUri, String userName, String userPassword, int expectedResponseCode, String studyReportId,
                     String expectedArchiveName, String expectedUriPrefix, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
         Response response = httpRequest.request(Method.GET, String.format(fetchDocsUri, studyReportId));
@@ -72,20 +73,20 @@ final boolean isTestEnabled = true;
 
     @DataProvider(name = "getFetchDocsWithTokenDataProvider")
     public Object[][] getFetchDocsWithTokenDataProvider(){
-        return new Object[][] {{CREATOR_USER_NAME, CREATOR_PASSWORD ,
+        return new Object[][] {{2219, CREATOR_USER_NAME, CREATOR_PASSWORD ,
                 HttpStatus.SC_OK, "25046", "25046", false, "src/test/resources/files/test.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD ,
+                {2233, CREATOR_USER_NAME, CREATOR_PASSWORD ,
                  HttpStatus.SC_BAD_REQUEST, "25046", "25046", true, null, "Invalid report archive token!"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD ,
+                {2234, CREATOR_USER_NAME, CREATOR_PASSWORD ,
                         HttpStatus.SC_BAD_REQUEST, "25046", "125046", false, null, "No such report found!"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD ,
+                {2235, CREATOR_USER_NAME, CREATOR_PASSWORD ,
                         HttpStatus.SC_BAD_REQUEST, "25046", "125046", true, null, "Invalid report archive token!"}
         };
     }
 
-    @UseAsTestRailId(testRailId = 2219)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "getFetchDocsWithTokenDataProvider", enabled = isTestEnabled)
-    void getFetchWithToken(String userName, String userPassword, int expectedResponseCode, String studyReportId,
+    void getFetchWithToken(int testRailId, String userName, String userPassword, int expectedResponseCode, String studyReportId,
                            String secondStudyReportId, boolean sleep,
                            String expectedPdfFile, String expectedErrorMessage) throws Exception {
         RequestSpecification httpRequest = TestUtilities.generateRequestSpecification(userName, userPassword);
@@ -128,74 +129,74 @@ final boolean isTestEnabled = true;
     @DataProvider(name = "getPdfSearchReportDataProvider")
     public Object[][] getPdfSearchReportDataProvider(){
         return new Object[][]{
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, null, null,
+                {2220, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, null, null,
                 HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", null, null, null, null,
+                {2236, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", "M01", null, null, null,
+                {2237, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", "M01", null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentIdAndImpactSampleName.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "M01", null, null, null,
+                {2238, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "M01", null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithImpactSampleName.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, "21-006", null,
+                {2239, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, null, "21-006", null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, "PP001146", null, null,
+                {2240, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, "PP001146", null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, "PP001146", "21-006", null,
+                {2241, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, null, "PP001146", "21-006", null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPact.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", "M01", "PP001146", "21-006", null,
+                {2242, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "20002337", "M01", "PP001146", "21-006", null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImPactWithExperimentIdAndImpactSampleName.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "5500000", null, null, null, null, null,
+                {2243, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "5500000", null, null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectPatientId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "0.001", null, null, null, null,
+                {2244, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "0.001", null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "XXXX", null, null, null,
+                {2245, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", null, "XXXX", null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectImpactSampleName.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "5500000", "XXXX", null, null, null,
+                {2246, CREATOR_USER_NAME, CREATOR_PASSWORD, "imPACT", "55", "5500000", "XXXX", null, null, null,
                         HttpStatus.SC_BAD_REQUEST, "src/test/resources/files/expectedGetPdfSearchReportImpactWithIncorrectExperimentIdAndImpactName.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, null,
+                {2247, CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformatics.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", "20-628", "12860102C",
+                {2248, CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", "20-628", "12860102C",
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithSampleNameStudyIdHgxIdentifier.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001584", "20-627", "12860102",
+                {2249, CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001584", "20-627", "12860102",
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithIncorrectSampleNameStudyIdHgxIdentifier.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", "20002337", "XXXX", "PP001585", "20-628", "12860102C",
+                {2250, CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", "20002337", "XXXX", "PP001585", "20-628", "12860102C",
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithAllParameters.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", null, null,
+                {2251, CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, "PP001585", null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithSampleName.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, "20-628", null,
+                {2252, CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, "20-628", null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithStudyId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, "12860102C",
+                {2253, CREATOR_USER_NAME, CREATOR_PASSWORD, "Bioinformatics", "55", null, null, null, null, "12860102C",
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportBioinformaticsWithHgxIdentifier.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", null, null, null, null, null,
+                {2254, CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", null, null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSS.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "2035300", null, null, null, null,
+                {2255, CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "2035300", null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSSWithExpId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "203530011", null, null, null, null,
+                {2256, CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(S)", "55", "203530011", null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportWithIncorrectPSSWithExpId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", null, null, null, null, null,
+                {2257, CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", null, null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSL.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", "3118938", null, null, null, null,
+                {2258, CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", "3118938", null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSLWithExpId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", "311893800", null, null, null, null,
+                {2259, CREATOR_USER_NAME, CREATOR_PASSWORD, "Protein Science(L)", "2383964", "311893800", null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportPSLWithIncorrectExpId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, null, null,
+                {2260, CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportGE.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088", null,
+                {2261, CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088", null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportGEWithStudyReportId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088XX", null,
+                {2262, CREATOR_USER_NAME, CREATOR_PASSWORD, "Gene Editing", "2383964", null, null, null, "21-088XX", null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportGEWithIncorrectStudyReportId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, null, null,
+                {2263, CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, null, null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportTI.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, "21-247", null,
+                {2264, CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, "21-247", null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportTIWithStudyReportId.json"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, "21-247XX", null,
+                {2265, CREATOR_USER_NAME, CREATOR_PASSWORD, "Tumor Immunology", "2383964", null, null, null, "21-247XX", null,
                         HttpStatus.SC_OK, "src/test/resources/files/expectedGetPdfSearchReportTIWithIncorrectStudyReportId.json"}
         };
     }
 
-    @UseAsTestRailId(testRailId = 2220)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "getPdfSearchReportDataProvider", enabled = isTestEnabled)
-    void getPdfSearchReport(String userName, String userPassword, String reportType, String patientId,
+    void getPdfSearchReport(int testRailId, String userName, String userPassword, String reportType, String patientId,
                             String experimentId, String impactSampleName, String sampleName, String studyId, String hgxIdentifier,
                             int expectedResponseCode,
                             String expectedResponseFile) throws Exception{
@@ -233,31 +234,31 @@ final boolean isTestEnabled = true;
     @DataProvider(name = "putReportReportsDataProvider")
     public Object[][] putReportReportsDataProvider() {
         return new Object[][]{
-               {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
+               {2221, CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
                 null, null, null, null, null, null, null,
                 null, null, null, null, null, null, "This test conclusion.",
                 "expectedPutReportReports.pdf", null},
-               {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
+               {2266, CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
                         null, "06/May/21", null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "expectedPutReportReportsWithHandOffDate.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
+               {2267, CREATOR_USER_NAME, CREATOR_PASSWORD, "24682", HttpStatus.SC_OK,
                         null, "06/May/21","This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs", "30748", "11905", null, null,
                         "expectedPutReportReportsWithHandOffDate.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "51930", HttpStatus.SC_OK,
+               {2268, CREATOR_USER_NAME, CREATOR_PASSWORD, "51930", HttpStatus.SC_OK,
                         null, null, "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs", null, null, null, "This test conclusion.",
                         "expectedPutReportReportsBioinformaticsWithCommentsRecommendationsAmendmentsCancerAndTumorTypes.pdf", null},
-               {CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", HttpStatus.SC_OK,
+               {2269, CREATOR_USER_NAME, CREATOR_PASSWORD, "3017400", HttpStatus.SC_OK,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "expectedReportReportsGE.pdf", null},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3107271", HttpStatus.SC_OK,
+               {2270, CREATOR_USER_NAME, CREATOR_PASSWORD, "3107271", HttpStatus.SC_OK,
                          null, null, null, null, null, null, null,
                          null, null, null, null, null, LSC_SELECTED_SAMPLES, null,
                         "expectedPutReportReportsPSL.pdf", null},
@@ -265,46 +266,46 @@ final boolean isTestEnabled = true;
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, LSC_SELECTED_SAMPLES, null,
                         "expectedPutReportReportsPSLWithCompactReportHandOffDate.pdf", null},*/
-               {CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", HttpStatus.SC_BAD_REQUEST,
+               {2271, CREATOR_USER_NAME, CREATOR_PASSWORD, "42954", HttpStatus.SC_BAD_REQUEST,
                         null, "08/May/21", null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         null, "Named parameter \":lsc_selected_samples\" has no value in the given object."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541372", HttpStatus.SC_OK,
+               {2272, CREATOR_USER_NAME, CREATOR_PASSWORD, "2541372", HttpStatus.SC_OK,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, "This test conclusion.",
                         "expectedPutReportReportsTI.pdf", null},
                 //Study Report with Approved Status
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", HttpStatus.SC_BAD_REQUEST,
+                {2273, CREATOR_USER_NAME, CREATOR_PASSWORD, "38465", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         null, "Modification to approved report is disallowed!"},
                 //Study Report with USER APPROVAL permissions
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", HttpStatus.SC_BAD_REQUEST,
+                {2274, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541372", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have permission to " +
                                 "update report of type Tumor Immunology"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "24682", HttpStatus.SC_BAD_REQUEST,
+                {2275, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "24682", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to update report of type Protein Science(S)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "51930", HttpStatus.SC_BAD_REQUEST,
+                {2276, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "51930", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to update report of type Bioinformatics"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42954", HttpStatus.SC_BAD_REQUEST,
+                {2277, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42954", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com " +
                                 "does not have permission to update report of type Protein Science(L)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3017400", HttpStatus.SC_BAD_REQUEST,
+                {2278, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3017400", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to update report of type Gene Editing"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3107271", HttpStatus.SC_BAD_REQUEST,
+                {2279, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3107271", HttpStatus.SC_BAD_REQUEST,
                         null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null, null,
                         "User svc-study-report-approval@pactpharma.com does not have " +
@@ -316,9 +317,9 @@ final boolean isTestEnabled = true;
                 };
     }
 
-    @UseAsTestRailId(testRailId = 2221)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "putReportReportsDataProvider", enabled = isTestEnabled )
-    void putReportReports(String userName, String userPassword, String studyReportId,
+    void putReportReports(int testRailId, String userName, String userPassword, String studyReportId,
                           int expectedResponseCode, String[] fileAttachmentName, String compactReportHandOffDate,
                           String tumorFusionDetectedComment, String lowExpressedNsmComment,
                           String lowTcByNgsPctComment, String recommendation, String amendments,
@@ -359,20 +360,19 @@ final boolean isTestEnabled = true;
                         expectedErrorMessage, response.jsonPath().get(MESSAGE));
                 break;
         }
-
     }
 
     //Study id 27651 for patient 0027
     @DataProvider(name = "postReportReportsSaveDataProvider")
     public Object[][] postReportReportsSaveDataProvider() {
         return new Object[][]{
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", HttpStatus.SC_OK,
+                {2222, CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", HttpStatus.SC_OK,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "In Progress", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", HttpStatus.SC_OK,
+                {2280, CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", HttpStatus.SC_OK,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "In Progress", null, "04/Dec/2020",
@@ -381,32 +381,32 @@ final boolean isTestEnabled = true;
                         "This is test recommendation", "This is test amendments",
                         "Melanoma", "Premalignant", "legs",
                         null, null, null, "This test conclusion.", "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "3297225", HttpStatus.SC_OK,
+                {2281, CREATOR_USER_NAME, CREATOR_PASSWORD, "3297225", HttpStatus.SC_OK,
                         "imPACT", "0403", "PACT443C",
                         "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This test conclusion.", "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", HttpStatus.SC_OK,
+                {2282, CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", HttpStatus.SC_OK,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This TI test conclusion.", "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", HttpStatus.SC_OK,
+                {2283, CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", HttpStatus.SC_OK,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", "42993_ge-0030.pdf", "20-545",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "  Report saved successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", HttpStatus.SC_OK,
+                {2284,  CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", HttpStatus.SC_OK,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.", "  Report saved successfully."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", HttpStatus.SC_BAD_REQUEST,
+                {2285, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2542290", HttpStatus.SC_BAD_REQUEST,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
@@ -414,7 +414,7 @@ final boolean isTestEnabled = true;
                         null, null, null, "This is test GE conclusion.",
                         "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to save report of type Gene Editing"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42993", HttpStatus.SC_BAD_REQUEST,
+                {2286, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42993", HttpStatus.SC_BAD_REQUEST,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
                         "Pending", null, null,
@@ -422,7 +422,7 @@ final boolean isTestEnabled = true;
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have permission to save " +
                                 "report of type Protein Science(L)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541133", HttpStatus.SC_BAD_REQUEST,
+                {2287, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2541133", HttpStatus.SC_BAD_REQUEST,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "Pending", null, null,
@@ -430,7 +430,7 @@ final boolean isTestEnabled = true;
                         null, null, null, "This TI test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have" +
                                 " permission to save report of type Tumor Immunology"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", HttpStatus.SC_BAD_REQUEST,
+                {2288, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", HttpStatus.SC_BAD_REQUEST,
                         "imPACT", "0403", "PACT443C",
                         "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
                         "In Progress", null, null,
@@ -438,7 +438,7 @@ final boolean isTestEnabled = true;
                         null, "100.00", null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to save report of type imPACT"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2677093", HttpStatus.SC_BAD_REQUEST,
+                {2289, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2677093", HttpStatus.SC_BAD_REQUEST,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "Pending", null, "04/Dec/2020",
@@ -449,7 +449,7 @@ final boolean isTestEnabled = true;
                         null, null, null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to save report of type Bioinformatics"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "27651", HttpStatus.SC_BAD_REQUEST,
+                {2290, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "27651", HttpStatus.SC_BAD_REQUEST,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
@@ -460,9 +460,9 @@ final boolean isTestEnabled = true;
     }
 
     //Study id 27651 for patient 0027
-    @UseAsTestRailId(testRailId = 2222)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "postReportReportsSaveDataProvider", enabled = isTestEnabled)
-    void postReportReportsSave(String userName, String userPassword, String studyReportId,
+    void postReportReportsSave(int testRailId, String userName, String userPassword, String studyReportId,
                           int expectedResponseCode,
                           String reportType, String patientNum, String patient,
                           String reportName, String documentNames, String studyId, String status,
@@ -483,7 +483,6 @@ final boolean isTestEnabled = true;
         Response response = httpRequest.request(Method.POST, String.format(POST_REPORT_REPORTS_SAVE, studyReportId));
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
-
 
         switch(expectedResponseCode) {
             case HttpStatus.SC_OK:
@@ -523,13 +522,13 @@ final boolean isTestEnabled = true;
     @DataProvider(name = "putReportReportsSubmitDataProvider")
     public Object[][] putReportReportsSubmitDataProvider() {
         return new Object[][]{
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", HttpStatus.SC_OK,
+                {2223, CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", HttpStatus.SC_OK,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "  Report submitted successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", HttpStatus.SC_OK,
+                {2291, CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", HttpStatus.SC_OK,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "Pending", null, "04/Dec/2020",
@@ -546,26 +545,26 @@ final boolean isTestEnabled = true;
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This submit imPact test conclusion.", "  Report submitted successfully."},*/
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", HttpStatus.SC_OK,
+                {2292, CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", HttpStatus.SC_OK,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This submit TI test conclusion.",  "  Report submitted successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", HttpStatus.SC_OK,
+                {2293, CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", HttpStatus.SC_OK,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", "42993_ge-0030.pdf", "20-545",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "  Report submitted successfully."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", HttpStatus.SC_OK,
+                {2294, CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", HttpStatus.SC_OK,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.", "  Report submitted successfully."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517281", HttpStatus.SC_BAD_REQUEST,
+                {2295, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517281", HttpStatus.SC_BAD_REQUEST,
                         "Gene Editing", "0504", "PACT326C",
                         "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
                         "Pending", null, null,
@@ -573,7 +572,7 @@ final boolean isTestEnabled = true;
                         null, null, null, "This is test GE conclusion.",
                         "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to submit report of type Gene Editing"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42963", HttpStatus.SC_BAD_REQUEST,
+                {2296, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42963", HttpStatus.SC_BAD_REQUEST,
                         "Protein Science(L)", "0403", "PACT443C",
                         "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
                         "Pending", null, null,
@@ -581,7 +580,7 @@ final boolean isTestEnabled = true;
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have permission to submit " +
                                 "report of type Protein Science(L)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2739606", HttpStatus.SC_BAD_REQUEST,
+                {2297, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2739606", HttpStatus.SC_BAD_REQUEST,
                         "Tumor Immunology", "0403", "PACT443C",
                         "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
                         "Pending", null, null,
@@ -589,7 +588,7 @@ final boolean isTestEnabled = true;
                         null, null, null, "This TI test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have" +
                                 " permission to submit report of type Tumor Immunology"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", HttpStatus.SC_BAD_REQUEST,
+                {2298, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", HttpStatus.SC_BAD_REQUEST,
                         "imPACT", "0403", "PACT443C",
                         "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
                         "In Progress", null, null,
@@ -597,7 +596,7 @@ final boolean isTestEnabled = true;
                         null, "100.00", null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to submit report of type imPACT"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2641522", HttpStatus.SC_BAD_REQUEST,
+                {2299, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2641522", HttpStatus.SC_BAD_REQUEST,
                         "Bioinformatics", "0412", "PACT493C",
                         "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
                         "Pending", null, "04/Dec/2020",
@@ -608,7 +607,7 @@ final boolean isTestEnabled = true;
                         null, null, null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to submit report of type Bioinformatics"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "34183", HttpStatus.SC_BAD_REQUEST,
+                {2300, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "34183", HttpStatus.SC_BAD_REQUEST,
                         "Protein Science(S)", "0027", "PACT407C",
                         "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
@@ -618,9 +617,9 @@ final boolean isTestEnabled = true;
         };
     }
 
-    @UseAsTestRailId(testRailId = 2223)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "putReportReportsSubmitDataProvider", enabled = isTestEnabled)
-    void putReportReportsSubmit(String userName, String userPassword, String studyReportId,
+    void putReportReportsSubmit(int testRailId, String userName, String userPassword, String studyReportId,
                                 int expectedResponseCode,
                                 String reportType, String patientNum, String patient,
                                 String reportName, String documentNames, String studyId, String status,
@@ -666,50 +665,50 @@ final boolean isTestEnabled = true;
     @DataProvider(name = "postReportReportsStatusDataProvider")
     public Object[][] postReportReportsStatusDataProvider() {
         return new Object[][]{
-               {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3119233", false, HttpStatus.SC_OK,
+               {2224, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3119233", false, HttpStatus.SC_OK,
                         "Approved", null, "imPACT", "0037", "PACT506C",
                         "21-117_0037_PACT506C_imPACT.pdf", null, "21-117",
                         null, null, null, null, null, null, null, null, null, null,
                         null, "0.00", null, null, "  Report has been successfully approved."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", false, HttpStatus.SC_OK,
+               {2301, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", false, HttpStatus.SC_OK,
                         "Reject", null, "Tumor Immunology", "0015", "PACT299C",
                         "20-085_0015_PACT299C_Tumor Immunology.pdf", null, "20-085",
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, "This test conclusion.", "  Report has been successfully rejected."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", false, HttpStatus.SC_OK,
+               {2302, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", false, HttpStatus.SC_OK,
                         "Reject", "0", "Gene Editing", "0512", "PACT463C",
                         "20-637_0512_PACT463C_Gene Editing.pdf", "2517325_sample.pdf", "20-637",
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, "  Report has been successfully rejected."},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", false, HttpStatus.SC_OK,
+               {2303, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", false, HttpStatus.SC_OK,
                         "Reject", "1", "Bioinformatics", "0611", "PACT507C",
                         "21-107_0611_PACT507C_Bioinformatics.pdf", null, "21-107",
                         null, null, null, null, null, null, null,
                         "sdsda", "dsadadasasa", "adadasad",
                         null, null, null, null, "  Report has been successfully rejected."},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
+               {2304, CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
                         "Reject", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "User svc-study-report-creator@pactpharma.com does not have permission to" +
                                 " approve or reject the reports of type Protein Science(S)"},
-                {CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
+               {2305, CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "User svc-study-report-creator@pactpharma.com does not have permission to approve or " +
                                 "reject the reports of type Protein Science(S)"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, HttpStatus.SC_BAD_REQUEST,
+                {2306, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "Modification to approved report is disallowed!"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, HttpStatus.SC_BAD_REQUEST,
+                {2307, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
                         "Report has not been submitted yet for approval"},
-                {APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, HttpStatus.SC_BAD_REQUEST,
+                {2308, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, HttpStatus.SC_BAD_REQUEST,
                         "Reject", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
@@ -730,9 +729,9 @@ final boolean isTestEnabled = true;
 
      */
 
-    @UseAsTestRailId(testRailId = 2224)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "postReportReportsStatusDataProvider", enabled = isTestEnabled)
-    void postReportReportsStatus(String userName, String userPassword, String studyReportId, boolean repeat,
+    void postReportReportsStatus(int testRailId, String userName, String userPassword, String studyReportId, boolean repeat,
                                  int expectedResponseCode, String status, String failureReason,
                                  String reportType, String patientNum, String patient,
                                  String reportName, String documentNames, String studyId,
@@ -784,34 +783,35 @@ final boolean isTestEnabled = true;
     @DataProvider(name = "getPdfAllDataProvider")
     public Object[][] getPdfAllDataProvider() {
         return new Object[][]{
-                {GET_PDF_ALL, null, HttpStatus.SC_UNPROCESSABLE_ENTITY, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2225, GET_PDF_ALL, null, HttpStatus.SC_UNPROCESSABLE_ENTITY, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1, "\"query.status\" is required"},
-                {GET_PDF_ALL, "status[]=pending&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending",
+                {2309, GET_PDF_ALL, "status[]=pending&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending",
                         "pending", 1, null},
-                {GET_PDF_ALL, "status[]=progress&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2310, GET_PDF_ALL, "status[]=progress&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "In Progress", "progress", 2, null},
-                {GET_PDF_ALL, "status[]=approved&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2311, GET_PDF_ALL, "status[]=approved&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "Approved", "approved", 1, null},
-                {GET_PDF_ALL, "status[]=reject&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Reject",
+                {2312, GET_PDF_ALL, "status[]=reject&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Reject",
                         "reject", 1, null},
-                {GET_PDF_ALL, "status[]=approved&status[]=reject&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME,
+                {2313, GET_PDF_ALL, "status[]=approved&status[]=reject&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME,
                         CREATOR_PASSWORD, "Approved,Reject", "approved,reject", 1, null},
-                {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&page=3", HttpStatus.SC_OK,
+                {2314, GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&page=3", HttpStatus.SC_OK,
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,In Progress", "approved,reject,progress", 3, null},
-                {GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", HttpStatus.SC_OK,
+                {2315, GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", HttpStatus.SC_OK,
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,Pending", "approved,reject,pending", 1, null},
-                {GET_PDF_ALL, "page=4", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2316, GET_PDF_ALL, "page=4", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 4, null},
-                {GET_PDF_ALL, null, HttpStatus.SC_OK, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1, null},
-                {GET_PDF_ALL, "status[]=INCORRECT&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2317, GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&status[]=pending&page=1", HttpStatus.SC_OK,
+                        APPROVAL_USER_NAME, APPROVAL_PASSWORD, "Pending,In Progress,Approved,Reject",
+                        "pending,progress,approved,reject", 1, null},
+                {2318, GET_PDF_ALL, "status[]=INCORRECT&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 2, null}
         };
     }
 
-    @UseAsTestRailId(testRailId = 2225)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "getPdfAllDataProvider", enabled = isTestEnabled)
-    public void getPdfAll(String baseUrl, String parameters, int expectedResponseCode, String userName, String userPassword,
+    public void getPdfAll(int testRailId, String baseUrl, String parameters, int expectedResponseCode, String userName, String userPassword,
                           String expectedStatus, String expectedStatusQuery, int currentPage, String expectedMessage ) {
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
@@ -834,21 +834,19 @@ final boolean isTestEnabled = true;
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
-
-
         }
     }
 
     @DataProvider(name = "getPdfSearchPatientDataProvider")
     public Object[][] getPdfSearchPatientDataProvider() {
         return new Object[][]{
-                {GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "332C", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2226, GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "332C", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithOneReport.json"},
-                {GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "255C", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2319, GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "255C", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithSeveralReport.json"},
-                {GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "332C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {2320, GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "332C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithOneReport.json"},
-                {GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "255C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {2321, GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "255C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithApprovalRole.json"}
         };
     }
@@ -857,9 +855,9 @@ final boolean isTestEnabled = true;
     UPDATE report_dev.study_report SET status="Pending" where id=29279;
     UPDATE report_dev.study_report SET status="Pending" where id=28560;
      */
-    @UseAsTestRailId(testRailId = 2226)
-    @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = true)
-    public void getPdfSearchPatient(String url, int expectedResponseCode, String patientId, String userName,
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
+    @Test(dataProvider = "getPdfSearchPatientDataProvider", enabled = isTestEnabled)
+    public void getPdfSearchPatient(int testRailId, String url, int expectedResponseCode, String patientId, String userName,
                                     String userPassword, String expectedResponseFile) throws Exception {
         executeUrlAndValidateJsonResponse(Method.GET, String.format(url, patientId), expectedResponseCode, userName,
                 userPassword, expectedResponseFile);
@@ -868,16 +866,16 @@ final boolean isTestEnabled = true;
     @DataProvider(name = "getPdfPatientDataProvider")
     public Object[][] getPdfPatientPatientDataProvider() {
         return new Object[][]{
-                {GET_PDF_PATIENT, HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2227, GET_PDF_PATIENT, HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "src/test/resources/files/getPdfPatient.json"},
-                {GET_PDF_PATIENT, HttpStatus.SC_OK, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {2322, GET_PDF_PATIENT, HttpStatus.SC_OK, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         "src/test/resources/files/getPdfPatient.json"}
         };
      }
 
-    @UseAsTestRailId(testRailId = 2227)
-    @Test(dataProvider = "getPdfPatientDataProvider", enabled = true)
-    public void getPdfPatient(String url, int expectedResponseCode, String userName,
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
+    @Test(dataProvider = "getPdfPatientDataProvider", enabled = isTestEnabled)
+    public void getPdfPatient(int testRailId, String url, int expectedResponseCode, String userName,
                               String userPassword, String expectedResponseFile) throws Exception{
         executeUrlAndValidateJsonResponse(Method.GET, url, expectedResponseCode, userName,
                 userPassword, expectedResponseFile);
@@ -886,23 +884,23 @@ final boolean isTestEnabled = true;
     @DataProvider(name = "postUploadReportsDocumentsDataProvider")
     public Object[][] postUploadReportsDocumentsDataProvider() {
         return new Object[][]{
-                {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2217, POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_OK, "dummy.txt", "dummy.txt", null, "32272_dummy.txt"},
-                {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2323, POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_BAD_REQUEST, null, null, "No files received", null},
-                {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2324, POST_UPLOAD_REPORTS_DOCUMENTS, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_OK, "dummy.txt,dummy1.txt,dummy2.txt", "dummy.txt,dummy1.txt,dummy2.txt", null,
                         "32272_dummy.txt,32272_dummy1.txt,32272_dummy2.txt"},
-                {POST_UPLOAD_REPORTS_DOCUMENTS, "32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {2325, POST_UPLOAD_REPORTS_DOCUMENTS, "32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         HttpStatus.SC_BAD_REQUEST, "dummy.txt", "dummy.txt", "User svc-study-report-approval@pactpharma.com " +
                         "does not have permission to upload supporting document of type Protein Science(S)",
                         null}
         };
     }
 
-    @UseAsTestRailId(testRailId = 2217)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "postUploadReportsDocumentsDataProvider", enabled = isTestEnabled)
-    public void postUploadReportsDocuments(String url, String studyReportId, String userName, String userPassword,
+    public void postUploadReportsDocuments(int testRailId, String url, String studyReportId, String userName, String userPassword,
                                            int expectedResponseCode, String filesToUpload, String expectedFiles,
                                            String expectedMessage, String expectedFilesFromGetRequest) {
         RequestSpecification httpRequest =
@@ -946,19 +944,19 @@ final boolean isTestEnabled = true;
     @DataProvider(name = "putUploadReportsDocumentsDataProvider")
     public Object[][] putUploadReportsDocumentsDataProvider() {
         return new Object[][]{
-                {"32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2216, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_OK, "dymmy.txt", "  File(s) has been deleted"},
-                {"32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                {2326, "32272", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         HttpStatus.SC_UNPROCESSABLE_ENTITY, "32272_dymmy.txt", "User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to upload supporting document of type Protein Science(S)"},
-                {"32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2327, "32272", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_UNPROCESSABLE_ENTITY, null, "\"body\" must be an array"}
         };
     }
 
-    @UseAsTestRailId(testRailId = 2216)
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
     @Test(dataProvider = "putUploadReportsDocumentsDataProvider", enabled = isTestEnabled)
-    public void putUploadReportsDocuments(String studyReportId, String userName, String userPassword,
+    public void putUploadReportsDocuments(int testRailId, String studyReportId, String userName, String userPassword,
                                            int expectedResponseCode, String filesToUpload, String expectedMessage) {
         switch(expectedResponseCode) {
             case HttpStatus.SC_OK:

@@ -2,6 +2,7 @@ package com.testrail.listeners;
 
 import java.util.Arrays;
 import com.testrail.util.UseAsTestRailId;
+import com.testrail.util.UseAsTestRailEnabled;
 import org.testng.IInvokedMethod;
 import org.testng.IInvokedMethodListener;
 import org.testng.ITestResult;
@@ -16,19 +17,22 @@ public class TestNgTestRailListener implements IInvokedMethodListener {
 
     @Override
     public void afterInvocation(IInvokedMethod method, ITestResult testResult){
-            UseAsTestRailId useAsTestRailId =
+        UseAsTestRailId useAsTestRailId =
                     method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(UseAsTestRailId.class);
-            //Data driven tests need to be handled differently
-           if(useAsTestRailId != null) {
+        UseAsTestRailEnabled useAsTestRailEnabled =
+                method.getTestMethod().getConstructorOrMethod().getMethod().getAnnotation(UseAsTestRailEnabled.class);
+
                if (method.getTestMethod().isDataDriven()) {
-                   // Get the Parameters from the Result
-                   Object[] parameters = testResult.getParameters();
-                   // Post the result to Test Rail
-                   new PostResults().postTestRailResult(
-                           useAsTestRailId.testRailId(), testResult, Arrays.toString(parameters));
+                   if (useAsTestRailEnabled != null && useAsTestRailEnabled.isTestRailEnabled()) {
+                       Object[] parameters = testResult.getParameters();
+                       new PostResults().postTestRailResult(
+                               (int) parameters[0], testResult, Arrays.toString(parameters));
+                   }
                } else {
-                   new PostResults().postTestRailResult(useAsTestRailId.testRailId(), testResult);
-               }
+                   if(useAsTestRailId != null) {
+                       new PostResults().postTestRailResult(useAsTestRailId.testRailId(), testResult);
+                   }
+
            }
     }
 
