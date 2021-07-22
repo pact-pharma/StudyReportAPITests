@@ -166,6 +166,11 @@
       "id": 3012932
     },
     {
+      "pact_id": "PACT1018C",
+      "patient_num": "0044",
+      "id": 3389096
+    },
+    {
       "pact_id": "PACT329C",
       "patient_num": "0302",
       "id": 43
@@ -391,5 +396,5 @@
       "id": 3444723
     }
   ],
-  "count": 78
+  "count": 79
 }
