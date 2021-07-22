@@ -230,7 +230,8 @@ final boolean isTestRailEnabledFlag = true;
     //select * from report_dev.study_report where report_name LIKE '%Protein Science(L)%' and status='Pending';
     //select id, report_name from report_dev.study_report where report_name LIKE "%Tumor%" and status='Pending';
     //UPDATE report_dev.study_report SET status="Approved" where id=38465;
-    //
+    //INSERT INTO `report_dev`.`binf_manifest`(`binf_sample_id`,`hla_panel`,`neoe_selection_strategy`,`no_oligo_plates`,`ranking_strategy`,`squencing_bait_panel`,`tcga_acronym`)
+    //VALUES("PACT482C_T_PP001611", "HLA-I_64", "AverageOut", 4, "EL_BA_Rank", "panel-00001", "OV");
     @DataProvider(name = "putReportReportsDataProvider")
     public Object[][] putReportReportsDataProvider() {
         return new Object[][]{
