@@ -784,7 +784,7 @@ final boolean isTestRailEnabledFlag = true;
     public Object[][] getPdfAllDataProvider() {
         return new Object[][]{
                 {2225, GET_PDF_ALL, null, HttpStatus.SC_UNPROCESSABLE_ENTITY, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1, "\"query.status\" is required"},
+                        null, null, 1, "\"query.status\" is required"},
                 {2309, GET_PDF_ALL, "status[]=pending&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending",
                         "pending", 1, null},
                 {2310, GET_PDF_ALL, "status[]=progress&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
@@ -799,8 +799,8 @@ final boolean isTestRailEnabledFlag = true;
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,In Progress", "approved,reject,progress", 3, null},
                 {2315, GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", HttpStatus.SC_OK,
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,Pending", "approved,reject,pending", 1, null},
-                {2316, GET_PDF_ALL, "page=4", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 4, null},
+                {2316, GET_PDF_ALL, "page=4", HttpStatus.SC_UNPROCESSABLE_ENTITY, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        null, null, 4, "\"query.status\" is required"},
                 {2317, GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&status[]=pending&page=1", HttpStatus.SC_OK,
                         APPROVAL_USER_NAME, APPROVAL_PASSWORD, "Pending,In Progress,Approved,Reject",
                         "pending,progress,approved,reject", 1, null},
