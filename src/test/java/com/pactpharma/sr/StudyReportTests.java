@@ -11,7 +11,10 @@ import org.apache.http.HttpStatus;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
+import org.skyscreamer.jsonassert.FieldComparisonFailure;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+import org.skyscreamer.jsonassert.JSONCompareResult;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -20,6 +23,7 @@ import java.util.*;
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
+import static org.skyscreamer.jsonassert.JSONCompare.compareJSON;
 
 @Listeners(TestNgTestRailListener.class)
 public class StudyReportTests {
@@ -861,7 +865,7 @@ final boolean isTestRailEnabledFlag = true;
     public void getPdfSearchPatient(int testRailId, String url, int expectedResponseCode, String patientId, String userName,
                                     String userPassword, String expectedResponseFile) throws Exception {
         executeUrlAndValidateJsonResponse(Method.GET, String.format(url, patientId), expectedResponseCode, userName,
-                userPassword, expectedResponseFile);
+                userPassword, expectedResponseFile, new String[]{"review_date"});
     }
 
     @DataProvider(name = "getPdfPatientDataProvider")
@@ -1048,14 +1052,35 @@ final boolean isTestRailEnabledFlag = true;
      */
     private void executeUrlAndValidateJsonResponse(Method method, String url, int expectedResponseCode, String userName,
                                                    String userPassword, String expectedResponseFile) throws Exception{
+        String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
+        JSONAssert.assertEquals(String.format("API:%s %s\nResponse should be %s", method,
+                url, expectedResponse), expectedResponse, executeRequest( method, url, expectedResponseCode, userName,
+                userPassword).asPrettyString(), false);
+    }
+
+    private Response executeRequest(Method method, String url, int expectedResponseCode, String userName,
+                                    String userPassword) {
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
         Response response = httpRequest.request(method, url);
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
+        return response;
+    }
+
+    private void executeUrlAndValidateJsonResponse(Method method, String url, int expectedResponseCode, String userName,
+                                                   String userPassword, String expectedResponseFile, String[] allowedFailures) throws Exception{
         String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
-        JSONAssert.assertEquals(String.format("API:%s %s\nResponse should be %s", method,
-                url, expectedResponse), expectedResponse, response.asPrettyString(), false);
+        String response =  executeRequest(method, url, expectedResponseCode, userName,
+                userPassword).asPrettyString();
+        JSONCompareResult jsonCompareResult = compareJSON(expectedResponse, response, JSONCompareMode.LENIENT);
+        if(!jsonCompareResult.passed() && allowedFailures!=null) {
+            Set<String> allowedFailuresSet = new HashSet<>(Arrays.asList(allowedFailures));
+            List<FieldComparisonFailure> list = jsonCompareResult.getFieldFailures();
+            list.stream().forEach(failure-> Assert.assertTrue(String.format("Response %s should match to expected response %s",
+                    response, expectedResponse),
+                    allowedFailuresSet.contains(failure.getField().substring(failure.getField().indexOf(".")+1))));
+        }
     }
 
     /**
