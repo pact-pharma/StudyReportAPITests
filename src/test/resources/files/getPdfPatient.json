@@ -166,6 +166,11 @@
       "id": 3012932
     },
     {
+      "pact_id": "PACT1028C",
+      "patient_num": "0043",
+      "id": 3206856
+    },
+    {
       "pact_id": "PACT1018C",
       "patient_num": "0044",
       "id": 3389096
@@ -226,6 +231,11 @@
       "id": 3105676
     },
     {
+      "pact_id": "PACT0001009C",
+      "patient_num": "0322",
+      "id": 3131564
+    },
+    {
       "pact_id": "PACT1022C",
       "patient_num": "0325",
       "id": 3294854
@@ -281,9 +291,29 @@
       "id": 92
     },
     {
+      "pact_id": "PACT1024C",
+      "patient_num": "0413",
+      "id": 2641384
+    },
+    {
       "pact_id": "PACT0001001C",
       "patient_num": "0414",
       "id": 3106667
+    },
+    {
+      "pact_id": "PACT1029C",
+      "patient_num": "0415",
+      "id": 3210196
+    },
+    {
+      "pact_id": "PACT1033C",
+      "patient_num": "0417",
+      "id": 3294851
+    },
+    {
+      "pact_id": "PACT1031C",
+      "patient_num": "0418",
+      "id": 3390917
     },
     {
       "pact_id": "PACT317C",
@@ -396,6 +426,41 @@
       "id": 3118896
     },
     {
+      "pact_id": "PACT0001008C",
+      "patient_num": "0617",
+      "id": 3019737
+    },
+    {
+      "pact_id": "PACT1020C",
+      "patient_num": "0619",
+      "id": 3201529
+    },
+    {
+      "pact_id": "PACT1019C",
+      "patient_num": "0620",
+      "id": 3202021
+    },
+    {
+      "pact_id": "PACT1017C",
+      "patient_num": "0701",
+      "id": 3131566
+    },
+    {
+      "pact_id": "PACT1032C",
+      "patient_num": "0705",
+      "id": 3428104
+    },
+    {
+      "pact_id": "PACT1030C",
+      "patient_num": "0902",
+      "id": 3201532
+    },
+    {
+      "pact_id": "PACT1035C",
+      "patient_num": "0908",
+      "id": 3434024
+    },
+    {
       "pact_id": "PACT1016C",
       "patient_num": "1001",
       "id": 3134913
@@ -404,7 +469,12 @@
       "pact_id": "PACT1027C",
       "patient_num": "1005",
       "id": 3444723
+    },
+    {
+      "pact_id": "PACT1014C",
+      "patient_num": "1006",
+      "id": 3444726
     }
   ],
-  "count": 81
+  "count": 95
 }
