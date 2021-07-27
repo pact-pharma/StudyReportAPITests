@@ -31,6 +31,7 @@ public class TestConstants {
     public static String GET_PDF_PATIENT = "/api/v1/pdf/patient";
     public static String POST_UPLOAD_REPORTS_DOCUMENTS = "/api/v1/upload/reports/%s/documents";
     public static String PUT_UPLOAD_REPORTS_DOCUMENTS = "/api/v1/upload/reports/%s/documents";
+    public static String POST_UPLOAD_IMAGE_FOR_GE_REPORT = "/api/v1/upload/reports/%s/tcr/%s/section/%s/images";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";

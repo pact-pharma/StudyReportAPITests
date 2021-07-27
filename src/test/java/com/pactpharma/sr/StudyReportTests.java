@@ -976,6 +976,58 @@ final boolean isTestRailEnabledFlag = true;
                 break;
         }
     }
+
+    @DataProvider(name = "uploadImageForGEReportDataProvider")
+    public Object[][] uploadImageForGEReportDataProvider() {
+        return new Object[][]{
+                {0, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "52711", "Insertion%20due%20t%20imPACT%20primer%20nesting",
+                        "cute_image.jpg", HttpStatus.SC_OK, "expectedPostUploadImageForGeReport.json", "id", null},
+                {1, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "52711", "Insertion%20due%20t%20imPACT%20primer%20nesting",
+                        null, HttpStatus.SC_BAD_REQUEST, "expectedPostUploadImageForGeReport.json", "id",
+                        "Cannot read property '0' of undefined"},
+                {2, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "52711", "Insertion%20due%20t%20imPACT%20primer%20nesting",
+                        "cute_image.jpg:cute_image_2.jpg", HttpStatus.SC_OK, "expectedPostUploadImageForGeReport.json", "id", null}
+        };
+    }
+
+    /**
+     * UPDATE report_dev.tcr set error_code='Insertion due to imPACT primer nesting' where tcr_name='TCR815';
+     */
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
+    @Test(dataProvider = "uploadImageForGEReportDataProvider", enabled = isTestEnabled)
+    public void uploadImageForGEReport(int testRailId, String studyReportId, String userName, String userPassword,
+                                       String tcrId, String section, String imagesToUpload, int expectedResponseCode,
+                                       String expectedResponseFile, String allowedFailures, String expectedMessage) throws Exception {
+        RequestSpecification httpRequest =
+                TestUtilities.generateRequestSpecification(userName, userPassword);
+
+        if(imagesToUpload != null) {
+            String[] imagesToUploadArray = imagesToUpload.split(":");
+            httpRequest.header(CONTENT_TYPE, "multipart/form-data");
+            for(String imageToUpload: imagesToUploadArray) {
+                File fileToUpload = new File("src/test/resources/files/" + imageToUpload);
+                httpRequest.multiPart(FILE, fileToUpload);
+            }
+        }
+        Response response = httpRequest.request(Method.POST, String.format(POST_UPLOAD_IMAGE_FOR_GE_REPORT,
+                studyReportId, tcrId, section));
+        Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
+        switch(expectedResponseCode) {
+            case HttpStatus.SC_OK:
+                validateJsonResponse(response, "src/test/resources/files/"+ expectedResponseFile, allowedFailures.split(":"));
+                break;
+            case HttpStatus.SC_BAD_REQUEST:
+                Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
+                        expectedMessage, response.jsonPath().get(MESSAGE));
+                break;
+        }
+
+    }
+
     /**
      * This method builds Request Body and executes PUT /api/v1/upload/reports/{id}/documents.
      * Body should contains array of files to delete.
@@ -1039,15 +1091,14 @@ final boolean isTestRailEnabledFlag = true;
                 .request(Method.PUT,String.format(PUT_REPORT_REPORTS_SUBMIT, studyReportId)).getStatusCode());
     }
 
-
     /**
      * This method executes HTTP method and compares results with expected JSON file.
-     * @param method
-     * @param url
-     * @param expectedResponseCode
-     * @param userName
-     * @param userPassword
-     * @param expectedResponseFile
+     * @param method - HTTP method
+     * @param url - URL
+     * @param expectedResponseCode - expected response code
+     * @param userName - user name to generate token
+     * @param userPassword - user password to to generate token
+     * @param expectedResponseFile - expected response file name
      * @throws Exception
      */
     private void executeUrlAndValidateJsonResponse(Method method, String url, int expectedResponseCode, String userName,
@@ -1058,6 +1109,15 @@ final boolean isTestRailEnabledFlag = true;
                 userPassword).asPrettyString(), false);
     }
 
+    /**
+     * This method executes request
+     * @param method - method
+     * @param url - url
+     * @param expectedResponseCode - expected response code
+     * @param userName - user name to generate token
+     * @param userPassword - user password to generate token
+     * @return
+     */
     private Response executeRequest(Method method, String url, int expectedResponseCode, String userName,
                                     String userPassword) {
         RequestSpecification httpRequest =
@@ -1068,18 +1128,44 @@ final boolean isTestRailEnabledFlag = true;
         return response;
     }
 
+    /**
+     * This method executes and validates response
+     * @param method - method
+     * @param url - url
+     * @param expectedResponseCode - expected response co
+     * @param userName - user name to generate token
+     * @param userPassword  - user password to generate token
+     * @param expectedResponseFile - expected response file
+     * @param allowedFailures - array of allowed failures
+     * @throws Exception
+     */
     private void executeUrlAndValidateJsonResponse(Method method, String url, int expectedResponseCode, String userName,
-                                                   String userPassword, String expectedResponseFile, String[] allowedFailures) throws Exception{
+                                                   String userPassword, String expectedResponseFile, String[] allowedFailures) throws Exception {
+        Response response =  executeRequest(method, url, expectedResponseCode, userName,
+                userPassword);
+        validateJsonResponse(response, expectedResponseFile, allowedFailures);
+    }
+
+    /**
+     * This method validates response
+     * @param response - response
+     * @param expectedResponseFile - expected response file
+     * @param allowedFailures - allowed failures
+     * @throws Exception
+     */
+    public void validateJsonResponse(Response response, String expectedResponseFile, String[] allowedFailures) throws Exception {
         String expectedResponse = TestUtilities.readJsonFile(expectedResponseFile);
-        String response =  executeRequest(method, url, expectedResponseCode, userName,
-                userPassword).asPrettyString();
-        JSONCompareResult jsonCompareResult = compareJSON(expectedResponse, response, JSONCompareMode.LENIENT);
+        JSONCompareResult jsonCompareResult =
+                compareJSON(expectedResponse, response.asPrettyString(), JSONCompareMode.LENIENT);
         if(!jsonCompareResult.passed() && allowedFailures!=null) {
             Set<String> allowedFailuresSet = new HashSet<>(Arrays.asList(allowedFailures));
             List<FieldComparisonFailure> list = jsonCompareResult.getFieldFailures();
             list.stream().forEach(failure-> Assert.assertTrue(String.format("Response %s should match to expected response %s",
                     response, expectedResponse),
                     allowedFailuresSet.contains(failure.getField().substring(failure.getField().indexOf(".")+1))));
+        } else if (!jsonCompareResult.passed()) {
+            Assert.assertTrue(String.format("Response %s should match to expected response %s",
+                    response, expectedResponse), jsonCompareResult.passed());
         }
     }
 
