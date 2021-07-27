@@ -980,16 +980,20 @@ final boolean isTestRailEnabledFlag = true;
     @DataProvider(name = "uploadImageForGEReportDataProvider")
     public Object[][] uploadImageForGEReportDataProvider() {
         return new Object[][]{
-                {0, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2360, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "52711", "Insertion%20due%20t%20imPACT%20primer%20nesting",
                         "cute_image.jpg", HttpStatus.SC_OK, "expectedPostUploadImageForGeReport.json", "id", null},
-                {1, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2362, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "52711", "Insertion%20due%20t%20imPACT%20primer%20nesting",
                         null, HttpStatus.SC_BAD_REQUEST, "expectedPostUploadImageForGeReport.json", "id",
                         "Cannot read property '0' of undefined"},
-                {2, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                {2361, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "52711", "Insertion%20due%20t%20imPACT%20primer%20nesting",
-                        "cute_image.jpg:cute_image_2.jpg", HttpStatus.SC_OK, "expectedPostUploadImageForGeReport.json", "id", null}
+                        "cute_image.jpg:cute_image_2.jpg", HttpStatus.SC_OK, "expectedPostUploadImageForGeReport.json", "id", null},
+                {2363, "2542277", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                        "52711", "Insertion%20due%20t%20imPACT%20primer%20nesting",
+                        "cute_image.jpg", HttpStatus.SC_BAD_REQUEST, null,
+                        null, "User svc-study-report-approval@pactpharma.com does not have permission to upload image  of type Gene Editing"}
         };
     }
 
