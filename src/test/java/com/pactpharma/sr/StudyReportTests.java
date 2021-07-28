@@ -19,10 +19,12 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import java.io.File;
+import java.net.URLDecoder;
 import java.util.*;
 import static com.pactpharma.sr.TestConstants.*;
 import static com.pactpharma.sr.TestConstants.APPROVAL_PASSWORD;
 import static com.pactpharma.sr.TestUtilities.*;
+import static com.testrail.util.TestRailConstants.ID;
 import static org.skyscreamer.jsonassert.JSONCompare.compareJSON;
 
 @Listeners(TestNgTestRailListener.class)
@@ -915,7 +917,7 @@ final boolean isTestRailEnabledFlag = true;
             httpRequest.header(CONTENT_TYPE, "multipart/form-data");
             fileNamesArray = filesToUpload.split(",");
             for (String fileName : fileNamesArray) {
-                File fileToUpload = new File("src/test/resources/files/" + fileName);
+                File fileToUpload = new File(FILE_DIR + fileName);
                 httpRequest.multiPart(FILE, fileToUpload);
             }
         }
@@ -1007,29 +1009,113 @@ final boolean isTestRailEnabledFlag = true;
                                        String expectedResponseFile, String allowedFailures, String expectedMessage) throws Exception {
         RequestSpecification httpRequest =
                 TestUtilities.generateRequestSpecification(userName, userPassword);
-
-        if(imagesToUpload != null) {
-            String[] imagesToUploadArray = imagesToUpload.split(":");
-            httpRequest.header(CONTENT_TYPE, "multipart/form-data");
-            for(String imageToUpload: imagesToUploadArray) {
-                File fileToUpload = new File("src/test/resources/files/" + imageToUpload);
-                httpRequest.multiPart(FILE, fileToUpload);
-            }
-        }
+        readImagesToUploadAndAddToRequest(httpRequest, imagesToUpload);
         Response response = httpRequest.request(Method.POST, String.format(POST_UPLOAD_IMAGE_FOR_GE_REPORT,
                 studyReportId, tcrId, section));
         Assert.assertEquals(String.format("Response code should be %s", expectedResponseCode),
                 expectedResponseCode, response.getStatusCode());
         switch(expectedResponseCode) {
             case HttpStatus.SC_OK:
-                validateJsonResponse(response, "src/test/resources/files/"+ expectedResponseFile, allowedFailures.split(":"));
+                validateJsonResponse(response, FILE_DIR + expectedResponseFile, allowedFailures.split(":"));
                 break;
             case HttpStatus.SC_BAD_REQUEST:
                 Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
                         expectedMessage, response.jsonPath().get(MESSAGE));
                 break;
         }
+    }
 
+    @DataProvider(name = "patchReportReportsTcrSectionDataProvider")
+    public Object[][] patchReportReportsTcrSectionDataProvider() {
+        return new Object[][]{
+                {2369, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "52711", "Insertion%20due%20to%20imPACT%20primer%20nesting",
+                        "cute_image.jpg", null, HttpStatus.SC_OK, "patchReportReportsTcrSectionPayload.json", "OK"},
+                {2370, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "52711", "Insertion%20due%20to%20incorrect%20nesting",
+                        "cute_image.jpg", null, HttpStatus.SC_UNPROCESSABLE_ENTITY, "patchReportReportsTcrSectionPayload.json",
+                        "\"params.section\" must be one of [Unable to amplify - Low NGS read counts, " +
+                                "Unable to amplify - Primer binding site blocked by adapter, " +
+                                "Unable to amplify - Template missing primer binding site, " +
+                                "Unable to amplify - Longer variant missing, " +
+                                "Unable to amplify - Longer variant cannot be amplified, " +
+                                "Unable to amplify - Smaller product due to template missing sequences, " +
+                                "Unable to amplify - Primer binding site contains mutation, " +
+                                "Identical variants - KOD proofreading (TRAV8-2*01, *02), " +
+                                "Identical variants - Different sequence with identical translation, " +
+                                "Patient-derived silent mutation, Patient-derived missense mutation, " +
+                                "Strand slippage, Plasmid prep mixture of two plasmids, " +
+                                "Truncated allele due to wrong primer call from imPACT (TRBV4-3*04), " +
+                                "Large deletion due to imPACT primer binding, Patient has mixed allele (TRAV14/DV4), " +
+                                "Insertion due to imPACT primer nesting, TCR from naïve T-cell, Other]"},
+                {2371, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "52711", "Insertion%20due%20to%20imPACT%20primer%20nesting",
+                        null, "XXXXX", HttpStatus.SC_UNPROCESSABLE_ENTITY,
+                        "patchReportReportsTcrSectionPayload.json", "\"body.figure1\" must be a number"},
+                {2372, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "52711", "Insertion%20due%20to%20imPACT%20primer%20nesting",
+                        "cute_image.jpg", "9007199254740992", HttpStatus.SC_UNPROCESSABLE_ENTITY,
+                        "patchReportReportsTcrSectionPayload.json", "\"body.figure1\" must be a safe number"},
+                {2373, "2542277", CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "52711", "Insertion%20due%20to%20imPACT%20primer%20nesting",
+                        "cute_image.jpg", null, HttpStatus.SC_UNPROCESSABLE_ENTITY,
+                        "incorrectPatchReportReportsTcrSectionPayload.json", "\"body.caption-figure1\" is required"},
+                {2374, "2542277", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
+                        "52711", "Insertion%20due%20to%20imPACT%20primer%20nesting",
+                        "cute_image.jpg", null, HttpStatus.SC_BAD_REQUEST, "patchReportReportsTcrSectionPayload.json",
+                        "User svc-study-report-approval@pactpharma.com does not have permission " +
+                                "to update report of type Gene Editing"}
+        };
+    }
+
+    @UseAsTestRailEnabled(isTestRailEnabled = isTestRailEnabledFlag)
+    @Test(dataProvider = "patchReportReportsTcrSectionDataProvider", enabled = isTestEnabled )
+    public void patchReportReportsTcrSection(int testRailId, String studyReportId, String userName, String userPassword,
+                                             String tcrId, String section, String imagesToUpload, String imageId, int expectedResponseCode,
+                                             String payloadFile, String expectedMessage) throws Exception {
+        if(imageId == null) {
+            RequestSpecification httpUploadImageRequest =
+                    TestUtilities.generateRequestSpecification(CREATOR_USER_NAME, CREATOR_PASSWORD);
+            readImagesToUploadAndAddToRequest(httpUploadImageRequest, imagesToUpload);
+            Response response = httpUploadImageRequest.request(Method.POST, String.format(POST_UPLOAD_IMAGE_FOR_GE_REPORT,
+                    studyReportId, tcrId, section));
+            Assert.assertEquals(String.format("Response code should be %s", HttpStatus.SC_OK),
+                    HttpStatus.SC_OK, response.getStatusCode());
+            imageId = response.jsonPath().get(ID).toString();
+        }
+        String payload = String.format(TestUtilities.readJsonFile(FILE_DIR + payloadFile), imageId);
+        Response response=TestUtilities.generateRequestSpecification(userName, userPassword).body(payload).request(Method.PATCH,
+        String.format(PATCH_REPORT_REPORTS_TCR_SECTION, studyReportId, tcrId, URLDecoder.decode(section, "UTF-8")));
+
+        Assert.assertEquals(String.format("Response code for PATH %s should be %s",
+                String.format(PATCH_REPORT_REPORTS_TCR_SECTION, studyReportId, tcrId,
+                        URLDecoder.decode(section, "UTF-8")),expectedResponseCode),
+                expectedResponseCode, response.getStatusCode());
+        switch(expectedResponseCode) {
+            case HttpStatus.SC_OK:
+                Assert.assertEquals(String.format("Response message should be %s", expectedMessage),
+                        expectedMessage, response.getBody().asPrettyString());
+                break;
+            case HttpStatus.SC_BAD_REQUEST: case HttpStatus.SC_UNPROCESSABLE_ENTITY:
+                Assert.assertEquals(String.format("Error message should be %s", expectedMessage),
+                        expectedMessage, response.jsonPath().get(MESSAGE));
+                break;
+        }
+    }
+
+    /**
+     * This method reads and adds images to upload to HTTP Request.
+     * @param httpRequest - HTTP Request
+     * @param imagesToUpload - images to upload separated by ":" character
+     */
+    private void readImagesToUploadAndAddToRequest(RequestSpecification httpRequest, String imagesToUpload) {
+        if(imagesToUpload != null) {
+            String[] imagesToUploadArray = imagesToUpload.split(":");
+            httpRequest.header(CONTENT_TYPE, "multipart/form-data");
+            for(String imageToUpload: imagesToUploadArray) {
+                httpRequest.multiPart(FILE, new File(FILE_DIR + imageToUpload));
+            }
+        }
     }
 
     /**

@@ -32,6 +32,7 @@ public class TestConstants {
     public static String POST_UPLOAD_REPORTS_DOCUMENTS = "/api/v1/upload/reports/%s/documents";
     public static String PUT_UPLOAD_REPORTS_DOCUMENTS = "/api/v1/upload/reports/%s/documents";
     public static String POST_UPLOAD_IMAGE_FOR_GE_REPORT = "/api/v1/upload/reports/%s/tcr/%s/section/%s/images";
+    public static String PATCH_REPORT_REPORTS_TCR_SECTION = "/api/v1/report/reports/%s/tcr/%s/section/%s";
     public static String GZIP ="gzip";
     public static String URI = "uri";
     public static String MESSAGE = "message";
@@ -57,4 +58,5 @@ public class TestConstants {
     public static String EXP_ID = "exp_id";
     public static String T_CELL_NON_CONFIDENT_COUNT = "t_cell_non_confident_count";
     public static String SELECTED_LSC_SAMPLES ="lsc_selected_samples";
+    public static String FILE_DIR ="src/test/resources/files/";
 }
