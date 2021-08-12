@@ -30,16 +30,20 @@ public class TestUtilities {
         RestAssured.baseURI = TOKEN_BASE_URI;
         RequestSpecification httpRequest = RestAssured.given();
         httpRequest.header(CONTENT_TYPE, "multipart/form-data");
-        httpRequest.multiPart(CLIENT_SECRET, "lBw1Bl-az10uFSis6gn2-j.UHy-mXY__ew");
+        //httpRequest.multiPart(CLIENT_SECRET, "lBw1Bl-az10uFSis6gn2-j.UHy-mXY__ew");
+        httpRequest.multiPart(CLIENT_SECRET, "K65z1OX4G-628Cw.1fAWZ.bktPB.-4fLWc");
         httpRequest.multiPart(GRANT_TYPE, "password");
-        httpRequest.multiPart(CLIENT_ID, "08c5a6fe-ad37-4a30-9bc7-344908a00f88");
+        //httpRequest.multiPart(CLIENT_ID, "08c5a6fe-ad37-4a30-9bc7-344908a00f88");
+        httpRequest.multiPart(CLIENT_ID, "b4b80a49-1286-4b6f-b8c6-97097274c303");
+        httpRequest.multiPart(RESOURCE, "b4b80a49-1286-4b6f-b8c6-97097274c303");
+        //httpRequest.multiPart(CLIENT_ID, "Kb4b80a49-1286-4b6f-b8c6-97097274c303");
         httpRequest.multiPart(USER_NAME, userName);
         httpRequest.multiPart(PASSWORD, password);
         httpRequest.multiPart(SCOPE, "openid profile");
         Response response = httpRequest.request(Method.POST);
         int statusCode = response.getStatusCode();
         Assert.assertEquals(200, statusCode);
-        return response.jsonPath().get(ID_TOKEN);
+        return response.jsonPath().get(ACCESS_TOKEN);
     }
 
     /**
