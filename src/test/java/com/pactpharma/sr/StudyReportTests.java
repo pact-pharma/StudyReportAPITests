@@ -36,7 +36,7 @@ final boolean isTestRailEnabledFlag = true;
     public Object[][] getFetchDocsDataProvider(){
         return new Object[][] {{2218, GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                 HttpStatus.SC_OK, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).tar.gz",
-                "https://study-report.zest.pactpharma.com/api/v1/report/reports/25046/fetchdocs/", null},
+                "https://dev-studyreport.zest.pactpharma.com/api/v1/report/reports/25046/fetchdocs/", null},
                 {2228, GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_BAD_REQUEST, "125046", null, null, "Error: No such report found!"},
                 {2229, GET_FETCH_DOCS_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
@@ -44,7 +44,7 @@ final boolean isTestRailEnabledFlag = true;
                         "to download report of type Protein Science(S)"},
                 {2230, GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_OK, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).word.tar.gz",
-                        "https://study-report.zest.pactpharma.com/api/v1/report/reports/25046/fetchinwordformat/", null},
+                        "https://dev-studyreport.zest.pactpharma.com/api/v1/report/reports/25046/fetchinwordformat/", null},
                 {2232, GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD ,
                         HttpStatus.SC_BAD_REQUEST, "125046", null, null, "Error: No such report found!"},
                 {2231, GET_FETCH_IN_WORD_FORMAT_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD ,

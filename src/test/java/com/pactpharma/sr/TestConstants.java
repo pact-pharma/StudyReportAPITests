@@ -1,14 +1,18 @@
 package com.pactpharma.sr;
 
 public class TestConstants {
-    public static String TOKEN_BASE_URI = "https://login.microsoftonline.com/7e9e134e-8b39-4bc7-93f1-ac46a728032f/oauth2/v2.0/token";
-    public static String BASE_URI = "https://study-report.zest.pactpharma.com";
+    //public static String TOKEN_BASE_URI = "https://login.microsoftonline.com/7e9e134e-8b39-4bc7-93f1-ac46a728032f/oauth2/v2.0/token";
+    public static String TOKEN_BASE_URI = "https://login.microsoftonline.com/7e9e134e-8b39-4bc7-93f1-ac46a728032f/oauth2/token";
+    //public static String BASE_URI = "https://study-report.zest.pactpharma.com";
+    public static String BASE_URI = "https://dev-studyreport.zest.pactpharma.com";
+    public static String ACCESS_TOKEN = "access_token";
     public static String ID_TOKEN = "id_token";
     public static String CONTENT_TYPE = "Content-Type";
     public static String ACCEPT_ENCODING = "Accept-Encoding";
     public static String CLIENT_ID = "client_id";
     public static String CLIENT_SECRET = "client_secret";
     public static String GRANT_TYPE = "grant_type";
+    public static String RESOURCE = "resource";
     public static String AUTHORIZATION = "Authorization";
     public static String USER_NAME = "username";
     public static String PASSWORD = "password";
