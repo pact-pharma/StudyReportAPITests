@@ -38,17 +38,17 @@ final boolean isTestRailEnabledFlag = true;
                 HttpStatus.SC_OK, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).tar.gz",
                 "https://dev-studyreport.zest.pactpharma.com/api/v1/report/reports/25046/fetchdocs/", null},
                 {2228, GET_FETCH_DOCS_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        HttpStatus.SC_BAD_REQUEST, "125046", null, null, "Error: No such report found!"},
+                        HttpStatus.SC_BAD_REQUEST, "125046", null, null, "No such report found!"},
                 {2229, GET_FETCH_DOCS_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        HttpStatus.SC_BAD_REQUEST, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
+                        HttpStatus.SC_BAD_REQUEST, "25046", null, null, "User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"},
                 {2230, GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD,
                         HttpStatus.SC_OK, "25046", "20-227_20000820_0014_PACT298C_Protein Science(S).word.tar.gz",
                         "https://dev-studyreport.zest.pactpharma.com/api/v1/report/reports/25046/fetchinwordformat/", null},
                 {2232, GET_FETCH_IN_WORD_FORMAT_URI, CREATOR_USER_NAME, CREATOR_PASSWORD ,
-                        HttpStatus.SC_BAD_REQUEST, "125046", null, null, "Error: No such report found!"},
+                        HttpStatus.SC_BAD_REQUEST, "125046", null, null, "No such report found!"},
                 {2231, GET_FETCH_IN_WORD_FORMAT_URI, APPROVAL_USER_NAME, APPROVAL_PASSWORD ,
-                        HttpStatus.SC_BAD_REQUEST, "25046", null, null, "Error: User svc-study-report-approval@pactpharma.com does not have permission " +
+                        HttpStatus.SC_BAD_REQUEST, "25046", null, null, "User svc-study-report-approval@pactpharma.com does not have permission " +
                         "to download report of type Protein Science(S)"}
         };
     }
@@ -676,35 +676,33 @@ final boolean isTestRailEnabledFlag = true;
                         "Approved", null, "imPACT", "0037", "PACT506C",
                         "21-117_0037_PACT506C_imPACT.pdf", null, "21-117",
                         null, null, null, null, null, null, null, null, null, null,
-                        null, "0.00", null, null, "  Report has been successfully approved."},
+                        null, "0.00", null, null, "  Report has been successfully marked Approved"},
                {2301, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3118773", false, HttpStatus.SC_OK,
                         "Reject", null, "Tumor Immunology", "0015", "PACT299C",
                         "20-085_0015_PACT299C_Tumor Immunology.pdf", null, "20-085",
                         null, null, null, null, null, null, null, null, null, null,
-                        null, null, null, "This test conclusion.", "  Report has been successfully rejected."},
+                        null, null, null, "This test conclusion.", "  Report has been successfully marked Reject"},
                {2302, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", false, HttpStatus.SC_OK,
                         "Reject", "0", "Gene Editing", "0512", "PACT463C",
                         "20-637_0512_PACT463C_Gene Editing.pdf", "2517325_sample.pdf", "20-637",
                         null, null, null, null, null, null, null, null, null, null,
-                        null, null, null, null, "  Report has been successfully rejected."},
+                        null, null, null, null, "  Report has been successfully marked Reject"},
                {2303, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", false, HttpStatus.SC_OK,
                         "Reject", "1", "Bioinformatics", "0611", "PACT507C",
                         "21-107_0611_PACT507C_Bioinformatics.pdf", null, "21-107",
                         null, null, null, null, null, null, null,
                         "sdsda", "dsadadasasa", "adadasad",
-                        null, null, null, null, "  Report has been successfully rejected."},
+                        null, null, null, null, "  Report has been successfully marked Reject"},
                {2304, CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
                         "Reject", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "User svc-study-report-creator@pactpharma.com does not have permission to" +
-                                " approve or reject the reports of type Protein Science(S)"},
+                        "svc-study-report-creator@pactpharma.com cannot approve reports of type Protein Science(S)"},
                {2305, CREATOR_USER_NAME, CREATOR_PASSWORD, "29641", false, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "User svc-study-report-creator@pactpharma.com does not have permission to approve or " +
-                                "reject the reports of type Protein Science(S)"},
+                        "svc-study-report-creator@pactpharma.com cannot approve reports of type Protein Science(S)"},
                 {2306, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "30738", true, HttpStatus.SC_BAD_REQUEST,
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
@@ -714,12 +712,12 @@ final boolean isTestRailEnabledFlag = true;
                         "Approved", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "Report has not been submitted yet for approval"},
+                        "Creator has not finished generating report yet"},
                 {2308, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "28374", true, HttpStatus.SC_BAD_REQUEST,
                         "Reject", null, null, null, null,
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, null, null, null,
-                        "Report has not been submitted yet for approval"}
+                        "Creator has not finished generating report yet"}
         };
     }
 
@@ -790,8 +788,8 @@ final boolean isTestRailEnabledFlag = true;
     @DataProvider(name = "getPdfAllDataProvider")
     public Object[][] getPdfAllDataProvider() {
         return new Object[][]{
-                {2225, GET_PDF_ALL, null, HttpStatus.SC_UNPROCESSABLE_ENTITY, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        null, null, 1, "\"query.status\" is required"},
+                {2225, GET_PDF_ALL, null, HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 1, null},
                 {2309, GET_PDF_ALL, "status[]=pending&page=1", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD, "Pending",
                         "pending", 1, null},
                 {2310, GET_PDF_ALL, "status[]=progress&page=2", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
@@ -806,8 +804,8 @@ final boolean isTestRailEnabledFlag = true;
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,In Progress", "approved,reject,progress", 3, null},
                 {2315, GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=pending", HttpStatus.SC_OK,
                         CREATOR_USER_NAME, CREATOR_PASSWORD, "Approved,Reject,Pending", "approved,reject,pending", 1, null},
-                {2316, GET_PDF_ALL, "page=4", HttpStatus.SC_UNPROCESSABLE_ENTITY, CREATOR_USER_NAME, CREATOR_PASSWORD,
-                        null, null, 4, "\"query.status\" is required"},
+                {2316, GET_PDF_ALL, "page=4", HttpStatus.SC_OK, CREATOR_USER_NAME, CREATOR_PASSWORD,
+                        "Pending,In Progress,Approved,Reject", "pending,progress,approved,reject", 4, null},
                 {2317, GET_PDF_ALL, "status[]=approved&status[]=reject&status[]=progress&status[]=pending&page=1", HttpStatus.SC_OK,
                         APPROVAL_USER_NAME, APPROVAL_PASSWORD, "Pending,In Progress,Approved,Reject",
                         "pending,progress,approved,reject", 1, null},
