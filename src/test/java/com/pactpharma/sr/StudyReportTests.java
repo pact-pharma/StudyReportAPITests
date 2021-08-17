@@ -30,7 +30,7 @@ import static org.skyscreamer.jsonassert.JSONCompare.compareJSON;
 @Listeners(TestNgTestRailListener.class)
 public class StudyReportTests {
 final boolean isTestEnabled = true;
-final boolean isTestRailEnabledFlag = true;
+final boolean isTestRailEnabledFlag = false;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
@@ -540,7 +540,7 @@ final boolean isTestRailEnabledFlag = true;
         return new Object[][]{
                 {2223, CREATOR_USER_NAME, CREATOR_PASSWORD, "27651", HttpStatus.SC_OK,
                         "Protein Science(S)", "0027", "PACT407C",
-                        "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
+                        null, null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "  Report submitted successfully."},
@@ -570,59 +570,51 @@ final boolean isTestRailEnabledFlag = true;
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This submit imPact test conclusion.", "  Report submitted successfully."},*/
                 {2292, CREATOR_USER_NAME, CREATOR_PASSWORD, "2541133", HttpStatus.SC_OK,
-                        "Tumor Immunology", "0403", "PACT443C",
-                        "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
+                        "Tumor Immunology", "0403", "PACT443C", null, null, "20-565",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This submit TI test conclusion.",  "  Report submitted successfully."},
                 {2293, CREATOR_USER_NAME, CREATOR_PASSWORD, "42993", HttpStatus.SC_OK,
-                        "Protein Science(L)", "0403", "PACT443C",
-                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", "42993_ge-0030.pdf", "20-545",
+                        "Protein Science(L)", "0403", "PACT443C", null, "42993_ge-0030.pdf", "20-545",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "  Report submitted successfully."},
                 {2294, CREATOR_USER_NAME, CREATOR_PASSWORD, "2542290", HttpStatus.SC_OK,
-                        "Gene Editing", "0504", "PACT326C",
-                        "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
+                        "Gene Editing", "0504", "PACT326C", null, null, "20-393",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.", "  Report submitted successfully."},
                 {2295, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517281", HttpStatus.SC_BAD_REQUEST,
-                        "Gene Editing", "0504", "PACT326C",
-                        "20-393_0504_PACT326C_Gene Editing.pdf", null, "20-393",
+                        "Gene Editing", "0504", "PACT326C", null, null, "20-393",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This is test GE conclusion.",
                         "User svc-study-report-approval@pactpharma.com does " +
                                 "not have permission to submit report of type Gene Editing"},
                 {2296, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "42963", HttpStatus.SC_BAD_REQUEST,
-                        "Protein Science(L)", "0403", "PACT443C",
-                        "20-545_20002003_0403_PACT443C_Protein Science(L).pdf", null, "20-545",
+                        "Protein Science(L)", "0403", "PACT443C", null, null, "20-545",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, M02_LSC_SELECTED_SAMPLES, "This is test Protein Science(L) conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have permission to submit " +
                                 "report of type Protein Science(L)"},
                 {2297, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2739606", HttpStatus.SC_BAD_REQUEST,
-                        "Tumor Immunology", "0403", "PACT443C",
-                        "20-565_0403_PACT443C_Tumor Immunology.pdf", null, "20-565",
+                        "Tumor Immunology", "0403", "PACT443C", null, null, "20-565",
                         "Pending", null, null,
                         null, null, null, null, null, null, null, null,
                         null, null, null, "This TI test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have" +
                                 " permission to submit report of type Tumor Immunology"},
                 {2298, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "3297225", HttpStatus.SC_BAD_REQUEST,
-                        "imPACT", "0403", "PACT443C",
-                        "20-457_0403_PACT443C_imPACT.pdf", null, "20-457",
+                        "imPACT", "0403", "PACT443C", null, null, "20-457",
                         "In Progress", null, null,
                         null, null, null, null, null, null, null, null,
                         null, "100.00", null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not " +
                                 "have permission to submit report of type imPACT"},
                 {2299, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2641522", HttpStatus.SC_BAD_REQUEST,
-                        "Bioinformatics", "0412", "PACT493C",
-                        "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
+                        "Bioinformatics", "0412", "PACT493C", null, null, "21-063",
                         "Pending", null, "04/Dec/2020",
                         "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
@@ -632,8 +624,7 @@ final boolean isTestRailEnabledFlag = true;
                         "User svc-study-report-approval@pactpharma.com does not have " +
                                 "permission to submit report of type Bioinformatics"},
                 {2300, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "34183", HttpStatus.SC_BAD_REQUEST,
-                        "Protein Science(S)", "0027", "PACT407C",
-                        "20-332_20001201_0027_PACT407C_Protein Science(S).pdf", null, "20-332",
+                        "Protein Science(S)", "0027", "PACT407C", null, null, "20-332",
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "User svc-study-report-approval@pactpharma.com does not have permission " +
@@ -699,9 +690,9 @@ final boolean isTestRailEnabledFlag = true;
                         "20-085_0015_PACT299C_Tumor Immunology.pdf", null, "20-085",
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, "This test conclusion.", "  Report has been successfully marked Reject"},
-               {2302, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2517325", false, HttpStatus.SC_OK,
-                        "Reject", "0", "Gene Editing", "0512", "PACT463C",
-                        "20-637_0512_PACT463C_Gene Editing.pdf", "2517325_sample.pdf", "20-637",
+               {2302, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2806982", false, HttpStatus.SC_OK,
+                        "Reject", "0", "Gene Editing", "0309", "PACT466C",
+                        "20-643_0309_PACT466C_Gene Editing.pdf", null, "20-643",
                         null, null, null, null, null, null, null, null, null, null,
                         null, null, null, null, "  Report has been successfully marked Reject"},
                {2303, APPROVAL_USER_NAME, APPROVAL_PASSWORD, "2792633", false, HttpStatus.SC_OK,
@@ -742,7 +733,7 @@ final boolean isTestRailEnabledFlag = true;
     Run before test execution:
          UPDATE report_dev.study_report SET status="Pending" where id=3119233;
          UPDATE report_dev.study_report SET status="Pending" where id=3118773;
-         UPDATE report_dev.study_report SET status="Pending" where id=2517325;
+         UPDATE report_dev.study_report SET status="Pending" where id=2806982;
          UPDATE report_dev.study_report SET status="Pending" where id=2792633;
          UPDATE report_dev.study_report SET status="Pending" where id=29641;
          UPDATE report_dev.study_report SET status="Pending" where id=30738;
@@ -867,7 +858,7 @@ final boolean isTestRailEnabledFlag = true;
                 {2319, GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "255C", CREATOR_USER_NAME, CREATOR_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithSeveralReport.json"},
                 {2320, GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "332C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
-                        "src/test/resources/files/getPdfSearchPatientWithOneReport.json"},
+                        "src/test/resources/files/getPdfSearchPatientWithApprovalRole.json"},
                 {2321, GET_PDF_SEARCH_PATIENT, HttpStatus.SC_OK, "255C", APPROVAL_USER_NAME, APPROVAL_PASSWORD,
                         "src/test/resources/files/getPdfSearchPatientWithApprovalRole.json"}
         };
