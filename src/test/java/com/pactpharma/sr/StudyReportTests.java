@@ -79,7 +79,8 @@ final boolean isTestRailEnabledFlag = true;
 
     @DataProvider(name = "getFetchDocsWithTokenDataProvider")
     public Object[][] getFetchDocsWithTokenDataProvider(){
-        return new Object[][] {{2219, CREATOR_USER_NAME, CREATOR_PASSWORD ,
+        return new Object[][] {
+                {2219, CREATOR_USER_NAME, CREATOR_PASSWORD,
                 HttpStatus.SC_OK, "25046", "25046", false, "src/test/resources/files/test.pdf", null},
                 {2233, CREATOR_USER_NAME, CREATOR_PASSWORD ,
                  HttpStatus.SC_BAD_REQUEST, "25046", "25046", true, null, "Invalid report archive token!"},
@@ -379,10 +380,18 @@ final boolean isTestRailEnabledFlag = true;
                         "In Progress", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "  Report saved successfully."},
-                {2280, CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", HttpStatus.SC_OK,
-                        "Bioinformatics", "0412", "PACT493C",
-                        "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
-                        "In Progress", null, "04/Dec/2020",
+                {2280, CREATOR_USER_NAME, CREATOR_PASSWORD, "3179259", HttpStatus.SC_OK,
+                        "Bioinformatics", "0024", "PACT0001002C",
+                        null, "PACT0001002C_T_PP001402_cpResult.tsv," +
+                        "PACT0001002C_T_PP001402_marker_expression.xlsx," +
+                        "PACT0001002C_T_PP001402_marker_expression.xlsx," +
+                        "PACT0001002C_T_PP001402-mantis.msi.final.tsv.status," +
+                        "PACT-0101_0024_PP001402_28DEC1960_BINF_neoE_with_oligo_PACT0001002C_T_PP001402_2021-03-26," +
+                        "PACT0001002C_T_PP001402_TCR_mixr.xlsx," +
+                        "PACT0001002C_T_PP001402_oncotator_results_Annotated.tsv," +
+                        "PACT-0101_0024_PP001402_28DEC1960_BINF_neoE_with_oligo_PACT0001002C_T_PP001402_2021-03-26.xlsx,"+
+                        "PACT-0101_0024_PP001402_28DEC1960_BINF_PACT0001002C_T_PP001402_for_oligo_ordering_PACT0001002C_T_PP001402_2021-03-26.xlsx",
+                        "21-251", "In Progress", null, "04/Dec/2020",
                         "This is tumor fusion Detected Comment",
                         "This is Low Expressed Nsm Comment", "Low Tc By Ngs Pct Comment",
                         "This is test recommendation", "This is test amendments",
@@ -535,9 +544,17 @@ final boolean isTestRailEnabledFlag = true;
                         "Pending", null, "04/Dec/2020", null, null, null, null, null,
                         null, null, null, "20001201", null, null, "This test conclusion.",
                         "  Report submitted successfully."},
-                {2291, CREATOR_USER_NAME, CREATOR_PASSWORD, "2677093", HttpStatus.SC_OK,
-                        "Bioinformatics", "0412", "PACT493C",
-                        "21-063_0412_PACT493C_Bioinformatics.pdf", null, "21-063",
+                {2291, CREATOR_USER_NAME, CREATOR_PASSWORD, "3179259", HttpStatus.SC_OK,
+                        "Bioinformatics", "0024", "PACT0001002C",
+                        null, "PACT0001002C_T_PP001402_cpResult.tsv," +
+                        "PACT0001002C_T_PP001402_marker_expression.xlsx," +
+                        "PACT0001002C_T_PP001402_marker_expression.xlsx," +
+                        "PACT0001002C_T_PP001402-mantis.msi.final.tsv.status," +
+                        "PACT-0101_0024_PP001402_28DEC1960_BINF_neoE_with_oligo_PACT0001002C_T_PP001402_2021-03-26," +
+                        "PACT0001002C_T_PP001402_TCR_mixr.xlsx," +
+                        "PACT0001002C_T_PP001402_oncotator_results_Annotated.tsv," +
+                        "PACT-0101_0024_PP001402_28DEC1960_BINF_neoE_with_oligo_PACT0001002C_T_PP001402_2021-03-26.xlsx,"+
+                        "PACT-0101_0024_PP001402_28DEC1960_BINF_PACT0001002C_T_PP001402_for_oligo_ordering_PACT0001002C_T_PP001402_2021-03-26.xlsx", "21-251",
                         "Pending", null, "04/Dec/2020",
                         "This is tumor submit fusion Detected Comment",
                         "This is submit Low Expressed Nsm Comment",
