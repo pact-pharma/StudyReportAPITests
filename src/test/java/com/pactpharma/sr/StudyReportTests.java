@@ -30,7 +30,7 @@ import static org.skyscreamer.jsonassert.JSONCompare.compareJSON;
 @Listeners(TestNgTestRailListener.class)
 public class StudyReportTests {
 final boolean isTestEnabled = true;
-final boolean isTestRailEnabledFlag = false;
+final boolean isTestRailEnabledFlag = true;
 
     @DataProvider(name = "getFetchDocsDataProvider")
     public Object[][] getFetchDocsDataProvider(){
