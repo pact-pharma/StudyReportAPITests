@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipInputStream;
 import static com.pactpharma.sr.TestConstants.*;
 import io.restassured.http.ContentType;
 
@@ -100,7 +100,7 @@ public class TestUtilities {
         }
         File testFile = new File(generatedPath);
         FileOutputStream out = new FileOutputStream(testFile);
-        GZIPInputStream gis = new GZIPInputStream(response.getBody().asInputStream());
+        ZipInputStream gis = new ZipInputStream(response.getBody().asInputStream());
         byte[] buffer = new byte[1024];
         int len;
         while((len = gis.read(buffer)) != -1){

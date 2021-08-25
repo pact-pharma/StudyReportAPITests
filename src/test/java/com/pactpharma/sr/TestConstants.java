@@ -4,7 +4,8 @@ public class TestConstants {
     //public static String TOKEN_BASE_URI = "https://login.microsoftonline.com/7e9e134e-8b39-4bc7-93f1-ac46a728032f/oauth2/v2.0/token";
     public static String TOKEN_BASE_URI = "https://login.microsoftonline.com/7e9e134e-8b39-4bc7-93f1-ac46a728032f/oauth2/token";
     //public static String BASE_URI = "https://study-report.zest.pactpharma.com";
-    public static String BASE_URI = "https://dev-studyreport.zest.pactpharma.com";
+   public static String BASE_URI = "https://dev-studyreport.zest.pactpharma.com";
+    // public static String BASE_URI = "http://localhost:3031";
     public static String ACCESS_TOKEN = "access_token";
     public static String ID_TOKEN = "id_token";
     public static String CONTENT_TYPE = "Content-Type";
