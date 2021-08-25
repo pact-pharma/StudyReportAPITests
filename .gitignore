@@ -1,0 +1,7 @@
+.classpath
+.idea/
+.project
+.settings/
+StudyReportTests.iml
+src/test/tmp/
+target/
