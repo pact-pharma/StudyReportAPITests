@@ -99,7 +99,9 @@ public class PostResults {
      * @throws Exception
      */
     private void readRunId(APIClient client) throws Exception {
-        JSONArray projects = (JSONArray) getTestRailAPIClient().sendGet("get_projects");
+        // JSONArray projects = (JSONArray) getTestRailAPIClient().sendGet("get_projects");
+        JSONObject res = (JSONObject) getTestRailAPIClient().sendGet("get_projects");
+        JSONArray projects = (JSONArray) res.get("projects");
         for(Object object: projects) {
             String projectName = (String) ((JSONObject) object).get(NAME);
             if(projectName.trim().equalsIgnoreCase(STUDY_REPORT_API)) {
