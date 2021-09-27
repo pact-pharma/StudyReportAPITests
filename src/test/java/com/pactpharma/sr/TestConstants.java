@@ -20,9 +20,9 @@ public class TestConstants {
     public static String SCOPE = "scope";
     public static String FILE = "file";
     public static String CREATOR_USER_NAME = "svc-study-report-creator@pactpharma.com";
-    public static String CREATOR_PASSWORD = "GRv0n0t!7hdL";
+    public static String CREATOR_PASSWORD = "DO;?aqw[Br3abukE";
     public static String APPROVAL_USER_NAME = "svc-study-report-approval@pactpharma.com";
-    public static String APPROVAL_PASSWORD = "k#2REA3pp42R";
+    public static String APPROVAL_PASSWORD = "qd@p]Z5(^zY>NXsC";
     public static String GET_FETCH_DOCS_URI = "/api/v1/report/reports/%s/fetchdocs";
     public static String GET_FETCH_IN_WORD_FORMAT_URI = "/api/v1/report/reports/%s/fetchinwordformat";
     public static String GET_PDF_SEARCH_REPORT = "/api/v1/pdf/search/reports?report_type=%s&patient_id=%s";
